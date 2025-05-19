@@ -1,3 +1,194 @@
-*{
-    font-family: "Open Sans", sans-serif !important;
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+* {
+  font-family: "Poppins", sans-serif !important;
 }
+
+/* variables de color */
+:root {
+  --primario: #e63946; /* Rojo vibrante */
+  --secundario: #6c757d; /* Gris medio */
+  --dark: #1a2526; /* Negro/Azul oscuro */
+  --light: #f5f5f5; /* Fondo claro */
+  --white: #ffffff; /* Blanco puro */
+  --logo:#F5EADB;
+  --black:#212121;
+}
+
+input, select,button{
+    height:3.5em;
+}
+
+/* Fondo de la página */
+body {
+  transition: .2s;
+  background-color: var(--light) !important;
+}
+#login{
+    background-color: var(--dark) !important;
+}
+
+/* contenedor del login */
+.login-container {
+  max-width: 500px;
+  width: 100%;
+  background-color: var(--logo) !important;
+  border: 1px solid var(--secundario)!important;;
+}
+
+/* Logo */
+.login-logo img {
+  width: 200px;
+  height: 200px;
+  border: none !important;
+}
+
+/* ttulos*/
+h2,
+.form-label {
+  color: var(--dark);
+}
+
+/* Campos de entrada */
+.form-control {
+  background-color: var(--light) !important;
+  /* border: 1px solid var(--secundario); */
+}
+
+
+/* Botón Ingresar */
+.btn-main{
+  transition: 0.3s;
+  background-color: var(--primario);
+  border-color: var(--primario);
+  color: var(--white);
+}
+
+.btn-main:hover {
+  background-color: #c5303d;
+  border-color: #c5303d;
+  color: var(--light);
+}
+
+/* Enlace Recuperar contraseña */
+.text-center a {
+  color: var(--dark);
+}
+
+.text-center a:hover {
+  color: var(--primario);
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+  .login-container {
+    max-width: 500px;
+  }
+  .login-logo img {
+    width: 160px;
+    height: 160px;
+  }
+}
+
+@media (max-width: 544px) {
+  .login-container {
+    max-width: 300px;
+  }
+}
+
+
+
+
+
+
+
+
+/* Navbar */
+.navbar {
+  background-color: var(--logo); /* Fondo negro/azul oscuro */
+}
+
+/* Enlaces de navegación */
+.nav-link {
+    transition: .2s;
+  color: var(--dark) !important; /* Enlaces blancos */
+  font-weight:500;
+
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: var(--primario) !important; /* Enlaces rojo al pasar el mouse o cuando están activos */
+}
+
+/* Menú desplegable */
+
+.navbar-collapse.collapse.show > ul{
+    width: auto;
+    gap: .5em !important;
+    flex-direction:column!important;
+    align-items: center;   
+    justify-content: center;
+}
+
+
+#principal{
+    min-height: 400px;
+}
+
+
+
+/* Estilos para la sección principal */
+main {
+  background-color: var(--light); /* Fondo claro */
+}
+
+/* Título principal */
+h1 {
+  color: var(--dark); /* Texto negro/azul oscuro */
+}
+
+/* Botones */
+
+
+/* Tabla */
+.table {
+  background-color: var(--white); /* Fondo blanco */
+}
+
+.table thead {
+  background-color: var(--dark); /* Fondo oscuro para el encabezado */
+  color: var(--white); /* Texto blanco */
+}
+
+.table tbody tr:hover {
+  background-color: var(--light); /* Fondo claro al pasar el mouse */
+}
+
+
+/* Filtros */
+.form-label {
+  color: var(--dark); /* Texto oscuro */
+}
+
+.form-select,
+.form-control {
+  border: 1px solid var(--secundario); /* Borde gris */
+}
+
+
+
+/* Footer */
+.footer {
+  background-color: var(--black); 
+  color: var(--white); 
+  font-size: 0.9rem; 
+}
+
+.footer p {
+  margin-bottom: 0.5rem; /* Espaciado entre líneas */
+}
+
+
+
+
