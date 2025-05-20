@@ -32,7 +32,7 @@
         <div class="container-fluid">
             <!-- Logo o nombre de la marca -->
             <a class="navbar-brand" href="home/index.html">
-                <img src="/lab_prog_2025_titos_alan/public/app/asseets/images/main_logo.webp" alt="BajoCeroWear Logo"
+                <img src="/lab_prog_2025_titos_alan/public/app/assets/images/main_logo.webp" alt="BajoCeroWear Logo"
                     width="70" height="70" class="d-inline-block align-text-top rounded-circle">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
@@ -76,17 +76,24 @@
     </nav>
 
 
-    <!-- Contenido principal -->
     <main class="flex-grow-1">
         <div class="container py-5">
-            <!-- Título principal -->
+
+            <section class="mb-4 d-flex flex-row">
+                <div class="breadCrumb border rounded p-2 shadow-sm w-100">
+                    <span class="d-flex flex-row gap-2"><a href="./home/" class="nav-link">Inicio</a> / <a
+                            href="./items/" class="nav-link">Productos</a> > <a href="./items/create.html"
+                            class="nav-link">Agregar</a></span>
+                </div>
+            </section>
+
             <section class="mb-4">
-                <h1 class="text-center">Crear Nuevo Producto</h1>
+                <h1 class="text-center">Agregar Nuevo Producto</h1>
                 <p class="text-center text-muted">Completa el formulario para registrar un nuevo producto en el sistema.
                 </p>
             </section>
 
-            <!-- Formulario de alta de producto -->
+
             <section class="mb-4">
                 <div class="row justify-content-center">
                     <div class="col-md-8">
@@ -96,13 +103,16 @@
                                 <div class="col-12">
                                     <label for="nombre" class="form-label">Nombre</label>
                                     <input type="text" id="nombre" name="nombre" class="form-control"
-                                        placeholder="Ingresa el nombre del producto" required>
+                                        placeholder="Ingresa el nombre del producto" required minlength="2"
+                                        pattern="[A-Za-z\s]+" title="Solo letras y espacios, entre 2 y 50 caracteres">
                                 </div>
                                 <!-- Código -->
                                 <div class="col-md-6">
                                     <label for="codigo" class="form-label">Código</label>
                                     <input type="text" id="codigo" name="codigo" class="form-control"
-                                        placeholder="Ingresa el código del producto" required>
+                                        placeholder="Ingresa el código del producto" required minlength="3"
+                                        maxlength="10" pattern="[A-Za-z0-9]{3,10}"
+                                        title="Solo letras y números, entre 3 y 10 caracteres">
                                 </div>
                                 <!-- Categoría -->
                                 <div class="col-md-6">
@@ -118,19 +128,22 @@
                                 <div class="col-md-6">
                                     <label for="precio" class="form-label">Precio</label>
                                     <input type="number" id="precio" name="precio" class="form-control"
-                                        placeholder="Ingresa el precio" min="0" step="0.01" required>
+                                        placeholder="Ingresa el precio" required min="0" max="999999.99" step="0.01"
+                                        title="Debe ser un número entre 0 y 999999.99">
                                 </div>
                                 <!-- Stock -->
                                 <div class="col-md-6">
                                     <label for="stock" class="form-label">Stock</label>
                                     <input type="number" id="stock" name="stock" class="form-control"
-                                        placeholder="Ingresa la cantidad en stock" min="0" required>
+                                        placeholder="Ingresa la cantidad en stock" required min="0" max="10000" step="1"
+                                        title="Debe ser un número entero entre 0 y 10000">
                                 </div>
                                 <!-- Descripción -->
                                 <div class="col-12">
                                     <label for="descripcion" class="form-label">Descripción</label>
                                     <textarea id="descripcion" name="descripcion" class="form-control"
-                                        placeholder="Ingresa una descripción del producto" rows="3"></textarea>
+                                        placeholder="Ingresa una descripción del producto" rows="3" maxlength="500"
+                                        title="Máximo 500 caracteres"></textarea>
                                 </div>
                             </div>
                         </form>
@@ -139,9 +152,14 @@
             </section>
 
             <!-- Botones de acción -->
-            <section class="d-flex justify-content-center gap-3">
-                <button type="submit" form="createProductForm" class="btn btn-primary">Validar y guardar</button>
-                <a href="index.html" class="btn btn-outline-secondary d-flex align-items-center">Volver al listado</a>
+            <section class="d-flex justify-content-center flex-wrap gap-3">
+                <button type="submit" form="createUserForm"
+                    class="btn btn-primary d-flex align-items-center justify-content-between gap-1">
+                    Validar y guardar <i class="bi bi-save"></i>
+                </button>
+                <a href="./items/index.html"
+                    class="btn btn-outline-secondary d-flex align-items-center justify-content-between gap-1">Volver al
+                    listado <i class="bi bi-arrow-left-square"></i></a>
             </section>
 
             <!-- Mensaje de éxito -->
@@ -156,14 +174,13 @@
     <footer class="footer py-4 mt-auto">
         <div class="container">
             <div class="row align-items-center">
-                <!-- Columna para el logo de la universidad -->
+
                 <div class="col-md-4 d-flex mb-3 mb-md-0 justify-content-center">
                     <img width="140"
-                        src="/lab_prog_2025_titos_alan/public/app/asseets/images/6aec15da-a886-41d1-93af-5ff9ea1b9a61_removalai_preview.png"
+                        src="/lab_prog_2025_titos_alan/public/app/assets/images/6aec15da-a886-41d1-93af-5ff9ea1b9a61_removalai_preview.png"
                         alt="Logo Universidad Nacional de la Patagonia Austral" class="universidad-logo img-fluid ">
                 </div>
 
-                <!-- Columna para la información -->
                 <div class="col-md-8 text-center text-md-start">
                     <p class="mb-1">Sistema: BajoCeroWear v1.0</p>
                     <p class="mb-1">Alumno: Titos Alan Daniel</p>

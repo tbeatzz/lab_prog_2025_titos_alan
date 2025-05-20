@@ -11,21 +11,23 @@
   --dark: #1a2526; /* Negro/Azul oscuro */
   --light: #f5f5f5; /* Fondo claro */
   --white: #ffffff; /* Blanco puro */
-  --logo:#F5EADB;
-  --black:#212121;
+  --logo: #f5eadb;
+  --black: #212121;
 }
 
-input, select,button{
-    height:3.5em;
+input,
+select,
+button {
+  height: 3.5em;
 }
 
 /* Fondo de la página */
 body {
-  transition: .2s;
+  transition: 0.2s;
   background-color: var(--light) !important;
 }
-#login{
-    background-color: var(--dark) !important;
+#login {
+  background-color: var(--dark) !important;
 }
 
 /* contenedor del login */
@@ -33,7 +35,7 @@ body {
   max-width: 500px;
   width: 100%;
   background-color: var(--logo) !important;
-  border: 1px solid var(--secundario)!important;;
+  border: 1px solid var(--secundario) !important;
 }
 
 /* Logo */
@@ -51,13 +53,16 @@ h2,
 
 /* Campos de entrada */
 .form-control {
-  background-color: var(--light) !important;
+ 
+   background-color: var(--white ) !important;
   /* border: 1px solid var(--secundario); */
 }
+.form-control[disabled]{
 
-
+  background-color: var(--light) !important;
+}
 /* Botón Ingresar */
-.btn-main{
+.btn-main {
   transition: 0.3s;
   background-color: var(--primario);
   border-color: var(--primario);
@@ -96,99 +101,87 @@ h2,
   }
 }
 
-
-
-
-
-
-
-
 /* Navbar */
 .navbar {
-  background-color: var(--logo); /* Fondo negro/azul oscuro */
+  background-color: var(--logo); 
 }
 
 /* Enlaces de navegación */
 .nav-link {
-    transition: .2s;
-  color: var(--dark) !important; /* Enlaces blancos */
-  font-weight:500;
-
+  transition: 0.2s;
+  color: var(--dark) !important; 
+  font-weight: 500;
 }
 
 .nav-link:hover,
 .nav-link.active {
-  color: var(--primario) !important; /* Enlaces rojo al pasar el mouse o cuando están activos */
+  color: var(
+    --primario
+  ) !important; 
 }
 
 /* Menú desplegable */
-
-.navbar-collapse.collapse.show > ul{
-    width: auto;
-    gap: .5em !important;
-    flex-direction:column!important;
-    align-items: center;   
-    justify-content: center;
+.navbar-collapse.collapse.show > ul {
+  width: auto;
+  gap: 0.5em !important;
+  flex-direction: column !important;
+  align-items: center;
+  justify-content: center;
 }
 
-
-#principal{
-    min-height: 400px;
+/* home */
+.home {
+  min-height: 400px;
 }
-
-
 
 /* Estilos para la sección principal */
 main {
-  background-color: var(--light); /* Fondo claro */
+  background-color: var(--light); 
 }
 
 /* Título principal */
 h1 {
-  color: var(--dark); /* Texto negro/azul oscuro */
+  color: var(--dark); 
 }
-
-/* Botones */
-
 
 /* Tabla */
 .table {
-  background-color: var(--white); /* Fondo blanco */
+  background-color: var(--white); 
 }
 
 .table thead {
-  background-color: var(--dark); /* Fondo oscuro para el encabezado */
-  color: var(--white); /* Texto blanco */
+  background-color: var(--dark); 
+  color: var(--white); 
 }
 
 .table tbody tr:hover {
-  background-color: var(--light); /* Fondo claro al pasar el mouse */
+  background-color: var(--light); 
 }
-
 
 /* Filtros */
 .form-label {
-  color: var(--dark); /* Texto oscuro */
+  color: var(--dark); 
 }
 
 .form-select,
 .form-control {
-  border: 1px solid var(--secundario); /* Borde gris */
+  border: 1px solid var(--secundario); 
 }
 
-
+/* botones de accion */
+@media (max-width: 409px) {
+  .botones-accion > button {
+    width: 100%;
+  }
+}
 
 /* Footer */
 .footer {
-  background-color: var(--black); 
-  color: var(--white); 
-  font-size: 0.9rem; 
+  background-color: var(--black);
+  color: var(--white);
+  font-size: 0.9rem;
 }
 
 .footer p {
   margin-bottom: 0.5rem; /* Espaciado entre líneas */
 }
-
-
-
-

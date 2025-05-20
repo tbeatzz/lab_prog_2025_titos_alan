@@ -1,296 +1,213 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <base
-      href="http://localhost/lab_prog_2025_titos_alan/app/resources/views/"
-    />
 
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+	<base href="http://localhost/lab_prog_2025_titos_alan/app/resources/views/" />
 
-    <meta name="description" content="Página de inicio" />
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>BajoCeroWear | Crar usuario</title>
-    <link
-      rel="icon"
-      type="image/x-icon"
-      href="/lab_prog_2025_titos_alan/public/app/assets/images/main_logo.webp"
-    />
+	<meta name="description" content="Página de inicio" />
 
-    <!-- Bootstrap CSS -->
-    <link
-      type="text/css"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT"
-      crossorigin="anonymous"
-    />
-    <script
-      defer
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
-      crossorigin="anonymous"
-    ></script>
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
-    />
+	<title>BajoCeroWear | Crar usuario</title>
+	<link rel="icon" type="image/x-icon" href="/lab_prog_2025_titos_alan/public/app/assets/images/main_logo.webp" />
 
-    <!--  CSS y JS -->
-    <link
-      rel="stylesheet"
-      href="/lab_prog_2025_titos_alan/public/app/css/main.css"
-    />
-    <script
-      defer
-      type="text/javascript"
-      src="/lab_prog_2025_titos_alan/public/app/js/main.js"
-    ></script>
-  </head>
+	<!-- Bootstrap CSS -->
+	<link type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css"
+		rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT"
+		crossorigin="anonymous" />
+	<script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
+		crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
 
-  <body class="d-flex flex-column min-vh-100">
-    <nav class="navbar navbar-expand-lg" aria-label="Main navigation">
-      <div class="container-fluid">
-        <!-- Logo o nombre de la marca -->
-        <a class="navbar-brand" href="home/index.html">
-          <img
-            src="/lab_prog_2025_titos_alan/public/app/asseets/images/main_logo.webp"
-            alt="BajoCeroWear Logo"
-            width="70"
-            height="70"
-            class="d-inline-block align-text-top rounded-circle"
-          />
-        </a>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#mainNavbar"
-          aria-controls="mainNavbar"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="mainNavbar">
-          <!-- Enlaces principales a la izquierda -->
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-4">
-            <li class="nav-item">
-              <a class="nav-link fs-5 p-0" href="home/index.html">Inicio</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link fs-5 p-0" href="items/index.html">Productos</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link fs-5 p-0" href="sale/index.html">Ventas</a>
-            </li>
-            <li class="nav-item">
-              <a
-                class="nav-link fs-5 p-0 active"
-                aria-current="page"
-                href="user/index.html"
-                >Usuarios</a
-              >
-            </li>
-          </ul>
-          <!-- "Mi cuenta" a la derecha -->
-          <ul class="navbar-nav ms-auto mb-2 mb-lg-0 p-0">
-            <li class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle fs-5 p-0"
-                href="#"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                Mi cuenta
-              </a>
-              <ul class="dropdown-menu dropdown-menu-end">
-                <li class="p-1">
-                  <a
-                    class="dropdown-item p-1 d-flex justify-content-between"
-                    href="javascript:void(0)"
-                    >Mis datos <i class="bi bi-person-circle"></i
-                  ></a>
-                </li>
-                <li class="p-1">
-                  <a
-                    class="dropdown-item p-1 d-flex justify-content-between"
-                    href="authentication/index.html"
-                    >Cerrar sesión <i class="bi bi-box-arrow-in-right"></i
-                  ></a>
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
+	<!--  CSS y JS -->
+	<link rel="stylesheet" href="/lab_prog_2025_titos_alan/public/app/css/main.css" />
+	<script defer type="text/javascript" src="/lab_prog_2025_titos_alan/public/app/js/main.js"></script>
+</head>
 
-    <!-- Contenido principal -->
-    <main class="flex-grow-1">
-      <div class="container py-5">
-        <!-- Título principal -->
-        <section class="mb-4">
-          <h1 class="text-center">Crear Nueva Cuenta</h1>
-          <p class="text-center text-muted">
-            Completa el formulario para registrar un nuevo usuario en el
-            sistema.
-          </p>
-        </section>
+<body class="d-flex flex-column min-vh-100">
+	<nav class="navbar navbar-expand-lg" aria-label="Main navigation">
+		<div class="container-fluid">
 
-        <!-- Formulario de alta de usuario -->
-        <section class="mb-4">
-          <div class="row justify-content-center">
-            <div class="col-md-8">
-              <form id="createUserForm">
-                <div class="row g-3">
-                  <!-- Apellido -->
-                  <div class="col-md-6">
-                    <label for="apellido" class="form-label">Apellido</label>
-                    <input
-                      type="text"
-                      id="apellido"
-                      name="apellido"
-                      class="form-control"
-                      placeholder="Ingresa el apellido"
-                      required
-                    />
-                  </div>
-                  <!-- Nombres -->
-                  <div class="col-md-6">
-                    <label for="nombres" class="form-label">Nombres</label>
-                    <input
-                      type="text"
-                      id="nombres"
-                      name="nombres"
-                      class="form-control"
-                      placeholder="Ingresa los nombres"
-                      required
-                    />
-                  </div>
-                  <!-- Cuenta -->
-                  <div class="col-md-6">
-                    <label for="cuenta" class="form-label">Cuenta</label>
-                    <input
-                      type="text"
-                      id="cuenta"
-                      name="cuenta"
-                      class="form-control"
-                      placeholder="Ingresa el nombre de usuario"
-                      required
-                    />
-                  </div>
-                  <!-- Perfil -->
-                  <div class="col-md-6">
-                    <label for="perfil" class="form-label">Perfil</label>
-                    <select
-                      id="perfil"
-                      name="perfil"
-                      class="form-select"
-                      required
-                    >
-                      <option value="" disabled selected>
-                        Selecciona un perfil
-                      </option>
-                      <option value="usuario">Usuario</option>
-                      <option value="administrador">Administrador</option>
-                    </select>
-                  </div>
-                  <!-- Correo -->
-                  <div class="col-12">
-                    <label for="correo" class="form-label">Correo</label>
-                    <input
-                      type="email"
-                      id="correo"
-                      name="correo"
-                      class="form-control"
-                      placeholder="Ingresa el correo electrónico"
-                      required
-                    />
-                  </div>
-                  <!-- Clave -->
-                  <div class="col-md-6">
-                    <label for="clave" class="form-label">Clave</label>
-                    <input
-                      type="password"
-                      id="clave"
-                      name="clave"
-                      class="form-control"
-                      placeholder="Ingresa la contraseña"
-                      required
-                    />
-                  </div>
-                  <!-- Confirmación de la clave -->
-                  <div class="col-md-6">
-                    <label for="confirmarClave" class="form-label"
-                      >Confirmación de la clave</label
-                    >
-                    <input
-                      type="password"
-                      id="confirmarClave"
-                      name="confirmarClave"
-                      class="form-control"
-                      placeholder="Confirma la contraseña"
-                      required
-                    />
-                  </div>
-                </div>
-              </form>
-            </div>
-          </div>
-        </section>
+			<a class="navbar-brand" href="home/index.html">
+				<img src="/lab_prog_2025_titos_alan/public/app/assets/images/main_logo.webp" alt="BajoCeroWear Logo"
+					width="70" height="70" class="d-inline-block align-text-top rounded-circle" />
+			</a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
+				aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="mainNavbar">
 
-        <!-- Botones de acción -->
-        <section class="d-flex justify-content-center gap-3">
-          <button type="submit" form="createUserForm" class="btn btn-primary">
-            Validar y guardar
-          </button>
-          <a
-            href="./user/index.html"
-            class="btn btn-outline-secondary d-flex align-items-center"
-            >Volver al listado</a
-          >
-        </section>
+				<ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-4">
+					<li class="nav-item">
+						<a class="nav-link fs-5 p-0" href="home/index.html">Inicio</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link fs-5 p-0" href="items/index.html">Productos</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link fs-5 p-0" href="sale/index.html">Ventas</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link fs-5 p-0 active" aria-current="page" href="user/index.html">Usuarios</a>
+					</li>
+				</ul>
 
-        <!-- Mensaje de éxito (oculto por defecto) -->
-        <section
-          id="successMessage"
-          class="mt-3 text-center"
-          style="display: none"
-        >
-          <p class="text-success mb-0">Registro creado</p>
-        </section>
-      </div>
-    </main>
+				<ul class="navbar-nav ms-auto mb-2 mb-lg-0 p-0">
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle fs-5 p-0" href="#" role="button" data-bs-toggle="dropdown"
+							aria-expanded="false">
+							Mi cuenta
+						</a>
+						<ul class="dropdown-menu dropdown-menu-end">
+							<li class="p-1">
+								<a class="dropdown-item p-1 d-flex justify-content-between"
+									href="javascript:void(0)">Mis datos <i class="bi bi-person-circle"></i></a>
+							</li>
+							<li class="p-1">
+								<a class="dropdown-item p-1 d-flex justify-content-between"
+									href="authentication/index.html">Cerrar sesión <i
+										class="bi bi-box-arrow-in-right"></i></a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
 
-    <footer class="footer py-4 mt-auto">
-      <div class="container">
-        <div class="row align-items-center">
-          <!-- Columna para el logo de la universidad -->
-          <div class="col-md-4 d-flex mb-3 mb-md-0 justify-content-center">
-            <img
-              width="140"
-              src="/lab_prog_2025_titos_alan/public/app/asseets/images/6aec15da-a886-41d1-93af-5ff9ea1b9a61_removalai_preview.png"
-              alt="Logo Universidad Nacional de la Patagonia Austral"
-              class="universidad-logo img-fluid"
-            />
-          </div>
+	<main class="flex-grow-1">
+		<div class="container py-5">
 
-          <!-- Columna para la información -->
-          <div class="col-md-8 text-center text-md-start">
-            <p class="mb-1">Sistema: BajoCeroWear v1.0</p>
-            <p class="mb-1">Alumno: Titos Alan Daniel</p>
-            <p class="mb-1">Materia: Laboratorio de Programación</p>
-            <p class="mb-1">Carrera: Ingeniería en Sistemas</p>
-            <p class="mb-0">
-              Universidad: Nacional de la Patagonia Austral – Unidad Académica
-              Caleta Olivia
-            </p>
-          </div>
-        </div>
-      </div>
-    </footer>
-  </body>
+			<section class="mb-4 d-flex flex-row">
+				<div class="breadCrumb border rounded p-2 shadow-sm w-100">
+					<span class="d-flex flex-row gap-2"><a href="./home/" class="nav-link">Inicio</a> / <a
+							href="./user/" class="nav-link">Usuarios</a> > <a href="./user/create.html"
+							class="nav-link">Crear</a></span>
+				</div>
+			</section>
+
+
+			<section class="mb-4">
+				<h1 class="text-center">Crear Nueva Cuenta</h1>
+				<p class="text-center text-muted">
+					Completa el formulario para registrar un nuevo usuario en el
+					sistema.
+				</p>
+			</section>
+
+
+			<section class="mb-4">
+				<div class="row justify-content-center">
+					<div class="col-md-8">
+						<form id="createUserForm">
+							<div class="row g-3">
+								<!-- Apellido -->
+								<div class="col-md-6">
+									<label for="apellido" class="form-label">Apellidos</label>
+									<input type="text" id="apellidos" name="apellidos" class="form-control"
+										placeholder="Ingresa el apellido" required minlength="2" maxlength="15"
+										pattern="[A-Za-z\s]+" title="Solo letras y espacios, entre 2 y 50 caracteres">
+								</div>
+								<!-- Nombres -->
+								<div class="col-md-6">
+									<label for="nombres" class="form-label">Nombres</label>
+									<input type="text" id="nombres" name="nombres" class="form-control"
+										placeholder="Ingresa los nombres" required minlength="2" maxlength="50"
+										pattern="[A-Za-z\s]{2,50}"
+										title="Solo letras y espacios, entre 2 y 50 caracteres">
+								</div>
+								<!-- Cuenta -->
+								<div class="col-md-6">
+									<label for="cuenta" class="form-label">Cuenta</label>
+									<input type="text" id="cuenta" name="cuenta" class="form-control"
+										placeholder="Ingresa el nombre de usuario" required minlength="4" maxlength="15"
+										pattern="[A-Za-z0-9]{4,15}"
+										title="Solo letras y números, entre 4 y 15 caracteres">
+								</div>
+								<!-- Perfil -->
+								<div class="col-md-6">
+									<label for="perfil" class="form-label">Perfil</label>
+									<select id="perfil" name="perfil" class="form-select" required>
+										<option value="" disabled selected>Selecciona un perfil</option>
+										<option value="operador">Operador</option>
+										<option value="administrador">Administrador</option>
+									</select>
+								</div>
+								<!-- Correo -->
+								<div class="col-12">
+									<label for="correo" class="form-label">Correo</label>
+									<input type="email" id="correo" name="correo" class="form-control"
+										placeholder="Ingresa el correo electrónico" required
+										pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+										title="Debe ser un email válido (ejemplo: usuario@dominio.com)">
+								</div>
+								<!-- Clave -->
+								<div class="col-md-6">
+									<label for="clave" class="form-label">Clave</label>
+									<input type="password" id="clave" name="clave" class="form-control"
+										placeholder="Ingresa la contraseña" required minlength="8" maxlength="20"
+										pattern=".{8,20}" title="Debe tener entre 8 y 20 caracteres">
+								</div>
+								<!-- Confirmación de la clave -->
+								<div class="col-md-6">
+									<label for="confirmarClave" class="form-label">Confirmación de la clave</label>
+									<input type="password" id="confirmarClave" name="confirmarClave"
+										class="form-control" placeholder="Confirma la contraseña" required minlength="8"
+										maxlength="20" pattern=".{8,20}"
+										title="Debe coincidir con la contraseña y tener entre 8 y 20 caracteres">
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</section>
+
+			<!-- Botones de acción -->
+			<section class="d-flex justify-content-center flex-wrap gap-3">
+				<button type="submit" form="createUserForm"
+					class="btn btn-primary d-flex align-items-center justify-content-between gap-1">
+					Validar y guardar <i class="bi bi-save"></i>
+				</button>
+				<a href="./user/index.html"
+					class="btn btn-outline-secondary d-flex align-items-center justify-content-between gap-1">Volver al
+					listado <i class="bi bi-arrow-left-square"></i></a>
+			</section>
+
+			<!-- Mensaje de éxito (oculto por defecto) -->
+			<section id="successMessage" class="mt-3 text-center d-none">
+				<p class="text-success mb-0">Registro creado</p>
+			</section>
+		</div>
+	</main>
+
+	<footer class="footer py-4 mt-auto">
+		<div class="container">
+			<div class="row align-items-center">
+
+				<div class="col-md-4 d-flex mb-3 mb-md-0 justify-content-center">
+					<img width="140"
+						src="/lab_prog_2025_titos_alan/public/app/assets/images/6aec15da-a886-41d1-93af-5ff9ea1b9a61_removalai_preview.png"
+						alt="Logo Universidad Nacional de la Patagonia Austral" class="universidad-logo img-fluid" />
+				</div>
+
+
+				<div class="col-md-8 text-center text-md-start">
+					<p class="mb-1">Sistema: BajoCeroWear v1.0</p>
+					<p class="mb-1">Alumno: Titos Alan Daniel</p>
+					<p class="mb-1">Materia: Laboratorio de Programación</p>
+					<p class="mb-1">Carrera: Ingeniería en Sistemas</p>
+					<p class="mb-0">
+						Universidad: Nacional de la Patagonia Austral – Unidad Académica
+						Caleta Olivia
+					</p>
+				</div>
+			</div>
+		</div>
+	</footer>
+</body>
+
 </html>

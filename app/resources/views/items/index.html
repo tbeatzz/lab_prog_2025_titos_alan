@@ -31,9 +31,9 @@
 <body class="d-flex flex-column min-vh-100">
     <nav class="navbar navbar-expand-lg " aria-label="Main navigation">
         <div class="container-fluid">
-            <!-- Logo o nombre de la marca -->
+            
             <a class="navbar-brand" href="home/index.html">
-                <img src="/lab_prog_2025_titos_alan/public/app/asseets/images/main_logo.webp" alt="BajoCeroWear Logo"
+                <img src="/lab_prog_2025_titos_alan/public/app/assets/images/main_logo.webp" alt="BajoCeroWear Logo"
                     width="70" height="70" class="d-inline-block align-text-top rounded-circle">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
@@ -41,13 +41,13 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="mainNavbar">
-                <!-- Enlaces principales a la izquierda -->
+                
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-4">
                     <li class="nav-item">
                         <a class="nav-link fs-5 p-0 " href="home/index.html">Inicio</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link fs-5 p-0 active" aria-current="page" href="item/index.html">Productos</a>
+                        <a class="nav-link fs-5 p-0 active" aria-current="page" href="items/index.html">Productos</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link fs-5 p-0" href="sale/index.html">Ventas</a>
@@ -56,7 +56,7 @@
                         <a class="nav-link fs-5 p-0 " href="user/index.html">Usuarios</a>
                     </li>
                 </ul>
-                <!-- "Mi cuenta" a la derecha -->
+                
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0 p-0">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle fs-5 p-0" href="#" role="button" data-bs-toggle="dropdown"
@@ -79,6 +79,12 @@
 
    <main class="flex-grow-1">
     <div class="container py-5">
+        <section class="mb-4 d-flex flex-row">
+            <div class="breadCrumb border rounded p-2 shadow-sm w-100">
+                <span class="d-flex flex-row gap-2"><a href="./home/" class="nav-link">Inicio</a> / <a href="./items/" class="nav-link">Productos</a></span>
+            </div>
+        </section>
+
         <!-- Título principal -->
         <section class="mb-4">
             <h1 class="text-center">Gestión de Productos</h1>
@@ -87,8 +93,8 @@
 
         <!-- Botones de acción -->
         <section class="mb-4 d-flex justify-content-center gap-3">
-            <a href="items/create.html" class="btn btn-primary">Alta de nuevo producto</a>
-            <a href="javascript:void(0)" class="btn btn-outline-secondary">Exportar listado</a>
+            <a href="items/create.html" class="btn btn-primary">Alta de nuevo producto <i class="bi bi-person-add"></i></a>
+            <a href="javascript:void(0)" class="btn btn-outline-secondary">Exportar listado en PDF <i class="bi bi-filetype-pdf"></i></a>
         </section>
 
         <!-- Filtros -->
@@ -179,7 +185,7 @@
             <div class="row align-items-center">
                 <!-- Columna para el logo de la universidad -->
                 <div class="col-md-4 d-flex mb-3 mb-md-0 justify-content-center">
-                    <img width="140" src="/lab_prog_2025_titos_alan/public/app/asseets/images/6aec15da-a886-41d1-93af-5ff9ea1b9a61_removalai_preview.png"
+                    <img width="140" src="/lab_prog_2025_titos_alan/public/app/assets/images/6aec15da-a886-41d1-93af-5ff9ea1b9a61_removalai_preview.png"
                         alt="Logo Universidad Nacional de la Patagonia Austral" class="universidad-logo img-fluid ">
                 </div>
 

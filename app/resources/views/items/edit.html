@@ -30,9 +30,9 @@
 <body class="d-flex flex-column min-vh-100">
     <nav class="navbar navbar-expand-lg" aria-label="Main navigation">
         <div class="container-fluid">
-            <!-- Logo o nombre de la marca -->
+            
             <a class="navbar-brand" href="home/index.html">
-                <img src="/lab_prog_2025_titos_alan/public/app/asseets/images/main_logo.webp" alt="BajoCeroWear Logo"
+                <img src="/lab_prog_2025_titos_alan/public/app/assets/images/main_logo.webp" alt="BajoCeroWear Logo"
                     width="70" height="70" class="d-inline-block align-text-top rounded-circle" />
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
@@ -40,7 +40,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="mainNavbar">
-                <!-- Enlaces principales a la izquierda -->
+                
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-4">
                     <li class="nav-item">
                         <a class="nav-link fs-5 p-0" href="home/index.html">Inicio</a>
@@ -55,7 +55,7 @@
                         <a class="nav-link fs-5 p-0" href="user/index.html">Usuarios</a>
                     </li>
                 </ul>
-                <!-- "Mi cuenta" a la derecha -->
+                
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0 p-0">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle fs-5 p-0" href="#" role="button" data-bs-toggle="dropdown"
@@ -81,6 +81,12 @@
 
     <main class="flex-grow-1">
         <div class="container py-5">
+            <section class="mb-4 d-flex flex-row">
+                <div class="breadCrumb border rounded p-2 shadow-sm w-100">
+                    <span class="d-flex flex-row gap-2"><a href="./home/" class="nav-link">Inicio</a> / <a href="./items/" class="nav-link">Productos</a> > <a href="./items/edit.html" class="nav-link">Editar</a></span>
+                </div>
+            </section>
+
             <!-- Título principal -->
             <section class="mb-4">
                 <h1 class="text-center">Editar Producto</h1>
@@ -89,7 +95,7 @@
                 </p>
             </section>
 
-            <!-- Información adicional -->
+         
             <section class="mb-4 text-center">
                 <p class="mb-1"><strong>Estado del producto:</strong> Disponible</p>
                 <p class="mb-1">
@@ -150,25 +156,29 @@ Campera de invierno nueva, ideal para bajas temperaturas, disponible en talles M
             </section>
 
             <!-- Botones de acción -->
-            <section class="d-flex justify-content-center gap-3 flex-wrap">
-                <button type="button" onclick="enableEditing()" class="btn btn-primary">
-                    Editar
-                </button>
-                <button type="submit" form="editProductForm" class="btn btn-success" style="display: none"
-                    id="updateButton">
-                    Actualizar
-                </button>
-                <button type="button" onclick="cancelEditing()" class="btn btn-warning" style="display: none"
-                    id="cancelButton">
-                    Cancelar
-                </button>
-                <a href="index.html" class="btn btn-outline-secondary">Volver al listado</a>
-                <button type="button" onclick="deleteProduct()" class="btn btn-danger">
-                    Eliminar registro
-                </button>
-                <button type="button" onclick="exportToPDF()" class="btn btn-outline-primary">
-                    Exportar a PDF
-                </button>
+            <section class="d-flex justify-content-center align-items-center flex-column gap-4 ">
+                <div class="botones-accion d-flex justify-content-center gap-3 col-md-8 flex-wrap">
+            
+            
+                    <button type="button" onclick="activarEdicion()" class="btn btn-primary">
+                        Editar <i class="bi bi-pen"></i>
+                    </button>
+                    <button type="submit" class="btn btn-success " id="updateButton">
+                        Actualizar <i class="bi bi-file-earmark-arrow-up"></i>
+                    </button>
+                    <button type="button" onclick="cancelarEdicion()" class="btn btn-warning " id="cancelButton">
+                        Cancelar <i class="bi bi-x-circle"></i>
+                    </button>
+                    <button type="button" onclick="borrarUser()" class="btn btn-danger">
+                        Eliminar registro <i class="bi bi-trash3"></i>
+                    </button>
+            
+                    <button type="button" onclick="exportarPDF()" class="btn btn-outline-primary">
+                        Exportar a PDF <i class="bi bi-filetype-pdf"></i>
+                    </button>
+
+                </div>
+            
             </section>
 
             <!-- Mensajes -->
@@ -181,14 +191,12 @@ Campera de invierno nueva, ideal para bajas temperaturas, disponible en talles M
     <footer class="footer py-4 mt-auto">
         <div class="container">
             <div class="row align-items-center">
-                <!-- Columna para el logo de la universidad -->
                 <div class="col-md-4 d-flex mb-3 mb-md-0 justify-content-center">
                     <img width="140"
-                        src="/lab_prog_2025_titos_alan/public/app/asseets/images/6aec15da-a886-41d1-93af-5ff9ea1b9a61_removalai_preview.png"
+                        src="/lab_prog_2025_titos_alan/public/app/assets/images/6aec15da-a886-41d1-93af-5ff9ea1b9a61_removalai_preview.png"
                         alt="Logo Universidad Nacional de la Patagonia Austral" class="universidad-logo img-fluid" />
                 </div>
 
-                <!-- Columna para la información -->
                 <div class="col-md-8 text-center text-md-start">
                     <p class="mb-1">Sistema: BajoCeroWear v1.0</p>
                     <p class="mb-1">Alumno: Titos Alan Daniel</p>
