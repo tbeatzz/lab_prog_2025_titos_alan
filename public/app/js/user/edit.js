@@ -7,7 +7,7 @@ const editButton = document.getElementById('editButton')
 
 const cambiarEdicion = (habilitar) => {
     const form = document.getElementById('editUserForm');
-    const elementos = form.querySelectorAll('input, select');
+    const elementos = form.querySelectorAll('input, select, textarea');
 
     elementos.forEach(el => {
         el.disabled = !habilitar;
