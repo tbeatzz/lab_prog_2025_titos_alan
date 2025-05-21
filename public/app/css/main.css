@@ -119,14 +119,16 @@ h2,
     --primario
   ) !important; 
 }
-
-/* Menú desplegable */
-.navbar-collapse.collapse.show > ul {
+/* 
+Menú desplegable */
+@media (max-width: 992px){
+  .navbar-collapse.collapse.show > ul {
   width: auto;
   gap: 0.5em !important;
   flex-direction: column !important;
   align-items: center;
   justify-content: center;
+}
 }
 
 /* home */

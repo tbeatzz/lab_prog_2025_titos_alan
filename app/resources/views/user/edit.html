@@ -45,7 +45,7 @@
                         <a class="nav-link fs-5 p-0" href="home/index.html">Inicio</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link fs-5 p-0" href="item/index.html">Productos</a>
+                        <a class="nav-link fs-5 p-0" href="items/index.html">Productos</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link fs-5 p-0" href="sale/index.html">Ventas</a>
@@ -108,19 +108,27 @@
                                 <!-- Apellido -->
                                 <div class="col-md-6">
                                     <label for="apellido" class="form-label">Apellido</label>
-                                    <input type="text" id="apellido" name="apellido" class="form-control" value="Pérez"
+                                    <input type="text" id="apellidos" name="apellidos" class="form-control"
+										placeholder="Ingresa el apellido" required minlength="2" maxlength="15"
+										pattern="[A-Za-z\s]+" title="Solo letras y espacios, entre 2 y 50 caracteres" value="Pérez"
                                         disabled />
                                 </div>
                                 <!-- Nombres -->
                                 <div class="col-md-6">
                                     <label for="nombres" class="form-label">Nombres</label>
-                                    <input type="text" id="nombres" name="nombres" class="form-control" value="Juan"
+                                    <input type="text" id="nombres" name="nombres" class="form-control"
+										placeholder="Ingresa los nombres" required minlength="2" maxlength="50"
+										pattern="[A-Za-z\s]{2,50}"
+										title="Solo letras y espacios, entre 2 y 50 caracteres" value="Juan"
                                         disabled />
                                 </div>
                                 <!-- Cuenta -->
                                 <div class="col-md-6">
                                     <label for="cuenta" class="form-label">Cuenta</label>
-                                    <input type="text" id="cuenta" name="cuenta" class="form-control" value="juanperez"
+                                    <input type="text" id="cuenta" name="cuenta" class="form-control"
+										placeholder="Ingresa el nombre de usuario" required minlength="4" maxlength="15"
+										pattern="[A-Za-z0-9]{4,15}"
+										title="Solo letras y números, entre 4 y 15 caracteres" value="juanperez"
                                         disabled />
                                 </div>
                                 <!-- Perfil -->
@@ -137,19 +145,25 @@
                                 <div class="col-12">
                                     <label for="correo" class="form-label">Correo</label>
                                     <input type="email" id="correo" name="correo" class="form-control"
+										placeholder="Ingresa el correo electrónico" required
+										pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+										title="Debe ser un email válido (ejemplo: usuario@dominio.com)"
                                         value="juan.perez@example.com" disabled />
                                 </div>
                                 <!-- Clave -->
                                 <div class="col-md-6">
                                     <label for="clave" class="form-label">Clave</label>
                                     <input type="password" id="clave" name="clave" class="form-control"
+										placeholder="Ingresa la contraseña" required minlength="8" maxlength="20"
+										pattern=".{8,20}" title="Debe tener entre 8 y 20 caracteres"
                                         value="password123" disabled />
                                 </div>
                                 <!-- Confirmación de la clave -->
                                 <div class="col-md-6">
                                     <label for="confirmarClave" class="form-label">Confirmación de la clave</label>
                                     <input type="password" id="confirmarClave" name="confirmarClave"
-                                        class="form-control" value="password123" disabled />
+										class="form-control" placeholder="Confirma la contraseña" required minlength="8"
+										maxlength="20" pattern=".{8,20}" title="Debe coincidir con la contraseña y tener entre 8 y 20 caracteres" value="password123" disabled />
                                 </div>
                             </div>
                         </form>
@@ -161,25 +175,32 @@
         
 
             <section class="d-flex justify-content-center align-items-center flex-column gap-4 ">
-                <div class="botones-accion d-flex justify-content-center gap-3 col-md-8 flex-wrap">
-            
-            
-                    <button type="button" onclick="activarEdicion()" class="btn btn-primary">
-                        Editar <i class="bi bi-pen"></i>
-                    </button>
-                    <button type="submit" class="btn btn-success d-none" id="updateButton">
-                        Actualizar <i class="bi bi-file-earmark-arrow-up"></i>
-                    </button>
-                    <button type="button" onclick="cancelarEdicion()" class="btn btn-warning d-none" id="cancelButton">
-                        Cancelar <i class="bi bi-x-circle"></i>
-                    </button>
-                    <button type="button" onclick="borrarUser()" class="btn btn-danger">
-                        Eliminar registro <i class="bi bi-trash3"></i>
-                    </button>
-            
-                    <button type="button" onclick="exportarPDF()" class="btn btn-outline-primary">
+                <div class="col-md-8 d-flex justify-content-between ">
+                    
+                    <div class="botones-accion d-flex justify-content-center gap-2 p-1">
+                        <button type="button" onclick="activarEdicion()" class="btn btn-primary" id="editButton">
+                            Editar <i class="bi bi-pen"></i>
+                        </button>
+                        <button type="submit" class="btn btn-success d-none" id="updateButton">
+                            Actualizar <i class="bi bi-file-earmark-arrow-up"></i>
+                        </button>
+                        <button type="button" onclick="cancelarEdicion()" class="btn btn-warning d-none" id="cancelButton">
+                            Cancelar <i class="bi bi-x-circle"></i>
+                        </button>
+                  
+                    </div>
+                    <div class="botones-accion d-flex justify-content-center gap-2 p-1">
+                        <button type="button" onclick="exportarPDF()" class="btn btn-outline-primary" id="exportButton">
                         Exportar a PDF <i class="bi bi-filetype-pdf"></i>
-                    </button>
+                        </button>
+                        <button type="button" onclick="borrarUser()" class="btn btn-danger" id="deleteButton" >
+                            Eliminar registro <i class="bi bi-trash3"></i>
+                        </button>
+                    </div>
+
+                    
+            
+                    
 
                 </div>
             
