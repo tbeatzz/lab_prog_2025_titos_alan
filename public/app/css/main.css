@@ -169,6 +169,13 @@ h1 {
   border: 1px solid var(--secundario); 
 }
 
+@media( max-width: 992px){
+  .botones-accion-container {
+    justify-content: center;
+    flex-direction: column;
+  }
+}
+
 /* botones de accion */
 @media (max-width: 409px) {
   .botones-accion > button {
