@@ -1,37 +1,39 @@
 const users = [
-    {id: 1, apellido:"Titos", nombres:"Alan Daniel", cuenta: "titos.alan", correo: "titosalan2003@gmail.com"},
-    {id: 2, apellido:"Perez", nombres:"Juan", cuenta: "juan.perez", correo: "juanperez@ejemplo.com"},
+    { id: 1, apellido: "Titos", nombres: "Alan Daniel", cuenta: "titos.alan", correo: "titosalan2003@gmail.com", perfil: "administrador", clave: "password123", estado: "Activa", fechaCreacion: "2025-03-15" },
+    { id: 2, apellido: "Pérez", nombres: "Juan", cuenta: "juanperez", correo: "juanperez@example.com", perfil: "operador", clave: "password456", estado: "Activa", fechaCreacion: "2025-03-15" },
 ];
-
-export const userService ={
-    load: id =>{
-        
-
-        return users.find(user => user.id == id);
-        //recorrer users hasta el id
-        //return users[pos] devuelve un objeto usuario
+export const userService = {
+    load: (id) => {
+        return users.find(user => user.id === id) || null;
     },
-    save: user =>{
-        // peticion asincrona
-        user.id=users.length();
+    
+    save: (user) => {
+        user.id = users.length + 1; 
         users.push(user);
+        return user;
     },
-    update: user =>{
+    
+    update: (user) => {
+ 
+        const index = users.findIndex(u => u.id === user.id);
+        if (index !== -1) { 
+            users[index] = user;
+            return users[index];
+        }
+    },
         
+    delete: (id) => {
+        const index = users.findIndex(user => user.id === id);
+        if (index !== -1) {
+            const deletedUser = users.splice(index, 1)[0];  
+            return deletedUser; 
+        }
+         
     },
-    delete: id=>{
-
-    },
-    list: filters =>{
+    
+    list: (filters = {}) => {
         return users;
-    },
-}   
+    }
+};
 
-
-let newUser = {};
-newUser.id=5;
-newUser.apellido="apellido";
-newUser.nombres="jose";
-newUser.cuenta = "jose.rasjido";
-newUser.correo = "jose.rasjido@gmail.com"
 

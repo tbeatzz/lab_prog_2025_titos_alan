@@ -25,7 +25,10 @@
     <!--  CSS y JS -->
     <link rel="stylesheet" href="/lab_prog_2025_titos_alan/public/app/css/main.css" />
     <script defer type="text/javascript" src="/lab_prog_2025_titos_alan/public/app/js/main.js"></script>
-    <script  defer type="text/javascript" src="/lab_prog_2025_titos_alan/public/app/js/user/edit.js"></script>
+    
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>    
+
+    <script type="module" defer src="/lab_prog_2025_titos_alan/public/app/js/user/edit.js"></script>
 </head>
 
 <body class="d-flex flex-column min-vh-100">
@@ -104,13 +107,14 @@
                 <div class="row justify-content-center">
                     <div class="col-md-8">
                         <form id="editUserForm">
+                             <input type="hidden" id="id" disabled>
                             <div class="row g-3">
                                 <!-- Apellido -->
                                 <div class="col-md-6">
                                     <label for="apellido" class="form-label">Apellido</label>
                                     <input type="text" id="apellidos" name="apellidos" class="form-control"
 										placeholder="Ingresa el apellido" required minlength="2" maxlength="15"
-										pattern="[A-Za-z\s]+" title="Solo letras y espacios, entre 2 y 50 caracteres" value="Pérez"
+										pattern="[A-Za-z\s]+" title="Solo letras y espacios, entre 2 y 50 caracteres" value=""
                                         disabled />
                                 </div>
                                 <!-- Nombres -->
@@ -119,7 +123,7 @@
                                     <input type="text" id="nombres" name="nombres" class="form-control"
 										placeholder="Ingresa los nombres" required minlength="2" maxlength="50"
 										pattern="[A-Za-z\s]{2,50}"
-										title="Solo letras y espacios, entre 2 y 50 caracteres" value="Juan"
+										title="Solo letras y espacios, entre 2 y 50 caracteres" value=""
                                         disabled />
                                 </div>
                                 <!-- Cuenta -->
@@ -128,7 +132,7 @@
                                     <input type="text" id="cuenta" name="cuenta" class="form-control"
 										placeholder="Ingresa el nombre de usuario" required minlength="4" maxlength="15"
 										pattern="[A-Za-z0-9]{4,15}"
-										title="Solo letras y números, entre 4 y 15 caracteres" value="juanperez"
+										title="Solo letras y números, entre 4 y 15 caracteres" value=""
                                         disabled />
                                 </div>
                                 <!-- Perfil -->
@@ -136,7 +140,7 @@
                                     <label for="perfil" class="form-label">Perfil</label>
                                     <select id="perfil" name="perfil" class="form-select" disabled>
                                         <option value="operador">Operador</option>
-                                        <option value="administrador" selected>
+                                        <option value="administrador" >
                                             Administrador
                                         </option>
                                     </select>
@@ -148,7 +152,7 @@
 										placeholder="Ingresa el correo electrónico" required
 										pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
 										title="Debe ser un email válido (ejemplo: usuario@dominio.com)"
-                                        value="juan.perez@example.com" disabled />
+                                        value="" disabled />
                                 </div>
                                 <!-- Clave -->
                                 <div class="col-md-6">
@@ -156,14 +160,14 @@
                                     <input type="password" id="clave" name="clave" class="form-control"
 										placeholder="Ingresa la contraseña" required minlength="8" maxlength="20"
 										pattern=".{8,20}" title="Debe tener entre 8 y 20 caracteres"
-                                        value="password123" disabled />
+                                        value="" disabled />
                                 </div>
                                 <!-- Confirmación de la clave -->
                                 <div class="col-md-6">
                                     <label for="confirmarClave" class="form-label">Confirmación de la clave</label>
                                     <input type="password" id="confirmarClave" name="confirmarClave"
 										class="form-control" placeholder="Confirma la contraseña" required minlength="8"
-										maxlength="20" pattern=".{8,20}" title="Debe coincidir con la contraseña y tener entre 8 y 20 caracteres" value="password123" disabled />
+										maxlength="20" pattern=".{8,20}" title="Debe coincidir con la contraseña y tener entre 8 y 20 caracteres" value="" disabled />
                                 </div>
                             </div>
                         </form>
@@ -178,22 +182,22 @@
                 <div class="botones-accion-container col-md-8 d-flex justify-content-between ">
                     
                     <div class="botones-accion d-flex justify-content-center gap-2 p-1">
-                        <button type="button" onclick="activarEdicion()" class="btn btn-primary" id="editButton">
+                        <button type="button" class="btn btn-primary" id="editButton">
                             Editar <i class="bi bi-pen"></i>
                         </button>
                         <button type="submit" class="btn btn-success d-none" id="updateButton">
                             Actualizar <i class="bi bi-file-earmark-arrow-up"></i>
                         </button>
-                        <button type="button" onclick="cancelarEdicion()" class="btn btn-warning d-none" id="cancelButton">
+                        <button type="button"  class="btn btn-warning d-none" id="cancelButton">
                             Cancelar <i class="bi bi-x-circle"></i>
                         </button>
                   
                     </div>
                     <div class="botones-accion d-flex justify-content-center gap-2 p-1">
-                        <button type="button" onclick="exportarPDF()" class="btn btn-outline-primary" id="exportButton">
+                        <button type="button"  class="btn btn-outline-primary" id="exportButton">
                         Exportar a PDF <i class="bi bi-filetype-pdf"></i>
                         </button>
-                        <button type="button" onclick="borrarUser()" class="btn btn-danger" id="deleteButton" >
+                        <button type="button"  class="btn btn-danger" id="deleteButton" >
                             Eliminar registro <i class="bi bi-trash3"></i>
                         </button>
                     </div>
@@ -206,10 +210,10 @@
             
             </section>
 
-            <!-- Mensajes -->
-            <section id="messageSection" class="mt-3 text-center" style="display: none">
-                <p id="messageText" class="mb-0"></p>
-            </section>
+            <!-- Mensaje -->
+            <section id="successMessage" class="mt-3 text-center d-none">
+				<div class="alert alert-success mb-0" role="alert">Usuario actualizado correctamente</div>
+			</section>
         </div>
     </main>
 
