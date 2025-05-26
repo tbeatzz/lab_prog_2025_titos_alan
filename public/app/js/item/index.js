@@ -31,12 +31,32 @@ const configurarEventosTabla = () => {
 
 }
 const configurarBotonExportar = () => {
-
+    const exportPdfButton = document.getElementById('botonExportPdfItems');
+        if (exportPdfButton) {
+            exportPdfButton.addEventListener('click', () => {
+                console.log('Exportando PDF'); // debug
+                itemController.exportToPDF();
+            });
+        } 
 }
 const configurarBotonFiltros = () => {
-
+    const applyFiltersButton = document.getElementById('botonItemFiltros');
+    if (applyFiltersButton) {
+        applyFiltersButton.addEventListener('click', () => {
+            const categoria = document.getElementById('filterCategory').value;
+            const nombre = document.getElementById('filterName').value;
+            console.log('Filtros aplicados:', { categoria, nombre });
+            itemController.applyFilters(categoria, nombre);
+            itemController.list();
+        });
+    } else {
+        console.error('Botón botonFiltros no encontrado');
+    }
 }
 
 const configurarBotonAlta = () => {
-
+    const botonCreate = document.getElementById('botonCreateItem');
+    if (botonCreate) {
+        botonCreate.addEventListener('click', () =>  window.location.href= 'items/create.html');
+    }
 }

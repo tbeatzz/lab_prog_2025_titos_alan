@@ -31,7 +31,7 @@ import { itemController } from './controller.js';
 import { itemService } from './service.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-
+    
     //preparar la vista, carga la info del usuario en el formulario usando el session storage
     const itemId = sessionStorage.getItem('editItemId');
     let originalItemData = null;
@@ -39,14 +39,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (itemId) {
         const item = itemService.load(parseInt(itemId));
         if (item) {
-
+            // console.log();
             document.getElementById('id').value = item.id || '';
-            document.getElementById('nombre').value = item.apellido || '';
-            document.getElementById('codigo').value = item.nombres || '';
-            document.getElementById('categoria').value = item.cuenta || '';
-            document.getElementById('precio').value = item.perfil || '';
-            document.getElementById('stock').value = item.correo || '';
-            document.getElementById('descripcion').value = item.clave || '';
+            document.getElementById('nombre').value = item.nombre || '';
+            document.getElementById('codigo').value = item.codigo || '';
+            document.getElementById('categoria').value = item.categoria.split(" ").join("") || '';
+            
+            document.getElementById('precio').value = item.precio || '';
+            document.getElementById('stock').value = item.stock || '';
+            document.getElementById('descripcion').value = item.descripcion || '';
             originalItemData = { ...item }; //para guardar la informacion
             // crea un nuevo objeto copiando todas las propiedades de user
             sessionStorage.removeItem('editItemId'); // limpia el session storage

@@ -83,7 +83,10 @@ export const userController = {
     delete: (id) => {
         const deletedUser = userService.delete(id);
         if (deletedUser) {
+            
+            console.log('usuario final', userService.list());
             alert('Usuario eliminado correctamente');
+            
             // window.location.href = 'user/index.html';
         
         } else {

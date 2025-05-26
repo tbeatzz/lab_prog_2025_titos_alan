@@ -41,7 +41,17 @@ export const itemController = {
 
     },
     delete: (id) => {
-
+        const deletedUser = userService.delete(id);
+                if (deletedUser) {
+                    
+                    console.log('usuario final', userService.list());
+                    alert('Usuario eliminado correctamente');
+                    
+                    // window.location.href = 'user/index.html';
+                
+                } else {
+                    alert('Usuario no encontrado');
+                }
     },
     // Variable para almacenar usuarios filtrados
     filteredItems: null,
