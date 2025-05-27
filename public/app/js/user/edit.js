@@ -7,9 +7,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const userId = sessionStorage.getItem('editUserId');
     let originalUserData = null;
 
+    const userEstadoElement = document.getElementById('userEstado');
+    const userFechaElement = document.getElementById('userFecha');
+
     if (userId) {
         const user = userService.load(parseInt(userId));
         if (user) {
+            // Mostrar estado y fecha de creación
+            userEstadoElement.innerHTML = `<strong>Estado de la cuenta:</strong> ${user.estado || 'N/A'}`;
+            userFechaElement.innerHTML = `<strong>Fecha de creación:</strong> ${user.fechaCreacion || 'N/A'}`;
 
             document.getElementById('id').value = user.id || '';
             document.getElementById('apellidos').value = user.apellido || '';
@@ -36,8 +42,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const updateButton = document.getElementById('updateButton');
     updateButton.addEventListener('click', () => {
-        if (originalUserData) userController.update(originalUserData.id);
-        else alert('Error: No hay datos del usuario para actualizar');
+        if (originalUserData) {
+            userController.update(originalUserData.id);
+            // Actualizar estado y fecha después de la actualización para no perderlos
+            const updatedUser = userService.load(parseInt(userId));
+            if (updatedUser) {
+                userEstadoElement.innerHTML = `<strong>Estado de la cuenta:</strong> ${updatedUser.estado || 'N/A'}`;
+                userFechaElement.innerHTML = `<strong>Fecha de creación:</strong> ${updatedUser.fechaCreacion || 'N/A'}`;
+            }
+        } else {
+            alert('Error: No hay datos del usuario para actualizar');
+        }
     });
 
     // boton de editar
@@ -59,6 +74,10 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById("correo").value = originalUserData.correo;
             document.getElementById("clave").value = originalUserData.clave;
             document.getElementById("confirmarClave").value = originalUserData.clave;
+
+            // Restaurar estado y fecha mostrados
+            userEstadoElement.innerHTML = `<strong>Estado de la cuenta:</strong> ${originalUserData.estado || 'N/A'}`;
+            userFechaElement.innerHTML = `<strong>Fecha de creación:</strong> ${originalUserData.fechaCreacion || 'N/A'}`;
         }
     });
 

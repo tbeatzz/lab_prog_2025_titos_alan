@@ -23,6 +23,7 @@ export const userController = {
         }
 
         const user = {
+            id: 0,
             apellido: document.getElementById('apellidos').value,
             nombres: document.getElementById('nombres').value,
             cuenta: document.getElementById('cuenta').value,
@@ -53,7 +54,14 @@ export const userController = {
             alert('Las contraseñas no coinciden');
             return;
         }
-        // console.log('updateando');
+        
+        // Obtener el usuario original para conservar campos que no están en el formulario
+        const originalUser = userService.load(id);
+        if (!originalUser) {
+            alert('Usuario no encontrado');
+            return;
+        }
+
         const user = {
             id: id,
             apellido: document.getElementById('apellidos').value,
@@ -61,7 +69,9 @@ export const userController = {
             cuenta: document.getElementById('cuenta').value,
             perfil: document.getElementById('perfil').value,
             correo: document.getElementById('correo').value,
-            clave: clave
+            clave: clave,   
+            estado: originalUser.estado, // Conservar el estado
+            fechaCreacion: originalUser.fechaCreacion, // Conservar la fecha de creación
         };
         // console.log(user);
 
