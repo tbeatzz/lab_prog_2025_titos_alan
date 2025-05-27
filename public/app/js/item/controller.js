@@ -77,8 +77,8 @@ export const itemController = {
     delete: (id) => {
         const deletedItem = itemService.delete(id);
         if (deletedItem) {
-            alert('Producto eliminado correctamente');
             console.log(itemService.list()); //debug para ver si se elimina el item
+            alert('Producto eliminado correctamente, revisar consola para ver si se elimino el item');
             // window.location.href = 'items/index.html'; // Redirigir después de eliminar
             return deletedItem;
         } else {

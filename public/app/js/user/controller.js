@@ -95,11 +95,10 @@ export const userController = {
         if (deletedUser) {
             
             console.log('usuario final', userService.list());
-            alert('Usuario eliminado correctamente');
-            
+            alert('Usuario eliminado correctamente, revisar consola para ver si se elimino el item');
             // window.location.href = 'user/index.html';
         
-        } else {
+        } else {    
             alert('Usuario no encontrado');
         }
     },
