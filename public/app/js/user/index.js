@@ -1,7 +1,6 @@
 // public/app/js/user/index.js
 import { userController } from './controller.js';
 
-// Carga la lista de usuarios al iniciar la página
 document.addEventListener('DOMContentLoaded', () => {
     cargarListaUsuarios();
     configurarEventosTabla();
@@ -10,52 +9,53 @@ document.addEventListener('DOMContentLoaded', () => {
     configurarBotonAlta();
 });
 
-// lista de usuarios en la tabla
 const cargarListaUsuarios = () => {
     userController.list();
-}
+};
 
-//  eventos de "Editar" y "Eliminar" en la tabla
-const configurarEventosTabla = () => {  
+const configurarEventosTabla = () => {
     const tabla = document.querySelector('#userTable tbody');
     if (!tabla) {
-        console.error('No se encontró el cuerpo de la tabla');
+        console.error('No se encontró el cuerpo de la tabla userTable');
         return;
     }
 
     tabla.addEventListener('click', (e) => {
         const boton = e.target.closest('button[data-action]');
+        if (boton) {
+            const idUsuario = Number(boton.dataset.userId);
+            const accion = boton.dataset.action;
 
-        const idUsuario = Number(boton.dataset.userId);
-        const accion = boton.dataset.action;
-
-        if (accion === 'editar') {
-            userController.load(idUsuario);
-        } else if (accion === 'eliminar' && confirm('¿Seguro que quieres eliminar este usuario?')) {
-            userController.delete(idUsuario);
+            if (accion === 'editar') {
+                window.location.href = `user/edit.html?id=${idUsuario}`;
+            } else if (accion === 'eliminar' && confirm('¿Seguro que quieres eliminar este usuario?')) {
+                userController.delete(idUsuario);
+            }
         }
     });
-}
+};
 
-//botón para a;ta de usuario
 const configurarBotonAlta = () => {
     const botonCreate = document.getElementById('botonCreateUser');
     if (botonCreate) {
-        botonCreate.addEventListener('click', () =>  window.location.href= 'user/create.html');
+        botonCreate.addEventListener('click', () => window.location.href = 'user/create.html');
+    } else {
+        console.error('Botón botonCreateUser no encontrado');
     }
-}
+};
 
-//botón para exportar a PDF
 const configurarBotonExportar = () => {
     const exportPdfButton = document.getElementById('export-pdf');
     if (exportPdfButton) {
         exportPdfButton.addEventListener('click', () => {
-            console.log('Exportando PDF'); // debug
+            console.log('Exportando PDF');
             userController.exportToPDF();
         });
-    } 
-}
-// botón para aplicar filtros
+    } else {
+        console.error('Botón export-pdf no encontrado');
+    }
+};
+
 const configurarBotonFiltros = () => {
     const applyFiltersButton = document.getElementById('botonFiltros');
     if (applyFiltersButton) {
@@ -69,7 +69,7 @@ const configurarBotonFiltros = () => {
     } else {
         console.error('Botón botonFiltros no encontrado');
     }
-}
+};
     // // Filtros dinámicos (actualizar al escribir en el campo de correo)
     // const filterEmail = document.getElementById('filterEmail');
     // if (filterEmail) {

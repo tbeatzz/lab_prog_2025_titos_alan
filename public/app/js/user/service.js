@@ -1,5 +1,5 @@
 const users = [
-    { id: 1, apellido: "Titos", nombres: "Alan Daniel", cuenta: "titos.alan", correo: "titosalan2003@gmail.com", perfil: "administrador", clave: "password123", estado: "Activa", fechaCreacion: "2025-03-15" },
+    { id: 1, apellido: "Titos", nombres: "Alan Daniel", cuenta: "titos.alan", correo: "titosalan2003@gmail.com", perfil: "administrador", clave: "password123", estado: "Activa", fechaCreacion: "2025-02-15" },
     { id: 2, apellido: "Pérez", nombres: "Juan", cuenta: "juanperez", correo: "juanperez@example.com", perfil: "operador", clave: "password456", estado: "Activa", fechaCreacion: "2025-03-15" },
 ];
 export const userService = {
