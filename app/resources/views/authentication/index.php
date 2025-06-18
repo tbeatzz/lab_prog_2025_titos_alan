@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <base href="http://localhost/lab_prog_2025_titos_alan/app/resources/views/">
+    <base href="http://localhost/lab_prog_2025_titos_alan/public/">
+
 
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -31,7 +32,8 @@
         <h2 class="text-center mb-4">Iniciar Sesión</h2>
 
         <!-- Formulario de autenticación -->
-        <form action="./home/" method="POST">
+        <form action="home" method="POST">
+
             <!-- Campo Usuario -->
             <div class="mb-3">
                 <label for="loginUsuario" class="form-label">Usuario</label>

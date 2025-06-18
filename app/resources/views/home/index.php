@@ -1,9 +1,4 @@
-<!-- • Un pie de página con la siguiente información:
-    • Nombre del sistema y versión.
-    • Nombre del alumno.
-    • Nombre de la materia.
-    • Nombre de la carrera.
-    • Nombre de la universidad. -->
+
 
 <!DOCTYPE html>
 <html lang="es">
