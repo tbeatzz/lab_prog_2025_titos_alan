@@ -1,8 +1,8 @@
 <?php
 
-namespace app\core\model\dto;
+namespace app\core\models\dto;
 
-use app\core\model\dto\base\InterfaceDto;
+use app\core\models\dto\base\InterfaceDto;
 
 final class CategoriaDto implements InterfaceDto{
 
@@ -28,7 +28,7 @@ final class CategoriaDto implements InterfaceDto{
     }
 
     public function setNombre(string $nombre): void{
-        $this->nombre = $nombre;
+    $this->nombre = (strlen(trim($nombre)) <= 100) ? trim($nombre) : "";
     }
 
     public function toArray(): array{

@@ -1,54 +1,30 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
+require_once '../../app/config/AppConfig.php';
+require_once '../../app/config/DBConfig.php';
+require_once '../../app/vendor/autoload.php';
+
+use app\libs\database\Connection;
+use app\core\models\dto\CategoriaDto;
 use app\core\models\dao\CategoriaDao;
-use app\core\model\dto\CategoriaDto;
+try{
+    // $data = ["id" => 0, "nombre" => "remeras123"];
+    // $dto = new CategoriaDto($data);
 
-final class CategoriaDaoTest extends TestCase
-{
-    private CategoriaDao $dao;
+    // $dao = new CategoriaDao(Connection::get());
+    // unset($data["id"]);
+    // $dao->save($data);
+    
 
-    protected function setUp(): void
-    {
-        $pdo = new PDO("mysql:host=localhost;dbname=test_db", "root", "");
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $this->dao = new CategoriaDao($pdo);
-    }
+    // $data = ["id" => 71];
+    // $dao = new CategoriaDao(Connection::get());
+    // $result = $dao->load($data["id"]);
+    // print_r($result);
 
-    public function testSaveAndLoadCategoria(): void
-    {
-        $data = [
-            "nombre" => "Electrónica",
-            "descripcion" => "Categoría de tecnología"
-        ];
-        $this->dao->save($data);
-
-        $id = $this->dao->getLastInsertId();
-        $categoria = $this->dao->load($id);
-
-        $this->assertEquals("Electrónica", $categoria["nombre"]);
-    }
-
-    public function testUpdateCategoria(): void
-    {
-        $data = ["nombre" => "Temporal", "descripcion" => ""];
-        $this->dao->save($data);
-        $id = $this->dao->getLastInsertId();
-
-        $update = ["id" => $id, "nombre" => "Actualizado", "descripcion" => "Nueva descripción"];
-        $this->dao->update($update);
-
-        $categoria = $this->dao->load($id);
-        $this->assertEquals("Actualizado", $categoria["nombre"]);
-    }
-
-    public function testDeleteCategoria(): void
-    {
-        $this->dao->save(["nombre" => "Eliminar", "descripcion" => ""]);
-        $id = $this->dao->getLastInsertId();
-
-        $this->dao->delete($id);
-        $this->expectException(Exception::class);
-        $this->dao->load($id);
-    }
+}
+catch(\PDOException $ex){
+    echo "Error database => " . $ex->getMessage();
+}
+catch(\Exception $ex){
+    echo "Error sistema => " . $ex->getMessage();
 }

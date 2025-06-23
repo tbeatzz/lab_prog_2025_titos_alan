@@ -1,3 +1,3 @@
 <?php
 
-const DATABASE_DSN="mysql:host=localhost;dbname=lp_2025;port=3306;charset=UTF8";
+const DATABASE_DSN = "mysql:host=localhost;port=3306;dbname=lp_2025;charset=UTF8";

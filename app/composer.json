@@ -1,0 +1,17 @@
+{
+    "name": "titosalan/app",
+    "description": "Sistema de gestión",
+    "type": "project",
+    "autoload": {
+        "psr-4": { 
+            "app\\": "",
+            "Dompdf\\": "vendor/dompdf/dompdf/src"
+        }
+    },
+    "authors": [
+        {
+            "name": "titos alan"
+        }
+    ],
+    "require": {}
+}
