@@ -5,7 +5,7 @@ function load(){
         id: document.getElementById("datoId").value
     }
 
-    fetch("http://localhost/lab_prog_2025/test/request/requestLoadTest.php",{
+    fetch("http://localhost/lab_prog_2025_titos_alan/test/request/requestLoadTest.php",{
         method: "post",
         headers: {"Content-Type": "application/json", "Accept": "application/json"},
         body: JSON.stringify(data)
@@ -31,7 +31,7 @@ function save(e){
         nombre: formCategoria.datoNombre.value
     }
     console.log("Guardando datos...")
-    fetch("http://localhost/lab_prog_2025/test/request/requestTest.php",{
+    fetch("http://localhost/lab_prog_2025_titos_alan/test/request/requestTest.php",{
         method: "post",
         headers: {"Content-Type": "application/json", "Accept": "application/json"},
         body: JSON.stringify(data)

@@ -19,7 +19,7 @@ final class CategoriaController extends BaseController implements InterfaceContr
 
     public function load(Request $request, Response $response): void{
         $service = new CategoriaService();
-        $dto = $service->load($request->getId());
+        $dto = $service->load((int)$request->getId());
         $response->setResult($dto->toArray());
         $response->send();
     }
