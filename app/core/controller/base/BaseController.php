@@ -7,11 +7,12 @@ use app\libs\http\Response;
 
 class BaseController{
 
-    protected $view, $scripts;
+    protected $view, $scripts, $styles;
 
-    public function __construct($scripts = [])
+    public function __construct($scripts = [], $styles = [])
     {
         $this->view = "";
         $this->scripts = $scripts;
+        $this->styles = $styles;
     }
 }

@@ -4,7 +4,7 @@ namespace app\core\model\dto;
 
 use app\core\model\dto\base\InterfaceDto;
 
-final class UserDto implements InterfaceDto {
+final class UsuarioDto implements InterfaceDto {
 
     private $id, $apellido, $nombres, $cuenta, $perfil, $clave, $correo, $estado, $fechaAlta, $resetPass;
 

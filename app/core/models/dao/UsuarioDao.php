@@ -9,7 +9,7 @@ use app\core\models\dao\base\InterfaceDao;
  * DAO para la entidad Usuario.
  * Maneja operaciones de base de datos sobre la tabla 'usuarios'.
  */
-final class UserDao extends BaseDao implements InterfaceDao{
+final class UsusarioDao extends BaseDao implements InterfaceDao{
     /**
      * Constructor
      *
