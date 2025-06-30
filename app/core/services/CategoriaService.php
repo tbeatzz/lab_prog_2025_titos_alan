@@ -8,56 +8,98 @@ use app\core\models\dto\CategoriaDto;
 use app\core\services\base\InterfaceService;
 use app\libs\database\Connection;
 
-final class CategoriaService implements InterfaceService{
+/**
+ * Servicio para manejar la lógica de negocio relacionada con la entidad Categoría.
+ * Implementa validaciones y delega operaciones al DAO.
+ */
+final class CategoriaService implements InterfaceService {
 
-    public function load(int $id): InterfaceDto{
+    /**
+     * Carga una categoría por su ID
+     *
+     * @param int $id ID de la categoría
+     * @return InterfaceDto Objeto de transferencia de datos de la categoría
+     * @throws \Exception Si no se encuentra la categoría
+     */
+    public function load(int $id): InterfaceDto {
         $dao = new CategoriaDao(Connection::get());
-        //$data validación de que no sea nulo realizada en el DAO
-        $data = $dao->load($id);
+        $data = $dao->load($id); // El DAO lanza excepción si no encuentra
         return new CategoriaDto($data);
     }
 
-    public function save(InterfaceDto $dto): void{
+    /**
+     * Guarda una nueva categoría
+     *
+     * @param InterfaceDto $dto Objeto de transferencia con los datos de la categoría
+     * @throws \Exception Si hay errores de validación o duplicación
+     */
+    public function save(InterfaceDto $dto): void {
         $this->validate($dto);
         $data = $dto->toArray();
-        //Uso Unset para eliminar variables o indices del arreglo que no me sirvan:
-        unset($data["id"]);
+        unset($data["id"]); // ID autoincremental
         $dao = new CategoriaDao(Connection::get());
         $dao->save($data);
     }
-    
-    public function update(InterfaceDto $dto): void{
+
+    /**
+     * Actualiza una categoría existente
+     *
+     * @param InterfaceDto $dto Objeto con ID y datos actualizados
+     * @throws \Exception Si faltan datos o ya existe otra categoría con ese nombre
+     */
+    public function update(InterfaceDto $dto): void {
         $this->validate($dto);
-        if($dto->getId() <= 0){
-            throw new \Exception("<p>El <strong>id</strong> de la categoría es obligatorio para actualizar.</p>");
+
+        if ($dto->getId() <= 0) {
+            throw new \Exception("<p>El <strong>ID</strong> de la categoría es obligatorio para actualizar.</p>");
         }
 
         $dao = new CategoriaDao(Connection::get());
 
-        //Validación de existencia utilizando el load del dao que ya valida si existe o no
+        // Validar existencia
         $dao->load($dto->getId());
 
         $dao->update($dto->toArray());
     }
 
-    public function delete(InterfaceDto $dto): void{
-        if($dto->getId() <= 0){
-            throw new \Exception("<p>El <strong>id</strong> de la categoría es obligatorio para eliminar.</p>");
+    /**
+     * Elimina una categoría existente
+     *
+     * @param InterfaceDto $dto Objeto con el ID de la categoría a eliminar
+     * @throws \Exception Si el ID es inválido o no existe
+     */
+    public function delete(InterfaceDto $dto): void {
+        if ($dto->getId() <= 0) {
+            throw new \Exception("<p>El <strong>ID</strong> de la categoría es obligatorio para eliminar.</p>");
         }
 
         $dao = new CategoriaDao(Connection::get());
-        //Validación de existencia utilizando el load del dao que ya valida si existe o no
+
+        // Validar existencia
         $dao->load($dto->getId());
+
         $dao->delete($dto->getId());
     }
 
-    public function list(array $filters): array{
+    /**
+     * Lista categorías utilizando filtros opcionales
+     *
+     * @param array $filters Filtros como 'nombre', 'limit', 'offset'
+     * @return array Lista de resultados
+     */
+    public function list(array $filters): array {
         $dao = new CategoriaDao(Connection::get());
         return $dao->list($filters);
     }
 
-    private function validate(CategoriaDto $dto): void{
-        if($dto->getNombre() == ""){
+    /**
+     * Valida los datos de una categoría
+     *
+     * @param CategoriaDto $dto Objeto a validar
+     * @throws \Exception Si el nombre está vacío
+     */
+    private function validate(CategoriaDto $dto): void {
+        if (trim($dto->getNombre()) === "") {
             throw new \Exception("<p>El <strong>nombre</strong> de la categoría es obligatorio.</p>");
         }
     }

@@ -9,27 +9,42 @@ use app\core\controllers\base\InterfaceController;
 use app\core\services\UsuarioService;
 use app\core\models\dto\UsuarioDto;
 
+/**
+ * Controlador para manejar operaciones sobre usuarios.
+ */
 final class UsuarioController extends BaseController implements InterfaceController {
 
+    /**
+     * Vista principal del módulo.
+     */
     public function index(Request $request, Response $response): void {
         array_push($this->scripts, "app/js/usuario/index.js");
         echo "<h1>Funciona el controlador de Usuario</h1>";
-        // $this->setCurrentView($request);
-        // require_once APP_FILE_TEMPLATE;
     }
 
+    /**
+     * Carga un usuario por ID.
+     */
     public function load(Request $request, Response $response): void {
+
+        $id = (int) $request->getParameterValue("id", 0);
         $service = new UsuarioService();
-        $dto = $service->load((int) $request->getId());
+        $dto = $service->load($id);
+
         $response->setResult($dto->toArray());
         $response->send();
     }
 
+    /**
+     * Vista para crear usuario 
+     */
     public function create(Request $request, Response $response): void {
-        array_push($this->scripts, "app/js/usuario/create.js");
-        // require_once APP_FILE_TEMPLATE;
+        // array_push($this->scripts, "app/js/usuario/create.js");
     }
 
+    /**
+     * Guarda un nuevo usuario 
+     */
     public function save(Request $request, Response $response): void {
         $dto = new UsuarioDto($request->getDataFromInput());
         $service = new UsuarioService();
@@ -39,6 +54,9 @@ final class UsuarioController extends BaseController implements InterfaceControl
         $response->send();
     }
 
+    /**
+     * Actualiza un usuario existente
+     */
     public function update(Request $request, Response $response): void {
         $dto = new UsuarioDto($request->getDataFromInput());
         $service = new UsuarioService();
@@ -48,6 +66,9 @@ final class UsuarioController extends BaseController implements InterfaceControl
         $response->send();
     }
 
+    /**
+     * Elimina un usuario 
+     */
     public function delete(Request $request, Response $response): void {
         $dto = new UsuarioDto($request->getDataFromInput());
         $service = new UsuarioService();
@@ -57,6 +78,9 @@ final class UsuarioController extends BaseController implements InterfaceControl
         $response->send();
     }
 
+    /**
+     * Lista de usuarios con filtros.
+     */
     public function list(Request $request, Response $response): void {
         $filters = [
             "nombres" => $request->getParameterValue("nombres", null),
@@ -70,6 +94,9 @@ final class UsuarioController extends BaseController implements InterfaceControl
         $response->send();
     }
 
+    /**
+     * Habilita un usuario por ID.
+     */
     public function enable(Request $request, Response $response): void {
         $id = (int) $request->getId();
         $service = new UsuarioService();
@@ -78,6 +105,9 @@ final class UsuarioController extends BaseController implements InterfaceControl
         $response->send();
     }
 
+    /**
+     * Deshabilita un usuario por ID.
+     */
     public function disable(Request $request, Response $response): void {
         $id = (int) $request->getId();
         $service = new UsuarioService();
@@ -86,6 +116,9 @@ final class UsuarioController extends BaseController implements InterfaceControl
         $response->send();
     }
 
+    /**
+     * Marca para restablecer contraseña.
+     */
     public function reset(Request $request, Response $response): void {
         $id = (int) $request->getId();
         $service = new UsuarioService();

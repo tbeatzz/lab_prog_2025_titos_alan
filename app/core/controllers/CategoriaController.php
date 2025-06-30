@@ -9,41 +9,76 @@ use app\core\controllers\base\InterfaceController;
 use app\core\services\CategoriaService;
 use app\core\models\dto\CategoriaDto;
 
-final class CategoriaController extends BaseController implements InterfaceController{
+/**
+ * Controlador del módulo Categoría.
+ * Gestiona las peticiones HTTP y comunica la vista con la lógica de negocio (service).
+ */
+final class CategoriaController extends BaseController implements InterfaceController {
 
-    public function index(Request $request, Response $response): void{
-        //HAGO UN PUSH DE LOS SCRIPTS QUE TIENE QUE CARGAR LA PLANTILLA
+    /**
+     * Muestra la vista principal del módulo Categoría.
+     *
+     * @param Request $request
+     * @param Response $response
+     */
+    public function index(Request $request, Response $response): void {
         array_push($this->scripts, "app/js/categoria/index.js");
         echo "<h1>Funciona el controlador de Categoría</h1>";
-        //$this->setCurrentView($request);
+        // $this->setCurrentView($request);
         // require_once APP_FILE_TEMPLATE;
     }
 
-
+    /**
+     * Carga una categoría por ID.
+     * Ejemplo: GET /categoria/load/1
+     *
+     * @param Request $request
+     * @param Response $response
+     */
     public function load(Request $request, Response $response): void {
-        $id = (int) $request->getParameterValue("id", 0); 
+        $id = (int) $request->getParameterValue("id", 0);
         $service = new CategoriaService();
         $dto = $service->load($id);
+
         $response->setResult($dto->toArray());
         $response->send();
     }
 
-
-    public function create(Request $request, Response $response):void{
+    /**
+     * Invoca la vista para crear una nueva categoría.
+     *
+     * @param Request $request
+     * @param Response $response
+     */
+    public function create(Request $request, Response $response): void {
         array_push($this->scripts, "app/js/categoria/create.js");
         // require_once APP_FILE_TEMPLATE;
     }
 
-    public function save(Request $request, Response $response): void{
+    /**
+     * Guarda una nueva categoría.
+     * Ejemplo: POST /categoria/save con body JSON {"nombre": "Guantes"}
+     *
+     * @param Request $request
+     * @param Response $response
+     */
+    public function save(Request $request, Response $response): void {
         $dto = new CategoriaDto($request->getDataFromInput());
         $service = new CategoriaService();
         $service->save($dto);
-    
+
         $response->setMessage("<p>Se agregó una nueva categoría al sistema</p>");
         $response->send();
     }
 
-    public function update(Request $request, Response $response): void{
+    /**
+     * Actualiza una categoría existente.
+     * Ejemplo: PUT /categoria/update con body JSON {"id":1, "nombre": "Nuevo nombre"}
+     *
+     * @param Request $request
+     * @param Response $response
+     */
+    public function update(Request $request, Response $response): void {
         $dto = new CategoriaDto($request->getDataFromInput());
         $service = new CategoriaService();
         $service->update($dto);
@@ -52,8 +87,14 @@ final class CategoriaController extends BaseController implements InterfaceContr
         $response->send();
     }
 
-
-    public function delete(Request $request, Response $response): void{
+    /**
+     * Elimina una categoría.
+     * Ejemplo: DELETE /categoria/delete con body JSON {"id":1}
+     *
+     * @param Request $request
+     * @param Response $response
+     */
+    public function delete(Request $request, Response $response): void {
         $dto = new CategoriaDto($request->getDataFromInput());
         $service = new CategoriaService();
         $service->delete($dto);
@@ -62,11 +103,18 @@ final class CategoriaController extends BaseController implements InterfaceContr
         $response->send();
     }
 
-
-    public function list(Request $request, Response $response): void{
+    /**
+     * Lista categorías con filtros opcionales.
+     * Ejemplo: GET /categoria/list?nombre=guante&limit=10&offset=0
+     *
+     * @param Request $request
+     * @param Response $response
+     */
+    public function list(Request $request, Response $response): void {
         $filters = [
-            "estado" => $request->getParameterValue("estado", null),
-            "limit"  => $request->getParameterValue("limit", null)
+            "nombre" => $request->getParameterValue("nombre", null),
+            "limit"  => $request->getParameterValue("limit", null),
+            "offset" => $request->getParameterValue("offset", null)
         ];
 
         $service = new CategoriaService();
@@ -75,5 +123,4 @@ final class CategoriaController extends BaseController implements InterfaceContr
         $response->setResult($categorias);
         $response->send();
     }
-
 }

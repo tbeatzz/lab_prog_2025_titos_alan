@@ -1,0 +1,190 @@
+✅ Módulo Categoría
+1. Cargar categoría
+Método: GET
+
+URL: http://localhost/lab_prog_2025_titos_alan/public/categoria/load/1
+
+Esperado: Retorna la categoría con ID 1.
+
+2. Crear categoría
+Método: POST
+
+URL: http://localhost/lab_prog_2025_titos_alan/public/categoria/save
+
+Body (JSON):
+
+json
+Copiar
+Editar
+{
+  "nombre": "Guantes de Box"
+}
+3. Actualizar categoría
+Método: PUT
+
+URL: http://localhost/lab_prog_2025_titos_alan/public/categoria/update
+
+Body (JSON):
+
+json
+Copiar
+Editar
+{
+  "id": 1,
+  "nombre": "Guantes de MMA"
+}
+4. Eliminar categoría
+Método: DELETE
+
+URL: http://localhost/lab_prog_2025_titos_alan/public/categoria/delete
+
+Body (JSON):
+
+json
+Copiar
+Editar
+{
+  "id": 1
+}
+5. Listar categorías
+Método: GET
+
+URL:
+http://localhost/lab_prog_2025_titos_alan/public/categoria/list?limit=10&offset=0&nombre=gua
+
+✅ Módulo Producto
+1. Cargar producto
+Método: GET
+
+URL: http://localhost/lab_prog_2025_titos_alan/public/producto/load/1
+
+2. Crear producto
+Método: POST
+
+URL: http://localhost/lab_prog_2025_titos_alan/public/producto/save
+
+Body (JSON):
+
+json
+Copiar
+Editar
+{
+  "nombre": "Guantes Negros",
+  "codigo": "GN001",
+  "descripcion": "Guantes de entrenamiento",
+  "categoriaId": 2,
+  "precio": 2499.99,
+  "stock": 50
+}
+3. Actualizar producto
+Método: PUT
+
+URL: http://localhost/lab_prog_2025_titos_alan/public/producto/update
+
+Body (JSON):
+
+json
+Copiar
+Editar
+{
+  "id": 1,
+  "nombre": "Guantes Negros XL",
+  "codigo": "GN001",
+  "descripcion": "Talle grande",
+  "categoriaId": 2,
+  "precio": 2999.99,
+  "stock": 45
+}
+4. Eliminar producto
+Método: DELETE
+
+URL: http://localhost/lab_prog_2025_titos_alan/public/producto/delete
+
+Body (JSON):
+
+json
+Copiar
+Editar
+{
+  "id": 1
+}
+5. Listar productos
+Método: GET
+
+URL:
+http://localhost/lab_prog_2025_titos_alan/public/producto/list?categoriaId=2&nombre=guantes&limit=10&offset=0
+
+✅ Módulo Usuario
+1. Cargar usuario
+Método: GET
+
+URL: http://localhost/lab_prog_2025_titos_alan/public/usuario/load/1
+
+2. Crear usuario
+Método: POST
+
+URL: http://localhost/lab_prog_2025_titos_alan/public/usuario/save
+
+Body (JSON):
+
+json
+Copiar
+Editar
+{
+  "nombres": "Alan Titos",
+  "cuenta": "alan2025",
+  "clave": "123456",
+  "perfil": "admin",
+  "estado": "activo"
+}
+3. Actualizar usuario
+Método: PUT
+
+URL: http://localhost/lab_prog_2025_titos_alan/public/usuario/update
+
+Body (JSON):
+
+json
+Copiar
+Editar
+{
+  "id": 1,
+  "nombres": "Alan Titos",
+  "cuenta": "alan2025",
+  "clave": "nuevaclave123",
+  "perfil": "admin",
+  "estado": "activo"
+}
+4. Eliminar usuario
+Método: DELETE
+
+URL: http://localhost/lab_prog_2025_titos_alan/public/usuario/delete
+
+Body (JSON):
+
+json
+Copiar
+Editar
+{
+  "id": 1
+}
+5. Listar usuarios
+Método: GET
+
+URL:
+http://localhost/lab_prog_2025_titos_alan/public/usuario/list?nombres=alan&limit=10&offset=0
+
+6. Habilitar usuario
+Método: POST
+
+URL: http://localhost/lab_prog_2025_titos_alan/public/usuario/enable/1
+
+7. Deshabilitar usuario
+Método: POST
+
+URL: http://localhost/lab_prog_2025_titos_alan/public/usuario/disable/1
+
+8. Resetear clave de usuario
+Método: POST
+
+URL: http://localhost/lab_prog_2025_titos_alan/public/usuario/reset/1

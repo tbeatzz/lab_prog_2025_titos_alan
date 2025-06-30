@@ -6,13 +6,24 @@ use app\core\models\dao\base\BaseDao;
 use app\core\models\dao\base\InterfaceDao;
 use app\core\models\dto\ProductoDto;
 
-final class ProductoDao extends BaseDao implements InterfaceDao{
+/**
+ * DAO para la entidad Producto.
+ * Maneja el acceso a datos de la tabla `productos`.
+ */
+final class ProductoDao extends BaseDao implements InterfaceDao {
 
-    public function __construct(\PDO $connection){
+    public function __construct(\PDO $connection) {
         parent::__construct($connection, "productos");
     }
 
-    public function load(int $id): array{
+    /**
+     * Carga un producto por ID.
+     *
+     * @param int $id
+     * @return array
+     * @throws \Exception si no se encuentra el producto.
+     */
+    public function load(int $id): array {
         $sql = "SELECT * FROM {$this->table} WHERE id = :id LIMIT 1";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute(["id" => $id]);
@@ -24,7 +35,13 @@ final class ProductoDao extends BaseDao implements InterfaceDao{
         return (new ProductoDto($data))->toArray();
     }
 
-    public function save(array $data): void{
+    /**
+     * Guarda un nuevo producto.
+     *
+     * @param array $data
+     * @throws \Exception si el código o nombre ya están en uso.
+     */
+    public function save(array $data): void {
         if ($this->existsByCodigo($data["codigo"])) {
             throw new \Exception("El código '{$data["codigo"]}' ya está siendo utilizado.");
         }
@@ -46,7 +63,13 @@ final class ProductoDao extends BaseDao implements InterfaceDao{
         ]);
     }
 
-    public function update(array $data): void{
+    /**
+     * Actualiza un producto existente.
+     *
+     * @param array $data
+     * @throws \Exception si el código o nombre ya están en uso por otro producto.
+     */
+    public function update(array $data): void {
         $id = (int)$data["id"];
 
         if ($this->existsByCodigo($data["codigo"], $id)) {
@@ -73,13 +96,24 @@ final class ProductoDao extends BaseDao implements InterfaceDao{
         ]);
     }
 
-    public function delete(int $id): void{
+    /**
+     * Elimina un producto por ID.
+     *
+     * @param int $id
+     */
+    public function delete(int $id): void {
         $sql = "DELETE FROM {$this->table} WHERE id = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute(["id" => $id]);
     }
 
-    public function list(array $filters): array{
+    /**
+     * Lista productos según filtros.
+     *
+     * @param array $filters
+     * @return array
+     */
+    public function list(array $filters): array {
         $where = [];
         $params = [];
 
@@ -101,7 +135,7 @@ final class ProductoDao extends BaseDao implements InterfaceDao{
 
         $sql .= " ORDER BY nombre";
 
-        if (isset($filters["limit"]) && isset($filters["offset"])) {
+        if (isset($filters["limit"], $filters["offset"])) {
             $sql .= " LIMIT {$filters["offset"]}, {$filters["limit"]}";
         }
 
@@ -116,7 +150,13 @@ final class ProductoDao extends BaseDao implements InterfaceDao{
         return $result;
     }
 
-    public function suggestive(array $filters): array{
+    /**
+     * Devuelve una lista de sugerencias de productos por nombre.
+     *
+     * @param array $filters
+     * @return array
+     */
+    public function suggestive(array $filters): array {
         $sql = "SELECT id, nombre FROM {$this->table} WHERE nombre LIKE :keyword ORDER BY nombre ASC LIMIT 10";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute([
@@ -125,7 +165,13 @@ final class ProductoDao extends BaseDao implements InterfaceDao{
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    // Verifica si ya existe un producto con el mismo código
+    /**
+     * Verifica si existe un producto con un código.
+     *
+     * @param string $codigo
+     * @param int $excludeId (opcional) ID a excluir
+     * @return bool
+     */
     private function existsByCodigo(string $codigo, int $excludeId = 0): bool {
         $sql = "SELECT COUNT(*) FROM {$this->table} WHERE codigo = :codigo";
         if ($excludeId > 0) {
@@ -140,7 +186,14 @@ final class ProductoDao extends BaseDao implements InterfaceDao{
         return (bool) $stmt->fetchColumn();
     }
 
-    // Verifica si ya existe un producto con el mismo nombre en la misma categoría
+    /**
+     * Verifica si existe un producto con el mismo nombre en la misma categoría.
+     *
+     * @param string $nombre
+     * @param int $categoriaId
+     * @param int $excludeId (opcional)
+     * @return bool
+     */
     private function existsByNombreYCategoria(string $nombre, int $categoriaId, int $excludeId = 0): bool {
         $sql = "SELECT COUNT(*) FROM {$this->table} WHERE nombre = :nombre AND categoriaId = :categoriaId";
         if ($excludeId > 0) {
@@ -155,5 +208,4 @@ final class ProductoDao extends BaseDao implements InterfaceDao{
         $stmt->execute();
         return (bool) $stmt->fetchColumn();
     }
-
 }
