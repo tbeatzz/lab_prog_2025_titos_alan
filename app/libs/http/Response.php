@@ -3,15 +3,14 @@
 namespace app\libs\http;
 
 final class Response{
-
     private $controller, $action, $error, $message, $result;
-    
+
     public function __construct(){
         $this->setController("");
         $this->setAction("");
         $this->setError("");
         $this->setMessage("");
-        $this->setResult([]);
+        $this->setResult("");
     }
 
     public function setController($controller): void{
@@ -21,7 +20,7 @@ final class Response{
     public function setAction($action): void{
         $this->action = $action;
     }
-
+    
     public function setError($error): void{
         $this->error = $error;
     }
@@ -44,5 +43,4 @@ final class Response{
             "result"        => $this->result
         ]);
     }
-
 }

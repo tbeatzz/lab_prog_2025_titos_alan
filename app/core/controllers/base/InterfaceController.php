@@ -9,16 +9,15 @@ interface InterfaceController{
 
     /**
      * Invoca la vista principal del módulo.
-     * @param Request $request Parámetros y datos de entrada. Tomados desde la petición del cliente.
+     * @param Request $request Parámetros y datos de entrada. Tomados desde la petición del cliente
      * @param Response $response Respuesta del servidor hacia el cliente.
      * @return void
      */
     public function index(Request $request, Response $response): void;
 
     /**
-     * Gestiona los servicios correspondientes, para la búsqueda de una entidad existente en el sistema. Se debe enviar el ID del cliente en la petición.
-     * @param Request $request Parámetros y datos de entrada. Tomados desde la petición del cliente.
-     * @param Response $response Respuesta del servidor hacia el cliente.
+     * Gestiona los servicios correspondientes, para la búsqueda de una entidad existente en el sistema
+     * @param Request $request parámetros y datos de entrada. Tomados desde la petición del cliente.
      * @return void
      */
     public function load(Request $request, Response $response): void;
@@ -27,31 +26,20 @@ interface InterfaceController{
      * Invoca la vista correspondiente, para el alta de una nueva entidad.
      * @param Request $request Parámetros y datos de entrada. Tomados desde la petición del cliente.
      * @param Response $response Respuesta del servidor hacia el cliente.
-     * @return void
      */
-    public function create(Request $request, Response $response): void;
+    public function create(Request $request, Response $response):void;
 
     /**
-     * Gestiona los servicios correspondientes, para el alta de una nueva entidad en el sistema.
+     * Gestiona los servicios correspondientes para el alta de una nueva entidad en el sistema.
      * @param Request $request Parámetros y datos de entrada. Tomados desde la petición del cliente.
-     * @param Response $response Respuesta del servidor hacia el cliente.
      * @return void
      */
     public function save(Request $request, Response $response): void;
 
     /**
-     * Invoca la vista correspondiente, para poder modificar los datos de una entidad existente en el sistema.
-     * @param Request $request Parámetros y datos de entrada. Tomados desde la petición del cliente.
-     * @param Response $response Respuesta del servidor hacia el cliente.
-     * @return void
-     */
-    public function edit(Request $request, Response $response): void;
-
-    /**
-     * Gestiona los servicios correspondientes, para la actualización de datos de una entidad existente en el sistema.
-     * @param Request $request Parámetros y datos de entrada. Tomados desde la petición del cliente.
-     * @param Response $response Respuesta del servidor hacia el cliente.
-     * @return void
+     * Invoca la vista correspondiente, para poder modificar los datos de una entidad existente en el sistema
+     * @param Request $request Parámetros y datos de entrada. Tomados desde la petición del cliente
+     * @param Response 
      */
     public function update(Request $request, Response $response): void;
 
@@ -70,5 +58,4 @@ interface InterfaceController{
      * @return void
      */
     public function list(Request $request, Response $response): void;
-
 }

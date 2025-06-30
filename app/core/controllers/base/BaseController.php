@@ -9,10 +9,10 @@ class BaseController{
 
     protected $view, $scripts, $styles;
 
-    public function __construct($scripts = [], $styles = [])
-    {
+    public function __construct($scripts = [], $styles = []){
         $this->view = "";
         $this->scripts = $scripts;
         $this->styles = $styles;
     }
+
 }

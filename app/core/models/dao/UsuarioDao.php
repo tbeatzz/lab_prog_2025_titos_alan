@@ -5,195 +5,213 @@ namespace app\core\models\dao;
 use app\core\models\dao\base\BaseDao;
 use app\core\models\dao\base\InterfaceDao;
 
-/**
- * DAO para la entidad Usuario.
- * Maneja operaciones de base de datos sobre la tabla 'usuarios'.
- */
-final class UsusarioDao extends BaseDao implements InterfaceDao{
-    /**
-     * Constructor
-     *
-     * @param \PDO|null $connection Conexión a la base de datos
-     */
-    public function __construct(?\PDO $connection)
-    {
-        parent::__construct($connection, 'usuarios');
+final class UsuarioDao extends BaseDao implements InterfaceDao {
+
+    public function __construct(\PDO $connection) {
+        parent::__construct($connection, "usuarios");
     }
 
-    /**
-     * Carga un usuario por ID
-     *
-     * @param int $id ID del usuario
-     * @return array Datos del usuario
-     * @throws \Exception Si no se encuentra el usuario
-     */
-    public function load(int $id): array
-    {
-        $sql = "SELECT * FROM {$this->table} WHERE id = :id";
-        $result = $this->selectQuery($sql, ["id" => $id]);
+    public function load(int $id): array {
+        $sql = "SELECT * FROM {$this->table} WHERE id = :id LIMIT 1";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute(["id" => $id]);
 
-        if (empty($result)) {
-            throw new \Exception("No se encontró el usuario con ID ($id)");
+        $data = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if (!$data) {
+            throw new \Exception("No se encontró el usuario con ID {$id}");
         }
 
-        return $result[0];
+        return $data;
     }
 
-    /**
-     * Guarda un nuevo usuario
-     *
-     * @param array $data Datos del nuevo usuario
-     * @return void
-     */
-    public function save(array $data): void
-    {
-        $sql = "INSERT INTO {$this->table}
-                (apellido, nombres, cuenta, perfil, clave, correo, estado, fechaAlta, resetPass)
-                VALUES
-                (:apellido, :nombres, :cuenta, :perfil, :clave, :correo, :estado, :fechaAlta, :resetPass)";
-        $this->insertQuery($sql, $data);
-    }
-
-    /**
-     * Actualiza un usuario existente
-     *
-     * @param array $data Datos del usuario (incluye ID)
-     * @return void
-     */
-    public function update(array $data): void
-    {
-        $sql = "UPDATE {$this->table} SET
-                    apellido = :apellido,
-                    nombres = :nombres,
-                    cuenta = :cuenta,
-                    perfil = :perfil,
-                    clave = :clave,
-                    correo = :correo,
-                    estado = :estado,
-                    fechaAlta = :fechaAlta,
-                    resetPass = :resetPass
-                WHERE id = :id";
-        $this->updateQuery($sql, $data);
-    }
-
-    /**
-     * Elimina un usuario por ID
-     *
-     * @param int $id ID del usuario
-     * @return void
-     */
-    public function delete(int $id): void
-    {
-        $this->deleteQuery($id);
-    }
-
-    /**
-     * Lista usuarios según filtros
-     *
-     * @param array $filters Filtros disponibles: cuenta, apellido, perfil, correo, estado
-     * @return array Lista de usuarios
-     */
-    public function list(array $filters): array
-    {
-        $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM {$this->table}";
-        $where = [];
-        $params = [];
-
-        if (!empty($filters["cuenta"])) {
-            $where[] = "cuenta LIKE :cuenta";
-            $params["cuenta"] = "%" . $filters["cuenta"] . "%";
+    public function save(array $data): void {
+        // Validar que no exista otra cuenta igual
+        if ($this->existsByCuenta($data["cuenta"])) {
+            throw new \Exception("La cuenta '{$data["cuenta"]}' ya está en uso.");
         }
 
-        if (!empty($filters["apellido"])) {
-            $where[] = "apellido LIKE :apellido";
-            $params["apellido"] = "%" . $filters["apellido"] . "%";
+        // Validar que no exista otro correo igual
+        if ($this->existsByCorreo($data["correo"])) {
+            throw new \Exception("El correo '{$data["correo"]}' ya está en uso.");
+    }
+
+        $sql = "INSERT INTO {$this->table} 
+            (apellido, nombres, cuenta, perfil, clave, correo, estado, fechaAlta, resetPass) 
+            VALUES (:apellido, :nombres, :cuenta, :perfil, :clave, :correo, :estado, :fechaAlta, :resetPass)";
+
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute([
+            "apellido" => $data["apellido"],
+            "nombres" => $data["nombres"],
+            "cuenta" => $data["cuenta"],
+            "perfil" => $data["perfil"],
+            "clave" => $data["clave"],
+            "correo" => $data["correo"],
+            "estado" => $data["estado"],
+            "fechaAlta" => $data["fechaAlta"],
+            "resetPass" => $data["resetPass"]
+        ]);
+    }
+
+    public function update(array $data): void {
+        // Validar que no exista otra cuenta igual para otro ID
+        if ($this->existsByCuenta($data["cuenta"], $data["id"])) {
+            throw new \Exception("La cuenta '{$data["cuenta"]}' ya está en uso por otro usuario.");
         }
+
+        // Validar que no exista otro correo igual para otro ID
+        if ($this->existsByCorreo($data["correo"], $data["id"])) {
+            throw new \Exception("El correo '{$data["correo"]}' ya está en uso por otro usuario.");
+        }
+
+        $sql = "UPDATE {$this->table} SET 
+            apellido = :apellido,
+            nombres = :nombres,
+            cuenta = :cuenta,
+            perfil = :perfil,
+            clave = :clave,
+            correo = :correo,
+            estado = :estado,
+            fechaAlta = :fechaAlta,
+            resetPass = :resetPass
+            WHERE id = :id";
+
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute([
+            "apellido" => $data["apellido"],
+            "nombres" => $data["nombres"],
+            "cuenta" => $data["cuenta"],
+            "perfil" => $data["perfil"],
+            "clave" => $data["clave"],
+            "correo" => $data["correo"],
+            "estado" => $data["estado"],
+            "fechaAlta" => $data["fechaAlta"],
+            "resetPass" => $data["resetPass"],
+            "id" => $data["id"]
+        ]);
+    }
+
+    public function delete(int $id): void {
+        $sql = "DELETE FROM {$this->table} WHERE id = :id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute(["id" => $id]);
+    }
+
+    public function list(array $filters): array {
+        $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM {$this->table} WHERE 1";
 
         if (!empty($filters["perfil"])) {
-            $where[] = "perfil = :perfil";
-            $params["perfil"] = $filters["perfil"];
+            $sql .= " AND perfil = :perfil";
         }
 
-        if (!empty($filters["correo"])) {
-            $where[] = "correo LIKE :correo";
-            $params["correo"] = "%" . $filters["correo"] . "%";
-        }
-
-        if (isset($filters["estado"])) {
-            $where[] = "estado = :estado";
-            $params["estado"] = $filters["estado"];
-        }
-
-        if ($where) {
-            $sql .= " WHERE " . implode(" AND ", $where);
+        if (!empty($filters["estado"])) {
+            $sql .= " AND estado = :estado";
         }
 
         $sql .= " ORDER BY apellido, nombres";
 
-        if (isset($filters["limit"])) {
-            $sql .= " LIMIT " . (int)$filters["limit"];
+        if (!empty($filters["limit"])) {
+            $sql .= " LIMIT :limit";
         }
 
-        if (isset($filters["offset"])) {
-            $sql .= " OFFSET " . (int)$filters["offset"];
+        $stmt = $this->connection->prepare($sql);
+
+        // Vinculaciones dinámicas
+        if (!empty($filters["perfil"])) {
+            $stmt->bindValue(":perfil", $filters["perfil"]);
         }
 
-        return $this->selectQuery($sql, $params);
+        if (!empty($filters["estado"])) {
+            $stmt->bindValue(":estado", $filters["estado"], \PDO::PARAM_INT);
+        }
+
+        if (!empty($filters["limit"])) {
+            $stmt->bindValue(":limit", (int)$filters["limit"], \PDO::PARAM_INT);
+        }
+
+        $stmt->execute();
+
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Devuelve la cantidad total de registros filtrados (para paginación)
-     *
-     * @return int
-     */
-    public function foundRows(): int
-    {
-        return $this->getFoundRows();
+    public function suggestive(array $filters): array {
+        $sql = "SELECT id, cuenta, apellido, nombres FROM {$this->table} 
+                WHERE cuenta LIKE :keyword OR apellido LIKE :keyword OR nombres LIKE :keyword 
+                ORDER BY apellido, nombres LIMIT 10";
+
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute([
+            "keyword" => "%" . ($filters["keyword"] ?? "") . "%"
+        ]);
+
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Devuelve el último ID insertado
-     *
-     * @return int
-     */
-    public function getLastInsertId(): int
-    {
-        return (int)$this->connection->lastInsertId();
+    public function foundRows(): int {
+        return parent::foundRows();
     }
 
-    /**
-     * Habilita a un usuario (estado = 1)
-     *
-     * @param int $id ID del usuario
-     * @return void
-     */
-    public function enable(int $id): void
-    {
+    public function getLastInsertId(): int {
+        return parent::getLastInsertId();
+    }
+
+    // ================== Métodos especiales ===================
+
+    public function enable(int $id): void {
         $sql = "UPDATE {$this->table} SET estado = 1 WHERE id = :id";
-        $this->updateQuery($sql, ["id" => $id]);
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute(["id" => $id]);
     }
 
-    /**
-     * Deshabilita a un usuario (estado = 0)
-     *
-     * @param int $id ID del usuario
-     * @return void
-     */
-    public function disable(int $id): void
-    {
+    public function disable(int $id): void {
         $sql = "UPDATE {$this->table} SET estado = 0 WHERE id = :id";
-        $this->updateQuery($sql, ["id" => $id]);
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute(["id" => $id]);
     }
 
-    /**
-     * Marca al usuario para reiniciar su contraseña (resetPass = 1)
-     *
-     * @param int $id ID del usuario
-     * @return void
-     */
-    public function reset(int $id): void
-    {
+    public function reset(int $id): void {
         $sql = "UPDATE {$this->table} SET resetPass = 1 WHERE id = :id";
-        $this->updateQuery($sql, ["id" => $id]);
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute(["id" => $id]);
     }
+
+    public function existsByCuenta(string $cuenta, int $excludeId = 0): bool {
+        $sql = "SELECT COUNT(*) FROM {$this->table} WHERE cuenta = :cuenta";
+        if ($excludeId > 0) {
+            $sql .= " AND id != :id";
+        }
+
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(":cuenta", $cuenta);
+        if ($excludeId > 0) {
+            $stmt->bindValue(":id", $excludeId, \PDO::PARAM_INT);
+        }
+        $stmt->execute();
+        return $stmt->fetchColumn() > 0;
+    }
+
+    public function existsByCorreo(string $correo, int $excludeId = 0): bool {
+        $sql = "SELECT COUNT(*) FROM {$this->table} WHERE correo = :correo";
+        if ($excludeId > 0) {
+            $sql .= " AND id != :id";
+        }
+
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(":correo", $correo);
+        if ($excludeId > 0) {
+            $stmt->bindValue(":id", $excludeId, \PDO::PARAM_INT);
+        }
+        $stmt->execute();
+        return $stmt->fetchColumn() > 0;
+    }
+
+    public function findByCuenta(string $cuenta): ?array {
+        $sql = "SELECT * FROM {$this->table} WHERE cuenta = :cuenta LIMIT 1";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(":cuenta", $cuenta);
+        $stmt->execute();
+        $data = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $data ?: null;
+    }
+
 }

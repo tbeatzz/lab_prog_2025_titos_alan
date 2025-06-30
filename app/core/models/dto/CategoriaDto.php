@@ -27,8 +27,9 @@ final class CategoriaDto implements InterfaceDto{
         $this->id = $id > 0 ? $id : 0;
     }
 
+    // VALIDAR LA LONGITUD DEL STRING Tiene que ser menor o igual a 100
     public function setNombre(string $nombre): void{
-    $this->nombre = (strlen(trim($nombre)) <= 100) ? trim($nombre) : "";
+        $this->nombre = (strlen(trim($nombre)) <= 100) ? trim($nombre) : "";
     }
 
     public function toArray(): array{

@@ -10,18 +10,12 @@ use app\libs\database\Connection;
 
 final class ProductoService implements InterfaceService {
 
-    /**
-     * Carga un producto por su ID y lo devuelve como DTO
-     */
     public function load(int $id): InterfaceDto {
         $dao = new ProductoDao(Connection::get());
         $data = $dao->load($id);
         return new ProductoDto($data);
     }
 
-    /**
-     * Guarda un nuevo producto en la base de datos
-     */
     public function save(InterfaceDto $dto): void {
         $this->validate($dto);
         $data = $dto->toArray();
@@ -30,60 +24,40 @@ final class ProductoService implements InterfaceService {
         $dao->save($data);
     }
 
-    /**
-     * Actualiza los datos de un producto existente
-     */
     public function update(InterfaceDto $dto): void {
         $this->validate($dto);
         $data = $dto->toArray();
         $dao = new ProductoDao(Connection::get());
+
+        //Validación de existencia utilizando el load del dao que ya valida si existe o no
+        $dao->load($dto->getId());
+
         $dao->update($data);
     }
 
-    /**
-     * Elimina un producto por ID
-     */
     public function delete(InterfaceDto $dto): void {
         $dao = new ProductoDao(Connection::get());
+
+        //Validación de existencia utilizando el load del dao que ya valida si existe o no
+        $dao->load($dto->getId());
+
         $dao->delete($dto->getId());
     }
 
-    /**
-     * Lista productos con filtros opcionales
-     */
     public function list(array $filters): array {
         $dao = new ProductoDao(Connection::get());
         return $dao->list($filters);
     }
 
-    /**
-     * Valida los datos de un producto
-     */
     private function validate(ProductoDto $dto): void {
-        $errores = [];
-
-        if (trim($dto->getNombre()) === "") {
-            $errores[] = "<p>El <strong>nombre</strong> del producto es obligatorio.</p>";
+        if ($dto->getNombre() === "") {
+            throw new \Exception("<p>El <strong>nombre</strong> del producto es obligatorio.</p>");
         }
-
-        if (trim($dto->getCodigo()) === "") {
-            $errores[] = "<p>El <strong>código</strong> del producto es obligatorio.</p>";
+        if ($dto->getPrecio() <= 0) {
+            throw new \Exception("<p>El <strong>precio</strong> debe ser mayor a 0.</p>");
         }
-
-        if ($dto->getCategoriaId() <= 0) {
-            $errores[] = "<p>Debe seleccionar una <strong>categoría</strong> válida.</p>";
-        }
-
-        if ($dto->getPrecio() < 0) {
-            $errores[] = "<p>El <strong>precio</strong> no puede ser negativo.</p>";
-        }
-
         if ($dto->getStock() < 0) {
-            $errores[] = "<p>El <strong>stock</strong> no puede ser negativo.</p>";
-        }
-
-        if (!empty($errores)) {
-            throw new \Exception(implode("", $errores));
+            throw new \Exception("<p>El <strong>stock</strong> no puede ser negativo.</p>");
         }
     }
 }
