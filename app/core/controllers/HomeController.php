@@ -6,19 +6,10 @@ use app\core\controllers\base\BaseController;
 use app\libs\http\Response;
 use app\libs\http\Request;
 
-
-
-final class AuthenticationController extends BaseController {
-
-   
+final class HomeController extends BaseController {
     public function index(Request $request, Response $response): void {
         array_push($this->scripts, "app/js/{$request->getController()}/{$request->getAction()}.js");
-       // $this->setCurrentView($request);
-        require_once APP_FILE_LOGIN;
-    }
-
-    public function logout(Request $request, Response $response): void {
-        $response->setMessage("en proceso");
-        $response->send();
+        $this->setCurrentView($request);
+        require_once APP_FILE_TEMPLATE ;
     }
 }

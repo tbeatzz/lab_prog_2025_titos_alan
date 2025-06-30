@@ -24,8 +24,14 @@ final class CategoriaController extends BaseController implements InterfaceContr
     public function index(Request $request, Response $response): void {
         array_push($this->scripts, "app/js/categoria/index.js");
         echo "<h1>Funciona el controlador de Categoría</h1>";
-        // $this->setCurrentView($request);
-        // require_once APP_FILE_TEMPLATE;
+        $this->setCurrentView($request);
+        require_once APP_FILE_TEMPLATE;
+    }
+
+    public function edit(Request $request, Response $response): void {
+        array_push($this->scripts, "app/js/categoria/edit.js");
+        $this->setCurrentView($request);
+        require_once APP_FILE_TEMPLATE;
     }
 
     /**
@@ -44,6 +50,8 @@ final class CategoriaController extends BaseController implements InterfaceContr
         $response->send();
     }
 
+    
+
     /**
      * Invoca la vista para crear una nueva categoría.
      *
@@ -52,7 +60,8 @@ final class CategoriaController extends BaseController implements InterfaceContr
      */
     public function create(Request $request, Response $response): void {
         array_push($this->scripts, "app/js/categoria/create.js");
-        // require_once APP_FILE_TEMPLATE;
+        $this->setCurrentView($request);
+        require_once APP_FILE_TEMPLATE;
     }
 
     /**

@@ -15,4 +15,10 @@ class BaseController{
         $this->styles = $styles;
     }
 
+    public function setCurrentView(Request $request):void{
+        $this->view = $request->getController() . "/" . $request->getAction() . ".php";
+    }
+
+
+
 }
