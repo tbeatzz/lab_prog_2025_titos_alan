@@ -2,7 +2,7 @@
      <div class="container-fluid">
 
          <a class="navbar-brand" href="home/index.html">
-             <img src="/lab_prog_2025_titos_alan/public/app/assets/images/main_logo.webp" alt="BajoCeroWear Logo"
+            <img src="<?= APP_URL ?>/app/assets/images/main_logo.webp" alt="BajoCeroWear Logo"
                  width="70" height="70" class="d-inline-block align-text-top rounded-circle" />
          </a>
          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
@@ -13,16 +13,17 @@
 
              <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-4">
                  <li class="nav-item">
-                     <a class="nav-link fs-5 p-0 active" aria-current="page" href="home/index.html">Inicio</a>
+                    <a class="nav-link fs-5 p-0 <?= $this->currentController === 'home' ? 'active' : '' ?> " href="<?= APP_URL ?>/home">Inicio</a>
                  </li>
                  <li class="nav-item">
-                     <a class="nav-link fs-5 p-0" href="items/index.html">Productos</a>
+                    
+                     <a class="nav-link fs-5 p-0 <?= $this->currentController === 'producto' ? 'active' : '' ?> " href="<?= APP_URL ?>/producto">Productos</a>
                  </li>
                  <li class="nav-item">
-                     <a class="nav-link fs-5 p-0" href="sale/index.html">Ventas</a>
+                     <a class="nav-link fs-5 p-0" href="sale/index">Ventas</a>
                  </li>
                  <li class="nav-item">
-                     <a class="nav-link fs-5 p-0" href="user/index.html">Usuarios</a>
+                    <a class="nav-link fs-5 p-0 <?= $this->currentController === 'usuario' ? 'active' : '' ?> " href="<?= APP_URL ?>/usuario">Usuarios</a>
                  </li>
              </ul>
 

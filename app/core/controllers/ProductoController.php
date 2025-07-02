@@ -16,8 +16,8 @@ use app\core\models\dto\ProductoDto;
 final class ProductoController extends BaseController implements InterfaceController {
 
     public function index(Request $request, Response $response): void {
-        array_push($this->scripts, "app/js/producto/index.js");
-        echo "<h1>Funciona el controlador de Producto</h1>";
+        $this->scripts[] = "app/js/{$request->getController()}/{$request->getAction()}.js";
+        $this->render($request);
     }
 
     /**
@@ -31,12 +31,15 @@ final class ProductoController extends BaseController implements InterfaceContro
         $response->send();
     }
 
+
     /**
      * Crea una nueva vista para el formulario de productos (opcional).
      */
     public function create(Request $request, Response $response): void {
-        array_push($this->scripts, "app/js/producto/create.js");
+        $this->scripts[] = "app/js/producto/create.js";
+        $this->render($request);
     }
+
 
     /**
      * Guarda un nuevo producto.

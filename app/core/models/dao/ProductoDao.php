@@ -118,22 +118,24 @@ final class ProductoDao extends BaseDao implements InterfaceDao {
         $params = [];
 
         if (isset($filters["nombre"])) {
-            $where[] = "nombre LIKE :nombre";
+            $where[] = "p.nombre LIKE :nombre";
             $params["nombre"] = "%" . $filters["nombre"] . "%";
         }
 
         if (isset($filters["categoriaId"])) {
-            $where[] = "categoriaId = :categoriaId";
+            $where[] = "p.categoriaId = :categoriaId";
             $params["categoriaId"] = $filters["categoriaId"];
         }
 
-        $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM {$this->table}";
+        $sql = "SELECT SQL_CALC_FOUND_ROWS p.*, c.nombre AS categoria
+                FROM {$this->table} p
+                LEFT JOIN categorias c ON p.categoriaId = c.id";
 
         if (count($where) > 0) {
             $sql .= " WHERE " . implode(" AND ", $where);
         }
 
-        $sql .= " ORDER BY nombre";
+        $sql .= " ORDER BY p.nombre";
 
         if (isset($filters["limit"], $filters["offset"])) {
             $sql .= " LIMIT {$filters["offset"]}, {$filters["limit"]}";
@@ -149,6 +151,7 @@ final class ProductoDao extends BaseDao implements InterfaceDao {
 
         return $result;
     }
+
 
     /**
      * Devuelve una lista de sugerencias de productos por nombre.

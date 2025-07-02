@@ -10,7 +10,7 @@ use app\core\models\dto\base\InterfaceDto;
  */
 final class ProductoDto implements InterfaceDto {
 
-    private $id, $nombre, $codigo, $descripcion, $categoriaId, $precio, $stock;
+    private $id, $nombre, $codigo, $descripcion,$categoria, $categoriaId, $precio, $stock;
 
     /**
      * Constructor del DTO. Recibe datos opcionales y los valida.
@@ -18,14 +18,16 @@ final class ProductoDto implements InterfaceDto {
      * @param array $data Datos del producto.
      */
     public function __construct(array $data = []) {
-        $this->setId($data["id"] ?? 0);
-        $this->setNombre($data["nombre"] ?? "");
-        $this->setCodigo($data["codigo"] ?? "");
-        $this->setDescripcion($data["descripcion"] ?? ""); 
-        $this->setCategoriaId($data["categoriaId"] ?? 0);
-        $this->setPrecio($data["precio"] ?? 9999999);
-        $this->setStock($data["stock"] ?? 0);
+        $this->id          = $data['id'] ?? null;
+        $this->nombre      = $data['nombre'] ?? '';
+        $this->codigo      = $data['codigo'] ?? '';
+        $this->descripcion = $data['descripcion'] ?? '';
+        $this->categoriaId = $data['categoriaId'] ?? null;
+        $this->categoria   = $data['categoria'] ?? null; // 👈 ¡esto es clave!
+        $this->precio      = $data['precio'] ?? 0.0;
+        $this->stock       = $data['stock'] ?? 0;
     }
+
 
     /** Getters */
     public function getId(): int { return $this->id; }
@@ -72,13 +74,15 @@ final class ProductoDto implements InterfaceDto {
      */
     public function toArray(): array {
         return [
-            "id"          => $this->getId(),
-            "nombre"      => $this->getNombre(),
-            "codigo"      => $this->getCodigo(),
-            "descripcion" => $this->getDescripcion(),
-            "categoriaId" => $this->getCategoriaId(),
-            "precio"      => $this->getPrecio(),
-            "stock"       => $this->getStock()
+            "id"          => $this->id,
+            "nombre"      => $this->nombre,
+            "codigo"      => $this->codigo,
+            "descripcion" => $this->descripcion,
+            "categoriaId" => $this->categoriaId,
+            "categoria"   => $this->categoria, // 👈 esto permite que JS lo reciba
+            "precio"      => $this->precio,
+            "stock"       => $this->stock
         ];
     }
+
 }

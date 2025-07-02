@@ -1,4 +1,5 @@
-<base href=" <?php APP_URL ?>" />
+<base href="<?= APP_URL ?>/" />
+
 
 <meta charset="UTF-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -18,8 +19,8 @@
     crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
 
-<!--  CSS y JS -->
-<!-- <link rel="stylesheet" href="/lab_prog_2025_titos_alan/public/app/css/main.css" />
-<script defer type="text/javascript" src="/lab_prog_2025_titos_alan/public/app/js/main.js"></script> -->
+ <!-- CSS y JS -->
+<link rel="stylesheet" href="<?= APP_URL ?>/app/css/main.css" />
+
 
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>

@@ -18,8 +18,8 @@ final class UsuarioController extends BaseController implements InterfaceControl
      * Vista principal del módulo.
      */
     public function index(Request $request, Response $response): void {
-        array_push($this->scripts, "app/js/usuario/index.js");
-        echo "<h1>Funciona el controlador de Usuario</h1>";
+        $this->scripts[] = "app/js/{$request->getController()}/{$request->getAction()}.js";
+        $this->render($request);
     }
 
     /**

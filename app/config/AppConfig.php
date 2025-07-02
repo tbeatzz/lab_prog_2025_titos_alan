@@ -18,7 +18,7 @@ define('APP_DIR_TEMPLATE', APP_URI . 'resources/template/');
 define('APP_DIR_VIEWS', APP_URI . 'resources/views/');
 // define('APP_DIR_REPORTS', APP_URI . 'resources/reports');
 
-define('APP_FILE_TEMPLATE', APP_DIR_TEMPLATE . 'template.php)');
+define('APP_FILE_TEMPLATE', APP_DIR_TEMPLATE . 'template.php');
 // define('APP_FILE_LOG_ERRORS', APP_URI . 'logs/error.log)');
 // define('APP_FILE_LOG_ACCESS', APP_URI . 'logs/access.log)');
 

@@ -1,87 +1,77 @@
 import { itemService } from './service.js';
 
 export const itemController = {
-    save: () => {
+    save: async () => {
         const item = {
             id: 0,
             nombre: document.getElementById('nombre').value,
             codigo: document.getElementById('codigo').value,
-            categoria: document.getElementById('categoria').value,
+            categoria: parseInt(document.getElementById('categoria').value), // ID
             precio: parseFloat(document.getElementById('precio').value) || 0,
             stock: parseInt(document.getElementById('stock').value) || 0,
             descripcion: document.getElementById('descripcion').value,
-            fechaCreacion: new Date().toISOString().split('T')[0] // Agregar fecha actual
+            fechaCreacion: new Date().toISOString().split('T')[0],
+            estado: 'activo' // opcional si tenés ese campo
         };
 
-        const savedItem = itemService.save(item);
-        if (savedItem) {
-            const successMessage = document.getElementById('successMessage');
-            if (successMessage) {
-                successMessage.classList.remove('d-none');
-                console.log(itemService.list()); // Debug para ver si se agrega el item
-                setTimeout(() => {
-                    successMessage.classList.add('d-none');
-                    window.location.href = 'items/index.html';
-                }, 2000);
-                return savedItem;
-            }
-        } else {
-            alert('Error al guardar el item');
+        try {
+            const savedResponse = await itemService.save(item);
+            return savedResponse;
+        } catch (err) {
+            console.error('Error al guardar:', err);
+            alert('Error al guardar el producto: ' + err.message);
         }
     },
 
-    update: (id) => {
-        const originalItem = itemService.load(id);
-        if (!originalItem) {
-            alert('Producto no encontrado');
-            return;
-        }
 
-        const item = {
-            id: id,
-            nombre: document.getElementById('nombre').value,
-            estado: document.getElementById('estado').value || originalItem.estado,
-            codigo: document.getElementById('codigo').value,
-            categoria: document.getElementById('categoria').value,
-            precio: parseFloat(document.getElementById('precio').value) || originalItem.precio,
-            stock: parseInt(document.getElementById('stock').value) || originalItem.stock,
-            descripcion: document.getElementById('descripcion').value,
-            fechaCreacion: originalItem.fechaCreacion
-        };
+    update: async (id) => {
+        try {
+            const originalItem = await itemService.load(id);
+            if (!originalItem) {
+                alert('Producto no encontrado');
+                return;
+            }
 
-        const updatedItem = itemService.update(item);
-        if (updatedItem) {
+            const item = {
+                id: id,
+                nombre: document.getElementById('nombre').value,
+                estado: document.getElementById('estado').value || originalItem.estado,
+                codigo: document.getElementById('codigo').value,
+                categoria: document.getElementById('categoria').value,
+                precio: parseFloat(document.getElementById('precio').value) || originalItem.precio,
+                stock: parseInt(document.getElementById('stock').value) || originalItem.stock,
+                descripcion: document.getElementById('descripcion').value,
+                fechaCreacion: originalItem.fechaCreacion
+            };
+
+            await itemService.update(item);
             const successMessage = document.getElementById('successMessage');
             if (successMessage) {
                 successMessage.classList.remove('d-none');
-                console.log(itemService.list()); // Debug para ver si se actualiza el item
                 setTimeout(() => {
                     successMessage.classList.add('d-none');
-                    window.location.href = 'items/index.html';
+                    window.location.href = 'index.html';
                 }, 2000);
-                return updatedItem;
             }
-        } else {
-            alert('Producto no encontrado o error al actualizar');
+        } catch (e) {
+            alert('Error al actualizar el producto: ' + e.message);
         }
     },
 
-    delete: (id) => {
-        const deletedItem = itemService.delete(id);
-        if (deletedItem) {
-            console.log(itemService.list()); // Debug para ver si se elimina el item
-            alert('Producto eliminado correctamente');
-            window.location.href = 'items/index.html';
-            return deletedItem;
-        } else {
-            alert('Producto no encontrado');
+    delete: async (id) => {
+        if (!confirm('¿Seguro que deseas eliminar este producto?')) return;
+        try {
+            await itemService.delete(id);
+            await itemController.list();
+        } catch (e) {
+            alert('Error al eliminar producto: ' + e.message);
         }
     },
 
     filteredItems: null,
 
-    applyFilters: (categoria, nombre) => {
-        let items = itemService.list();
+    applyFilters: async (categoria, nombre) => {
+        let items = await itemService.list();
 
         if (categoria) {
             items = items.filter(item => item.categoria.toLowerCase() === categoria.toLowerCase());
@@ -94,41 +84,43 @@ export const itemController = {
         return items;
     },
 
-    list: (filters = {}) => {
-        const items = itemController.filteredItems || itemService.list();
+    list: async () => {
+        const items = itemController.filteredItems || await itemService.list();
         const tableBody = document.querySelector('#itemTable tbody');
 
-        if (tableBody) {
-            tableBody.innerHTML = '';
-            if (items.length === 0) {
-                tableBody.innerHTML = '<tr><td colspan="9" class="text-center">No hay registros disponibles.</td></tr>';
-                return;
-            }
-            items.forEach(item => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <th scope="row">${item.id}</th>
-                    <td>${item.nombre}</td>
-                    <td>${item.codigo}</td>
-                    <td>${item.categoria}</td>
-                    <td>$ ${item.precio.toFixed(2)}</td>
-                    <td>${item.stock}</td>
-                    <td>${item.estado}</td>
-                    <td>${item.descripcion || 'Sin descripción'}</td>
-                    <td>
-                        <button class="btn btn-sm btn-outline-primary" data-item-id="${item.id}" data-action="editar">
-                            Editar <i class="bi bi-pen"></i>
-                        </button>
-                        <button class="btn btn-sm btn-outline-danger" data-item-id="${item.id}" data-action="eliminar">
-                            Eliminar <i class="bi bi-trash3"></i>
-                        </button>
-                    </td>
-                `;
-                tableBody.appendChild(row);
-            });
-        } else {
+        if (!tableBody) {
             console.error('Tabla itemTable no encontrada');
+            return;
         }
+
+        tableBody.innerHTML = '';
+        if (items.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="9" class="text-center">No hay registros disponibles.</td></tr>';
+            return;
+        }
+
+        items.forEach(item => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <th scope="row">${item.id}</th>
+                <td>${item.nombre}</td>
+                <td>${item.codigo}</td>
+                <td>${item.categoria || 'Sin categoría'}</td>
+
+                <td>$ ${item.precio.toFixed(2)}</td>
+                <td>${item.stock}</td>
+                <td>${item.descripcion || 'Sin descripción'}</td>
+                <td>
+                    <button class="btn btn-sm btn-outline-primary" data-item-id="${item.id}" data-action="editar">
+                        Editar <i class="bi bi-pen"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger" data-item-id="${item.id}" data-action="eliminar">
+                        Eliminar <i class="bi bi-trash3"></i>
+                    </button>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
     },
 
     exportToPDF: () => {

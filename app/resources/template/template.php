@@ -6,7 +6,7 @@
 
         if(isset($this->scripts) && is_array($this->scripts)){
             foreach($this->scripts as $script){
-                echo '<script defer srce="' . APP_URL . $script .'"></script>';
+               echo '<script type="module" defer src="' . APP_URL . '/' . $script . '"></script>';
             }
         }
     ?>
@@ -16,13 +16,16 @@
         require_once APP_DIR_TEMPLATE . "includes/menu.php";
     ?>
    
-   <main>
-        <?php
-            require_once APP_DIR_VIEWS . $this->view;
-        ?>
+   <main class="flex-grow-1">
+        <div class="container py-5">
+            <?php 
+                require_once APP_DIR_TEMPLATE . "includes/breadcrumbs.php"; 
+                require_once APP_DIR_VIEWS . $this->view;
+            ?>
+        </div>
    </main>
 
-    <footer>
+    <footer class="footer py-4 mt-auto">
         <?php
             require_once APP_DIR_TEMPLATE . "includes/footer.php";
         ?>
