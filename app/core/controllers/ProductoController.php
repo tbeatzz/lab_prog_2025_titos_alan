@@ -36,7 +36,15 @@ final class ProductoController extends BaseController implements InterfaceContro
      * Crea una nueva vista para el formulario de productos (opcional).
      */
     public function create(Request $request, Response $response): void {
-        $this->scripts[] = "app/js/producto/create.js";
+        $this->scripts[] = "app/js/{$request->getController()}/{$request->getAction()}.js";
+        $this->render($request);
+    }
+
+     /**
+     * Crea una nueva vista 
+     */
+    public function edit(Request $request, Response $response): void {
+        $this->scripts[] = "app/js/{$request->getController()}/{$request->getAction()}.js";
         $this->render($request);
     }
 
@@ -79,10 +87,10 @@ final class ProductoController extends BaseController implements InterfaceContro
      */
     public function list(Request $request, Response $response): void {
         $filters = [
-            "nombre"      => $request->getParameterValue("nombre", null),
-            "categoriaId" => $request->getParameterValue("categoriaId", null),
-            "limit"       => $request->getParameterValue("limit", null),
-            "offset"      => $request->getParameterValue("offset", null),
+            "nombres" => $request->getParameterValue("nombres", null),
+            "limit"   => $request->getParameterValue("limit", null),
+            "perfil"  => $request->getParameterValue("perfil", null),
+            "correo"  => $request->getParameterValue("correo", null),
         ];
 
         $service = new ProductoService();

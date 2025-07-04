@@ -12,12 +12,14 @@ use app\libs\database\Connection;
  * Servicio para lógica de negocio de usuarios.
  * Realiza validaciones y coordina acciones con el DAO.
  */
-final class UsuarioService implements InterfaceService {
+final class UsuarioService implements InterfaceService
+{
 
     /**
      * Carga un usuario por su ID.
      */
-    public function load(int $id): InterfaceDto {
+    public function load(int $id): InterfaceDto
+    {
         $dao = new UsuarioDao(Connection::get());
         $data = $dao->load($id);
         return new UsuarioDto($data);
@@ -27,9 +29,10 @@ final class UsuarioService implements InterfaceService {
      * Guarda un nuevo usuario.
      * Hash de clave incluido.
      */
-    public function save(InterfaceDto $dto): void {
+    public function save(InterfaceDto $dto): void
+    {
         $this->validate($dto);
-        $data = $dto->toArray();
+        $data = $dto->toArray();    
         unset($data["id"]);
 
         if (!empty($data["clave"])) {
@@ -40,6 +43,7 @@ final class UsuarioService implements InterfaceService {
         $dao->save($data);
     }
 
+
     /**
      * Actualiza un usuario existente.
      * Si no se envía clave nueva, conserva la anterior.
@@ -49,19 +53,34 @@ final class UsuarioService implements InterfaceService {
         $dao = new UsuarioDao(Connection::get());
         $usuarioExistente = $dao->load($dto->getId());
 
+        if (!$usuarioExistente) {
+            throw new \Exception("Usuario no encontrado");
+        }
+
         $data = $dto->toArray();
+
+        // Evitar validaciones de unicidad si cuenta o correo no han cambiado
+        if (isset($data['cuenta']) && $data['cuenta'] === $usuarioExistente['cuenta']) {
+            unset($data['cuenta']);
+        }
+        if (isset($data['correo']) && $data['correo'] === $usuarioExistente['correo']) {
+            unset($data['correo']);
+        }
 
         $data["clave"] = !empty($data["clave"])
             ? password_hash($data["clave"], PASSWORD_DEFAULT)
             : $usuarioExistente["clave"];
 
+        error_log("Datos para actualización en DAO: " . print_r($data, true));
         $dao->update($data);
     }
+
 
     /**
      * Elimina un usuario existente.
      */
-    public function delete(InterfaceDto $dto): void {
+    public function delete(InterfaceDto $dto): void
+    {
         $dao = new UsuarioDao(Connection::get());
         $dao->load($dto->getId());
         $dao->delete($dto->getId());
@@ -70,7 +89,8 @@ final class UsuarioService implements InterfaceService {
     /**
      * Lista usuarios con filtros (perfil, estado, limit...).
      */
-    public function list(array $filters): array {
+    public function list(array $filters): array
+    {
         $dao = new UsuarioDao(Connection::get());
         return $dao->list($filters);
     }
@@ -78,7 +98,8 @@ final class UsuarioService implements InterfaceService {
     /**
      * Habilita un usuario.
      */
-    public function enable(int $id): void {
+    public function enable(int $id): void
+    {
         $dao = new UsuarioDao(Connection::get());
         $dao->load($id);
         $dao->enable($id);
@@ -87,7 +108,8 @@ final class UsuarioService implements InterfaceService {
     /**
      * Deshabilita un usuario.
      */
-    public function disable(int $id): void {
+    public function disable(int $id): void
+    {
         $dao = new UsuarioDao(Connection::get());
         $dao->load($id);
         $dao->disable($id);
@@ -96,7 +118,8 @@ final class UsuarioService implements InterfaceService {
     /**
      * Activa el flag para restablecer contraseña.
      */
-    public function reset(int $id): void {
+    public function reset(int $id): void
+    {
         $dao = new UsuarioDao(Connection::get());
         $dao->load($id);
         $dao->reset($id);
@@ -105,7 +128,8 @@ final class UsuarioService implements InterfaceService {
     /**
      * Validaciones al guardar un usuario.
      */
-    private function validate(UsuarioDto $dto): void {
+    private function validate(UsuarioDto $dto): void
+    {
         if ($dto->getNombres() === "") {
             throw new \Exception("<p>El <strong>nombre</strong> es obligatorio.</p>");
         }
@@ -120,7 +144,8 @@ final class UsuarioService implements InterfaceService {
     /**
      * Validaciones al actualizar un usuario.
      */
-    private function validateUpdate(UsuarioDto $dto): void {
+    private function validateUpdate(UsuarioDto $dto): void
+    {
         if ($dto->getNombres() === "") {
             throw new \Exception("<p>El <strong>nombre</strong> es obligatorio.</p>");
         }

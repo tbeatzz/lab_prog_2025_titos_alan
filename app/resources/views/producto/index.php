@@ -1,3 +1,7 @@
+<head>
+    <title>BajoCeroWear | Productos</title>
+</head>
+
 <!-- Título principal -->
 <section class="mb-4">
     <h1 class="text-center">Gestión de Productos</h1>

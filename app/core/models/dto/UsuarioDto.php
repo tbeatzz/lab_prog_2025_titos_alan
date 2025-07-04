@@ -17,7 +17,7 @@ final class UsuarioDto implements InterfaceDto
      */
     public function __construct(array $data = [])
     {
-        $this->setId($data["id"] ?? 0);
+        $this->setId(isset($data["id"]) ? (int) $data["id"] : 0);
         $this->setApellido($data["apellido"] ?? "");
         $this->setNombres($data["nombres"] ?? "");
         $this->setCuenta($data["cuenta"] ?? "");

@@ -54,41 +54,61 @@ final class UsuarioDao extends BaseDao implements InterfaceDao {
     }
 
     public function update(array $data): void {
-        // Validar que no exista otra cuenta igual para otro ID
-        if ($this->existsByCuenta($data["cuenta"], $data["id"])) {
-            throw new \Exception("La cuenta '{$data["cuenta"]}' ya está en uso por otro usuario.");
+        try {
+            error_log("Datos recibidos en UsuarioDao::update: " . print_r($data, true));
+
+            // Validar ID
+            if (empty($data['id']) || !is_numeric($data['id'])) {
+                throw new \Exception("ID de usuario inválido o no especificado.");
+            }
+
+            // Validar unicidad solo si los campos están presentes
+            if (!empty($data["cuenta"]) && $this->existsByCuenta($data["cuenta"], $data["id"])) {
+                throw new \Exception("La cuenta '{$data["cuenta"]}' ya está en uso por otro usuario.");
+            }
+
+            if (!empty($data["correo"]) && $this->existsByCorreo($data["correo"], $data["id"])) {
+                throw new \Exception("El correo '{$data["correo"]}' ya está en uso por otro usuario.");
+            }
+
+            // Construir la consulta dinámicamente
+            $fields = [];
+            $params = [];
+            foreach (['apellido', 'nombres', 'cuenta', 'perfil', 'clave', 'correo', 'estado', 'resetPass'] as $field) {
+                if (isset($data[$field])) {
+                    $fields[] = "$field = :$field";
+                    $params[$field] = $data[$field];
+                }
+            }
+            $params['id'] = $data['id'];
+
+            if (empty($fields)) {
+                error_log("No hay campos para actualizar en UsuarioDao::update");
+                return; // No hay nada que actualizar
+            }
+
+            $sql = "UPDATE {$this->table} SET " . implode(', ', $fields) . " WHERE id = :id";
+            error_log("Consulta SQL en update: $sql");
+
+            $stmt = $this->connection->prepare($sql);
+            if (!$stmt) {
+                throw new \Exception("Error al preparar la consulta SQL");
+            }
+
+            $result = $stmt->execute($params);
+            if (!$result) {
+                throw new \Exception("Error al ejecutar la consulta SQL");
+            }
+
+            $rowsAffected = $stmt->rowCount();
+            error_log("Filas afectadas en update: $rowsAffected");
+            if ($rowsAffected === 0) {
+                throw new \Exception("No se actualizó ningún usuario. Verifica el ID o los datos enviados.");
+            }
+        } catch (\Exception $e) {
+            error_log("Error en UsuarioDao::update: " . $e->getMessage());
+            throw $e;
         }
-
-        // Validar que no exista otro correo igual para otro ID
-        if ($this->existsByCorreo($data["correo"], $data["id"])) {
-            throw new \Exception("El correo '{$data["correo"]}' ya está en uso por otro usuario.");
-        }
-
-        $sql = "UPDATE {$this->table} SET 
-            apellido = :apellido,
-            nombres = :nombres,
-            cuenta = :cuenta,
-            perfil = :perfil,
-            clave = :clave,
-            correo = :correo,
-            estado = :estado,
-            fechaAlta = :fechaAlta,
-            resetPass = :resetPass
-            WHERE id = :id";
-
-        $stmt = $this->connection->prepare($sql);
-        $stmt->execute([
-            "apellido" => $data["apellido"],
-            "nombres" => $data["nombres"],
-            "cuenta" => $data["cuenta"],
-            "perfil" => $data["perfil"],
-            "clave" => $data["clave"],
-            "correo" => $data["correo"],
-            "estado" => $data["estado"],
-            "fechaAlta" => $data["fechaAlta"],
-            "resetPass" => $data["resetPass"],
-            "id" => $data["id"]
-        ]);
     }
 
     public function delete(int $id): void {
@@ -108,11 +128,21 @@ final class UsuarioDao extends BaseDao implements InterfaceDao {
             $sql .= " AND estado = :estado";
         }
 
-        $sql .= " ORDER BY apellido, nombres";
+        if (isset($filters["correo"]) && trim($filters["correo"]) !== '') {
+            $sql .= " AND correo LIKE :correo";
+        }
 
         if (!empty($filters["limit"])) {
-            $sql .= " LIMIT :limit";
+            $limit = (int)$filters["limit"];
+            if ($limit > 0) {
+                $sql .= " LIMIT {$limit}";
+            }
         }
+
+        //$sql .= " ORDER BY apellido, nombres";
+
+        
+
 
         $stmt = $this->connection->prepare($sql);
 
@@ -125,9 +155,11 @@ final class UsuarioDao extends BaseDao implements InterfaceDao {
             $stmt->bindValue(":estado", $filters["estado"], \PDO::PARAM_INT);
         }
 
-        if (!empty($filters["limit"])) {
-            $stmt->bindValue(":limit", (int)$filters["limit"], \PDO::PARAM_INT);
+
+        if (isset($filters["correo"]) && trim($filters["correo"]) !== '') {
+            $stmt->bindValue(":correo", "%" . $filters["correo"] . "%");
         }
+
 
         $stmt->execute();
 

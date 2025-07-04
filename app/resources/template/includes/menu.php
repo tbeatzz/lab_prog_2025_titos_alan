@@ -1,7 +1,7 @@
  <nav class="navbar navbar-expand-lg" aria-label="Main navigation">
      <div class="container-fluid">
 
-         <a class="navbar-brand" href="home/index.html">
+         <a class="navbar-brand" href="home/index">
             <img src="<?= APP_URL ?>/app/assets/images/main_logo.webp" alt="BajoCeroWear Logo"
                  width="70" height="70" class="d-inline-block align-text-top rounded-circle" />
          </a>

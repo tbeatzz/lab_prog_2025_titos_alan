@@ -7,7 +7,6 @@
 
 <meta name="description" content="Sistema de gestion" />
 
-<title>BajoCeroWear | Sistema de gestion</title>
 <link rel="icon" type="image/x-icon" href="/lab_prog_2025_titos_alan/public/app/assets/images/main_logo.webp" />
 
 <!-- Bootstrap CSS -->

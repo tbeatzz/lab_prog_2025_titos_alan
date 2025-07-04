@@ -12,22 +12,52 @@ use app\core\models\dto\UsuarioDto;
 /**
  * Controlador para manejar operaciones sobre usuarios.
  */
-final class UsuarioController extends BaseController implements InterfaceController {
+final class UsuarioController extends BaseController implements InterfaceController
+{
 
     /**
      * Vista principal del módulo.
      */
-    public function index(Request $request, Response $response): void {
+    public function index(Request $request, Response $response): void
+    {
         $this->scripts[] = "app/js/{$request->getController()}/{$request->getAction()}.js";
         $this->render($request);
     }
 
     /**
+     * Vista principal del módulo de edición.
+     */
+    public function edit(Request $request, Response $response): void
+    {
+        // Obtener el ID desde la URL
+        $id = (int) $request->getParameterValue('id', 0);
+        if (!is_numeric($id) || $id <= 0) {
+            throw new \Exception('ID de usuario inválido');
+        }
+
+        // Cargar datos del usuario
+        $service = new UsuarioService();
+        $dto = $service->load($id);
+        if (!$dto) {
+            throw new \Exception('Usuario no encontrado');
+        }
+
+        // Agregar script
+        $this->scripts[] = "app/js/{$request->getController()}/{$request->getAction()}.js";
+
+        // Pasar datos a la vista
+        $response->setResult($dto->toArray());
+
+        $this->render($request, 'usuario/edit.php');
+    }
+
+    /**
      * Carga un usuario por ID.
      */
-    public function load(Request $request, Response $response): void {
+    public function load(Request $request, Response $response): void
+    {
+        $id = (int) $request->getId();
 
-        $id = (int) $request->getParameterValue("id", 0);
         $service = new UsuarioService();
         $dto = $service->load($id);
 
@@ -38,14 +68,17 @@ final class UsuarioController extends BaseController implements InterfaceControl
     /**
      * Vista para crear usuario 
      */
-    public function create(Request $request, Response $response): void {
-        // array_push($this->scripts, "app/js/usuario/create.js");
+    public function create(Request $request, Response $response): void
+    {
+        $this->scripts[] = "app/js/{$request->getController()}/{$request->getAction()}.js";
+        $this->render($request);
     }
 
     /**
      * Guarda un nuevo usuario 
      */
-    public function save(Request $request, Response $response): void {
+    public function save(Request $request, Response $response): void
+    {
         $dto = new UsuarioDto($request->getDataFromInput());
         $service = new UsuarioService();
         $service->save($dto);
@@ -58,18 +91,55 @@ final class UsuarioController extends BaseController implements InterfaceControl
      * Actualiza un usuario existente
      */
     public function update(Request $request, Response $response): void {
-        $dto = new UsuarioDto($request->getDataFromInput());
-        $service = new UsuarioService();
-        $service->update($dto);
+        try {
+            // Obtener datos del cuerpo de la solicitud
+            $data = $request->getDataFromInput();
+            error_log("Datos recibidos del cuerpo: " . print_r($data, true));
 
-        $response->setMessage("<p>Se modificó el usuario correctamente</p>");
-        $response->send();
+            // Obtener ID de la URL
+            $idFromUrl = (int) $request->getParameterValue('id', 0);
+            error_log("ID desde la URL: $idFromUrl");
+
+            // Obtener ID del cuerpo (si existe)
+            $idFromBody = isset($data['id']) ? (int) $data['id'] : 0;
+            error_log("ID desde el cuerpo: $idFromBody");
+
+            // Usar el ID de la URL si es válido, de lo contrario usar el del cuerpo
+            $id = $idFromUrl > 0 ? $idFromUrl : $idFromBody;
+            if ($id <= 0) {
+                throw new \Exception("ID de usuario inválido");
+            }
+
+            // Asegurar que el ID esté en los datos
+            $data['id'] = $id;
+            error_log("ID final utilizado: $id");
+
+            // Crear DTO y actualizar
+            $dto = new UsuarioDto($data);
+            $service = new UsuarioService();
+            $service->update($dto);
+
+            // Volver a cargar el usuario actualizado
+            $updatedDto = $service->load($id);
+            if (!$updatedDto) {
+                throw new \Exception("No se pudo cargar el usuario actualizado");
+            }
+
+            $response->setMessage("<p>Se modificó el usuario correctamente</p>");
+            $response->setResult($updatedDto->toArray());
+            $response->send();
+        } catch (\Exception $e) {
+            error_log("Error en UsuarioController::update: " . $e->getMessage());
+            $response->setMessage("<p>Error al actualizar el usuario: {$e->getMessage()}</p>");
+            
+            $response->send();
+        }
     }
-
     /**
      * Elimina un usuario 
      */
-    public function delete(Request $request, Response $response): void {
+    public function delete(Request $request, Response $response): void
+    {
         $dto = new UsuarioDto($request->getDataFromInput());
         $service = new UsuarioService();
         $service->delete($dto);
@@ -81,10 +151,16 @@ final class UsuarioController extends BaseController implements InterfaceControl
     /**
      * Lista de usuarios con filtros.
      */
-    public function list(Request $request, Response $response): void {
+    public function list(Request $request, Response $response): void
+    {
+        // Obtener datos del cuerpo JSON (para POST con JSON)
+        $inputData = $request->getDataFromInput();
+
+        // Combinar con parámetros 
         $filters = [
-            "nombres" => $request->getParameterValue("nombres", null),
-            "limit"   => $request->getParameterValue("limit", null)
+            "perfil" => $inputData['perfil'] ?? $request->getParameterValue("perfil", null),
+            "correo" => $inputData['correo'] ?? $request->getParameterValue("correo", null),
+            "limit"  => $inputData['limit'] ?? $request->getParameterValue("limit", null)
         ];
 
         $service = new UsuarioService();
@@ -97,7 +173,8 @@ final class UsuarioController extends BaseController implements InterfaceControl
     /**
      * Habilita un usuario por ID.
      */
-    public function enable(Request $request, Response $response): void {
+    public function enable(Request $request, Response $response): void
+    {
         $id = (int) $request->getId();
         $service = new UsuarioService();
         $service->enable($id);
@@ -108,7 +185,8 @@ final class UsuarioController extends BaseController implements InterfaceControl
     /**
      * Deshabilita un usuario por ID.
      */
-    public function disable(Request $request, Response $response): void {
+    public function disable(Request $request, Response $response): void
+    {
         $id = (int) $request->getId();
         $service = new UsuarioService();
         $service->disable($id);
@@ -119,7 +197,8 @@ final class UsuarioController extends BaseController implements InterfaceControl
     /**
      * Marca para restablecer contraseña.
      */
-    public function reset(Request $request, Response $response): void {
+    public function reset(Request $request, Response $response): void
+    {
         $id = (int) $request->getId();
         $service = new UsuarioService();
         $service->reset($id);
