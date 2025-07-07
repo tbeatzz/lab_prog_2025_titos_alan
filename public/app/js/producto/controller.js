@@ -1,313 +1,211 @@
-import { itemService } from './service.js';
+// public/assets/js/producto/controller.js
+import { productoService } from './service.js';
 
-export const itemController = {
-    save: async () => {
-        const item = {
-            id: 0,
-            nombre: document.getElementById('nombre').value,
-            codigo: document.getElementById('codigo').value,
-            categoria: parseInt(document.getElementById('categoria').value), // ID
-            precio: parseFloat(document.getElementById('precio').value) || 0,
-            stock: parseInt(document.getElementById('stock').value) || 0,
-            descripcion: document.getElementById('descripcion').value,
-            fechaCreacion: new Date().toISOString().split('T')[0],
-            estado: 'activo' // opcional si tenés ese campo
-        };
-
+export const productoController = {
+    async load(id, elements = null) {
         try {
-            const savedResponse = await itemService.save(item);
-            return savedResponse;
-        } catch (err) {
-            console.error('Error al guardar:', err);
-            alert('Error al guardar el producto: ' + err.message);
+            const response = await productoService.load(id);
+            const producto = response.result; // Compatible con UsuarioService::load
+            console.log('Producto cargado:', producto);
+
+            if (elements) {
+                sessionStorage.setItem('originalProductoData', JSON.stringify(producto));
+
+                elements.id.value = producto.id || '';
+                elements.nombre.value = producto.nombre || '';
+                elements.codigo.value = producto.codigo || '';
+                elements.categoria.value = producto.categoriaId || '';
+                elements.precio.value = producto.precio ?? 0;
+                elements.stock.value = producto.stock ?? 0;
+                elements.descripcion.value = producto.descripcion || '';
+
+                this.cancelEditMode(elements);
+            } else {
+                sessionStorage.setItem('editProductoId', id);
+                window.location.href = `producto/edit/${id}`;
+            }
+
+            return producto;
+        } catch (error) {
+            console.error('Error al cargar producto:', error);
+            alert(error.message || 'Error al cargar producto');
+            if (elements) window.location.href = 'producto/index.html';
+            return null;
         }
     },
 
 
-    update: async (id) => {
+    async save() {
         try {
-            const originalItem = await itemService.load(id);
-            if (!originalItem) {
-                alert('Producto no encontrado');
-                return;
-            }
-
-            const item = {
-                id: id,
-                nombre: document.getElementById('nombre').value,
-                estado: document.getElementById('estado').value || originalItem.estado,
-                codigo: document.getElementById('codigo').value,
-                categoria: document.getElementById('categoria').value,
-                precio: parseFloat(document.getElementById('precio').value) || originalItem.precio,
-                stock: parseInt(document.getElementById('stock').value) || originalItem.stock,
-                descripcion: document.getElementById('descripcion').value,
-                fechaCreacion: originalItem.fechaCreacion
+            const producto = {
+                nombre: document.getElementById('nombre').value.trim(),
+                codigo: document.getElementById('codigo').value.trim(),
+                categoriaId: document.getElementById('categoria').value,
+                precio: parseFloat(document.getElementById('precio').value),
+                stock: parseInt(document.getElementById('stock').value, 10),
+                descripcion: document.getElementById('descripcion').value.trim(),
             };
 
-            await itemService.update(item);
-            const successMessage = document.getElementById('successMessage');
-            if (successMessage) {
-                successMessage.classList.remove('d-none');
-                setTimeout(() => {
-                    successMessage.classList.add('d-none');
-                    window.location.href = 'index.html';
-                }, 2000);
-            }
-        } catch (e) {
-            alert('Error al actualizar el producto: ' + e.message);
+            await productoService.save(producto);
+            return true;
+        } catch (error) {
+            console.error('Error al guardar producto', error);
+            const message = error.response?.data?.message || error.message || 'Error al guardar producto';
+            throw new Error(message);
         }
     },
 
-    delete: async (id) => {
-        if (!confirm('¿Seguro que deseas eliminar este producto?')) return;
+    async update(elements) {
         try {
-            await itemService.delete(id);
-            await itemController.list();
-        } catch (e) {
-            alert('Error al eliminar producto: ' + e.message);
+            const id = parseInt(elements.id.value);
+            if (!id) {
+                throw new Error('ID inválido');
+            }
+
+            const originalData = JSON.parse(sessionStorage.getItem('originalProductoData') || '{}');
+
+            const producto = {
+                id,
+                nombre: elements.nombre.value.trim(),
+        
+                codigo: elements.codigo.value.trim(),
+                categoriaId: elements.categoria.value,
+                precio: parseFloat(elements.precio.value) || originalData.precio,
+                stock: parseInt(elements.stock.value) || originalData.stock,
+                descripcion: elements.descripcion.value.trim(),
+                fechaCreacion: originalData.fechaCreacion,
+            };
+
+            await productoService.update(producto);
+            sessionStorage.setItem('originalProductoData', JSON.stringify(producto)); // Actualizar datos originales
+            return true;
+        } catch (error) {
+            console.error('Error al actualizar producto', error);
+            const message = error.response?.data?.message || error.message || 'Error al actualizar producto';
+            throw new Error(message);
         }
     },
 
-    filteredItems: null,
-
-    applyFilters: async (categoria, nombre) => {
-        let items = await itemService.list();
-
-        if (categoria) {
-            items = items.filter(item => item.categoria.toLowerCase() === categoria.toLowerCase());
+    async delete(id) {
+        try {
+            if (confirm('¿Seguro que deseas eliminar este producto?')) {
+                await productoService.delete(id);
+                alert('Producto eliminado');
+                window.location.href = 'producto/index.html';
+            }
+        } catch (error) {
+            console.error('Error al eliminar producto', error);
+            alert(error.message || 'Error al eliminar producto');
         }
-        if (nombre) {
-            items = items.filter(item => item.nombre.toLowerCase().includes(nombre.toLowerCase()));
-        }
-
-        itemController.filteredItems = items;
-        return items;
     },
 
-    list: async () => {
-        const items = itemController.filteredItems || await itemService.list();
-        const tableBody = document.querySelector('#itemTable tbody');
+    async list(filters = {}) {
+        try {
+            const response = await productoService.list(filters);
+            const productos = response.result;
 
-        if (!tableBody) {
-            console.error('Tabla itemTable no encontrada');
-            return;
+            const tableBody = document.querySelector('#productTable tbody');
+            if (!tableBody) throw new Error('Tabla productTable no encontrada');
+
+            tableBody.innerHTML = '';
+
+            if (!productos || productos.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="8" class="text-center">No hay registros disponibles.</td></tr>';
+                return;
+            }
+            
+            productos.forEach(producto => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <th scope="row">${producto.id}</th>
+                    <td>${producto.nombre}</td>
+              
+                    <td>${producto.codigo}</td>
+                    <td>${producto.categoria || '-'}</td>
+                    <td>$ ${producto.precio?.toFixed(2) ?? 0}</td>
+                    <td>${producto.stock}</td>
+                    <td>${producto.descripcion || '-'}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary" data-product-id="${producto.id}" data-action="editar">
+                            Editar <i class="bi bi-pen"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" data-product-id="${producto.id}" data-action="eliminar">
+                            Eliminar <i class="bi bi-trash3"></i>
+                        </button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        } catch (error) {
+            console.error('Error al listar productos:', error);
+            alert(error.message || 'Error al listar productos');
         }
+    },
 
-        tableBody.innerHTML = '';
-        if (items.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="9" class="text-center">No hay registros disponibles.</td></tr>';
-            return;
+    async exportListPDF(filters) {
+        try {
+            await productoService.exportPdf(filters);
+        } catch (error) {
+            console.error('Error al exportar productos a PDF:', error);
+            alert(error.message || 'Error al exportar a PDF');
         }
+    },
 
-        items.forEach(item => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <th scope="row">${item.id}</th>
-                <td>${item.nombre}</td>
-                <td>${item.codigo}</td>
-                <td>${item.categoria || 'Sin categoría'}</td>
+    async exportSinglePdf(id) {
+        try {
+            await productoService.exportSinglePdf(id);
+        } catch (error) {
+            console.error('Error al exportar producto a PDF:', error);
+            alert(error.message || 'Error al exportar a PDF');
+        }
+    },
 
-                <td>$ ${item.precio.toFixed(2)}</td>
-                <td>${item.stock}</td>
-                <td>${item.descripcion || 'Sin descripción'}</td>
-                <td>
-                    <button class="btn btn-sm btn-outline-primary" data-item-id="${item.id}" data-action="editar">
-                        Editar <i class="bi bi-pen"></i>
-                    </button>
-                    <button class="btn btn-sm btn-outline-danger" data-item-id="${item.id}" data-action="eliminar">
-                        Eliminar <i class="bi bi-trash3"></i>
-                    </button>
-                </td>
-            `;
-            tableBody.appendChild(row);
+    enableEditMode(elements) {
+        Object.values(elements).forEach(el => {
+            if (el.tagName === 'INPUT' || el.tagName === 'SELECT' || el.tagName === 'TEXTAREA') {
+                el.disabled = false;
+            }
         });
+        elements.updateButton.classList.remove('d-none');
+        elements.cancelButton.classList.remove('d-none');
+        elements.editButton.classList.add('d-none');
+
+        elements.exportButton.classList.toggle('d-none');   
+        elements.deleteButton.classList.toggle('d-none');   
+   
     },
 
-    exportToPDF: () => {
-        try {
-            if (!window.jspdf || !window.jspdf.jsPDF) {
-                console.error('jsPDF no está cargado');
-                alert('Error: No se pudo cargar la librería jsPDF');
-                return;
+    cancelEditMode(elements) {
+        const originalData = JSON.parse(sessionStorage.getItem('originalProductoData') || '{}');
+
+        elements.nombre.value = originalData.nombre || '';
+        elements.codigo.value = originalData.codigo || '';
+        elements.categoria.value = originalData.categoriaId || '';
+        elements.precio.value = originalData.precio ?? 0;
+        elements.stock.value = originalData.stock ?? 0;
+        elements.descripcion.value = originalData.descripcion || '';
+
+        Object.values(elements).forEach(el => {
+            if (el.tagName === 'INPUT' || el.tagName === 'SELECT' || el.tagName === 'TEXTAREA') {
+                el.disabled = true;
             }
-
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-
-            doc.setFontSize(16);
-            doc.text('Lista de Productos - BajoCeroWear', 14, 20);
-
-            const items = itemController.filteredItems || itemService.list();
-            if (!items || items.length === 0) {
-                doc.setFontSize(12);
-                doc.text('No hay productos para exportar', 14, 30);
-                doc.save('productos.pdf');
-                return;
-            }
-
-            const headers = ['ID', 'Nombre', 'Código', 'Categoría', 'Precio', 'Stock', 'Descripción', 'Estado', 'Fecha'];
-            const colWidths = [10, 25, 20, 20, 15, 15, 30, 15, 15];
-            const pageWidth = 210;
-            const margin = 14;
-            const tableWidth = pageWidth - 2 * margin;
-
-            const totalWidth = colWidths.reduce((a, b) => a + b, 0);
-            if (totalWidth !== tableWidth) {
-                console.warn(`El ancho total de las columnas (${totalWidth}) no coincide con el ancho de la tabla (${tableWidth}). Ajustando...`);
-                const scaleFactor = tableWidth / totalWidth;
-                for (let i = 0; i < colWidths.length; i++) {
-                    colWidths[i] = colWidths[i] * scaleFactor;
-                }
-            }
-
-            const truncateText = (text, maxWidth, fontSize) => {
-                doc.setFontSize(fontSize);
-                let width = doc.getTextWidth(text);
-                if (width <= maxWidth) return text;
-                let truncated = text;
-                while (doc.getTextWidth(truncated + '...') > maxWidth && truncated.length > 0) {
-                    truncated = truncated.slice(0, -1);
-                }
-                return truncated + '...';
-            };
-
-            let y = 30;
-
-            doc.setFontSize(9);
-            doc.setFillColor(0, 102, 204);
-            doc.rect(14, y - 5, tableWidth, 8, 'F');
-            doc.setTextColor(255, 255, 255);
-            headers.forEach((header, i) => {
-                let x = 14 + colWidths.slice(0, i).reduce((a, b) => a + b, 0);
-                doc.text(header, x + 2, y);
-            });
-            doc.setTextColor(0, 0, 0);
-
-            let x = 14;
-            for (let i = 0; i <= headers.length; i++) {
-                doc.line(x, y - 5, x, y + 3);
-                if (i < headers.length) x += colWidths[i];
-            }
-
-            y += 8;
-            items.forEach((item, rowIndex) => {
-                if (y > 270) {
-                    doc.addPage();
-                    y = 20;
-                    doc.setFontSize(7);
-                    doc.setFillColor(0, 102, 204);
-                    doc.rect(14, y - 5, tableWidth, 8, 'F');
-                    doc.setTextColor(255, 255, 255);
-                    headers.forEach((header, i) => {
-                        let x = 14 + colWidths.slice(0, i).reduce((a, b) => a + b, 0);
-                        doc.text(header, x + 2, y);
-                    });
-                    doc.setTextColor(0, 0, 0);
-                    x = 14;
-                    for (let i = 0; i <= headers.length; i++) {
-                        doc.line(x, y - 5, x, y + 3);
-                        if (i < headers.length) x += colWidths[i];
-                    }
-                    y += 8;
-                }
-
-                if (rowIndex % 2 === 0) {
-                    doc.setFillColor(240, 240, 240);
-                    doc.rect(14, y - 5, tableWidth, 8, 'F');
-                }
-
-                doc.setFontSize(7);
-                x = 14;
-                doc.text(item.id.toString(), x + 2, y);
-                x += colWidths[0];
-                doc.text(truncateText(item.nombre, colWidths[1] - 4, 8), x + 2, y);
-                x += colWidths[1];
-                doc.text(truncateText(item.codigo, colWidths[2] - 4, 8), x + 2, y);
-                x += colWidths[2];
-                doc.text(truncateText(item.categoria, colWidths[3] - 4, 8), x + 2, y);
-                x += colWidths[3];
-                doc.text(`$${item.precio.toFixed(2)}`, x + 2, y);
-                x += colWidths[4];
-                doc.text(item.stock.toString(), x + 2, y);
-                x += colWidths[5];
-                doc.text(truncateText(item.descripcion || 'Sin descripción', colWidths[6] - 4, 8), x + 2, y);
-                x += colWidths[6];
-                doc.text(truncateText(item.estado, colWidths[7] - 4, 8), x + 2, y);
-                x += colWidths[7];
-                doc.text(truncateText(item.fechaCreacion, colWidths[8] - 4, 8), x + 2, y);
-
-                x = 14;
-                for (let i = 0; i <= headers.length; i++) {
-                    doc.line(x, y - 5, x, y + 3);
-                    if (i < headers.length) x += colWidths[i];
-                }
-
-                y += 8;
-            });
-
-            doc.rect(14, 25, tableWidth, y - 25);
-            doc.save('productos.pdf');
-        } catch (error) {
-            console.error('Error al generar PDF:', error);
-            alert('Error al generar el PDF: ' + error.message);
-        }
+        });
+        elements.updateButton.classList.add('d-none');
+        elements.cancelButton.classList.add('d-none');
+        elements.editButton.classList.remove('d-none');
+        
+        elements.exportButton.classList.remove('d-none');   
+        elements.deleteButton.classList.remove('d-none');   
     },
 
-    exportSingleItemToPDF: (item) => {
-        try {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            doc.setFontSize(16);
-            doc.text('Detalles de producto - BajoCeroWear', 10, 10);
-            doc.setFontSize(12);
-            doc.text(`ID: ${item.id}`, 10, 20);
-            doc.text(`Nombre: ${item.nombre}`, 10, 30);
-            doc.text(`Código: ${item.codigo}`, 10, 40);
-            doc.text(`Categoría: ${item.categoria}`, 10, 50);
-            doc.text(`Precio: $${item.precio.toFixed(2)}`, 10, 60);
-            doc.text(`Stock: ${item.stock}`, 10, 70);
-            doc.text(`Descripción: ${item.descripcion || 'Sin descripción'}`, 10, 80);
-            doc.text(`Estado: ${item.estado}`, 10, 90);
-            doc.text(`Fecha de creación: ${item.fechaCreacion}`, 10, 100);
-            doc.save(`item_${item.id}.pdf`);
-        } catch (error) {
-            console.error('Error al generar PDF:', error);
-            alert('Error al generar el PDF: ' + error.message);
-        }
-    },
-
-    enableEditMode: () => {
-        const form = document.getElementById('editItemForm');
-        if (form) {
-            const inputs = form.querySelectorAll('input, select, textarea');
-            inputs.forEach(input => input.disabled = false);
-            document.getElementById('editButton').classList.add('d-none');
-            document.getElementById('updateButton').classList.remove('d-none');
-            document.getElementById('cancelButton').classList.remove('d-none');
-            document.getElementById('deleteButton').disabled = true;
-            document.getElementById('exportButton').disabled = true;
-        }
-    },
-
-    cancelEditMode: () => {
-        const form = document.getElementById('editItemForm');
-        if (form) {
-            const inputs = form.querySelectorAll('input, select, textarea');
-            inputs.forEach(input => input.disabled = true);
-            document.getElementById('editButton').classList.remove('d-none');
-            document.getElementById('updateButton').classList.add('d-none');
-            document.getElementById('cancelButton').classList.add('d-none');
-            document.getElementById('deleteButton').disabled = false;
-            document.getElementById('exportButton').disabled = false;
-        }
-    },
-
-    resetForm: (formId) => {
+    resetForm(formId) {
         const form = document.getElementById(formId);
         if (form) {
             form.reset();
             const idField = document.getElementById('id');
             if (idField) idField.value = '';
+            const successMessage = document.getElementById('successMessage');
+            if (successMessage) successMessage.classList.add('d-none');
         }
-    }
+    },
 };

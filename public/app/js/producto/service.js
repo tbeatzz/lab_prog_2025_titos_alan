@@ -1,76 +1,87 @@
 const BASE_URL = "http://localhost/lab_prog_2025_titos_alan/public";
 
-export const itemService = {
-    list: async () => {
-        const res = await fetch(`${BASE_URL}/producto/list`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            },
-            body: JSON.stringify({}) // Si hay filtros, los agregás acá
-        });
-        if (!res.ok) throw new Error("Error al obtener productos");
-        const json = await res.json();
-        return json.result || [];
-    },
+export const productoService = {
 
     load: async (id) => {
-        const res = await fetch(`${BASE_URL}/producto/load`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            },
-            body: JSON.stringify({ id })
-        });
+        const res = await fetch(`${BASE_URL}/producto/load/${id}`);
         if (!res.ok) throw new Error("Error al cargar producto");
-        const json = await res.json();
-        return json.result;
+        return res.json();
     },
 
-    save: async (item) => {
-        const res = await fetch(`${BASE_URL}/producto/save`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify(item)
-        });
-
-        if (!res.ok) {
-            const errorData = await res.json();
-            throw new Error(errorData.message || 'Error al guardar el producto');
-        }
-
-        const response = await res.json();
-        return response;
-    },
-
-    update: async (item) => {
-        const res = await fetch(`${BASE_URL}/producto/update`, {
+    save: async (producto) => {
+        const response = await fetch(`${BASE_URL}/producto/save`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            },
-            body: JSON.stringify(item)
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(producto),
         });
-        if (!res.ok) throw new Error("Error al actualizar producto");
-        return await res.json();
+        return response.json();
+    },
+
+    update: async (producto) => {
+        try {
+            const response = await fetch(`${BASE_URL}/producto/update/${producto.id}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(producto),
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(`Error ${response.status}: ${result.message || response.statusText}`);
+            }
+
+            return result;
+        } catch (error) {
+            console.error("Error en productoService.update:", error);
+            throw error;
+        }
     },
 
     delete: async (id) => {
-        const res = await fetch(`${BASE_URL}/producto/delete`, {
+        const response = await fetch(`${BASE_URL}/producto/delete/${id}`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            },
-            body: JSON.stringify({ id })
         });
-        if (!res.ok) throw new Error("Error al eliminar producto");
-        return await res.json();
-    }
+        return response.json();
+    },
+
+    list: async (filters = {}) => {
+        const response = await fetch(`${BASE_URL}/producto/list`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(filters),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error ${response.status}: ${response.statusText}`);
+        }
+
+        return response.json();
+    },
+
+    exportPdf: async (filters = {}) => {
+        const response = await fetch(`${BASE_URL}/producto/exportPdf`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(filters),
+        });
+
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `productos_${new Date().toISOString().replace(/[:.]/g, "")}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+    },
+
+    exportSinglePdf: async (id) => {
+        window.location.href = `${BASE_URL}/producto/exportSinglePdf/${id}`;
+    },
+
+   
+
+
 };

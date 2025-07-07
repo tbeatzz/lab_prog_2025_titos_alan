@@ -110,6 +110,9 @@
             <button type="button" class="btn btn-danger" id="deleteButton">
                 Eliminar registro <i class="bi bi-trash3"></i>
             </button>
+            <button type="button" class="btn btn-outline-secondary d-flex align-items-center justify-content-between gap-1" id="volverListadoButton">
+                Volver al listado <i class="bi bi-arrow-left-square"></i>
+            </button>
         </div>
 
     </div>

@@ -24,7 +24,11 @@ final class ProductoDao extends BaseDao implements InterfaceDao {
      * @throws \Exception si no se encuentra el producto.
      */
     public function load(int $id): array {
-        $sql = "SELECT * FROM {$this->table} WHERE id = :id LIMIT 1";
+        $sql = "SELECT p.*, c.nombre AS categoria
+                FROM {$this->table} p
+                LEFT JOIN categorias c ON p.categoriaId = c.id
+                WHERE p.id = :id LIMIT 1";
+        
         $stmt = $this->connection->prepare($sql);
         $stmt->execute(["id" => $id]);
 
@@ -34,6 +38,7 @@ final class ProductoDao extends BaseDao implements InterfaceDao {
         }
         return (new ProductoDto($data))->toArray();
     }
+
 
     /**
      * Guarda un nuevo producto.
@@ -117,9 +122,15 @@ final class ProductoDao extends BaseDao implements InterfaceDao {
         $where = [];
         $params = [];
 
+        // Filtros condicionales
         if (isset($filters["nombre"])) {
             $where[] = "p.nombre LIKE :nombre";
             $params["nombre"] = "%" . $filters["nombre"] . "%";
+        }
+
+        if (isset($filters["codigo"])) {
+            $where[] = "p.codigo LIKE :codigo";
+            $params["codigo"] = "%" . $filters["codigo"] . "%";
         }
 
         if (isset($filters["categoriaId"])) {
@@ -127,22 +138,52 @@ final class ProductoDao extends BaseDao implements InterfaceDao {
             $params["categoriaId"] = $filters["categoriaId"];
         }
 
+        // Base SQL
         $sql = "SELECT SQL_CALC_FOUND_ROWS p.*, c.nombre AS categoria
                 FROM {$this->table} p
                 LEFT JOIN categorias c ON p.categoriaId = c.id";
 
-        if (count($where) > 0) {
+        // Condiciones WHERE
+        if (!empty($where)) {
             $sql .= " WHERE " . implode(" AND ", $where);
         }
 
-        $sql .= " ORDER BY p.nombre";
+        // Orden dinámico (por seguridad, validamos campos permitidos)
+        $ordenValido = [
+            "nombre_asc"  => "p.nombre ASC",
+            "nombre_desc" => "p.nombre DESC",
+            "precio_asc"  => "p.precio ASC",
+            "precio_desc" => "p.precio DESC",
+            "stock_asc"   => "p.stock ASC",
+            "stock_desc"  => "p.stock DESC"
+        ];
 
-        if (isset($filters["limit"], $filters["offset"])) {
-            $sql .= " LIMIT {$filters["offset"]}, {$filters["limit"]}";
+        $sql .= " ORDER BY ";
+        if (isset($filters["orden"]) && isset($ordenValido[$filters["orden"]])) {
+            $sql .= $ordenValido[$filters["orden"]];
+        } else {
+            $sql .= "p.nombre ASC"; // valor por defecto
         }
 
+        // Limit y offset (paginación)
+        if (isset($filters["limit"]) && isset($filters["offset"])) {
+            $sql .= " LIMIT :offset, :limit";
+            $params["offset"] = (int) $filters["offset"];
+            $params["limit"] = (int) $filters["limit"];
+        }
+
+        // Preparar y ejecutar
         $stmt = $this->connection->prepare($sql);
-        $stmt->execute($params);
+
+        foreach ($params as $key => $value) {
+            if (in_array($key, ["offset", "limit", "categoriaId"])) {
+                $stmt->bindValue(":$key", $value, \PDO::PARAM_INT);
+            } else {
+                $stmt->bindValue(":$key", $value, \PDO::PARAM_STR);
+            }
+        }
+
+        $stmt->execute();
 
         $result = [];
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {

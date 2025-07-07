@@ -3,7 +3,7 @@
 </head>
 
 
-<div class="container py-5">
+<div class="container py-4">
 
     <section class="mb-4">
         <h1 class="text-center">Gestión de Usuarios</h1>
@@ -13,7 +13,7 @@
 
     <section class="mb-4 d-flex justify-content-center gap-3">
         <button id="botonCreateUser" class="btn btn-primary">Alta de nueva cuenta <i class="bi bi-person-add"></i></a>
-            <button id="export-pdf" class="btn btn-outline-secondary">Exportar listado en PDF <i class="bi bi-filetype-pdf"></i></a>
+            <button id="exportPdfButton" class="btn btn-outline-secondary">Exportar listado en PDF <i class="bi bi-filetype-pdf"></i></a>
     </section>
 
 

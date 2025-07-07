@@ -19,7 +19,9 @@
 
     <!--  CSS y JS -->
     <link rel="stylesheet" href="/lab_prog_2025_titos_alan/public/app/css/main.css">
-    <script defer type="text/javascript" src="/lab_prog_2025_titos_alan/public/app/js/main.js"></script>
+
+    <script type="module" src="app/js/authentication/index.js"></script>
+
 
 </head>
 <body id="login" class="d-flex justify-content-center align-items-center min-vh-100">
@@ -31,7 +33,7 @@
         <h2 class="text-center mb-4">Iniciar Sesión</h2>
 
         <!-- Formulario de autenticación -->
-        <form action="home/index" method="POST">
+        <form id="loginForm">
 
             <!-- Campo Usuario -->
             <div class="mb-3">

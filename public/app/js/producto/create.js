@@ -1,9 +1,11 @@
-import { itemController } from "./controller.js";
-import { categoriaService } from "../categoria/service.js"; 
+import { productoController } from "./controller.js";
+import { categoriaController } from "../categoria/controller.js"; 
 
 
 document.addEventListener('DOMContentLoaded', async () => {
-    await cargarCategorias();
+    await categoriaController.cargarOpcionesSelect('categoria');
+  
+    
   // Obtener el formulario y los campos
   const form = document.getElementById("createItemForm");
   const elements = {
@@ -35,7 +37,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   // Resetear el formulario
-  itemController.resetForm("createItemForm");
+  productoController.resetForm("createItemForm");
 
   // Manejar el envío del formulario
   form.addEventListener("submit", async (event) => {
@@ -52,6 +54,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!elements.stock.value || elements.stock.value < 0)
       errors.push("El stock no puede ser negativo");
 
+    
+
     if (errors.length > 0) {
       alert(
         "Por favor corrige los siguientes errores:\n- " + errors.join("\n- ")
@@ -60,7 +64,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     try {
-      const savedItem = await itemController.save(); // ✅ ahora esperamos que se complete
+      const savedItem = await productoController.save(); 
       if (savedItem && elements.successMessage) {
         elements.successMessage.classList.remove("d-none");
       }
@@ -73,22 +77,3 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
 
-async function cargarCategorias() {
-    try {
-        const categorias = await categoriaService.list();
-        const select = document.getElementById('categoria');
-
-        // Limpiar opciones (por si recarga)
-        select.innerHTML = '<option value="" disabled selected>Selecciona una categoría</option>';
-
-        categorias.forEach(cat => {
-            const option = document.createElement('option');
-            option.value = cat.id;     
-            option.textContent = cat.nombre;
-            select.appendChild(option);
-        });
-    } catch (error) {
-        console.error('Error al cargar categorías:', error);
-        alert('No se pudieron cargar las categorías');
-    }
-}

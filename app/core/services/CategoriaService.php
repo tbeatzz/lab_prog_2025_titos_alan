@@ -103,4 +103,9 @@ final class CategoriaService implements InterfaceService {
             throw new \Exception("<p>El <strong>nombre</strong> de la categoría es obligatorio.</p>");
         }
     }
+
+    public function getCantidadCategorias(): int {
+        $dao = new CategoriaDao(Connection::get());
+        return $dao->listCantidad();
+    }
 }

@@ -147,6 +147,9 @@ export const usuarioController = {
             elements.correo.value = originalUserData.correo || '';
             elements.clave.value = '';
             elements.confirmarClave.value = '';
+
+            elements.exportButton.classList.remove('d-none');   
+            elements.deleteButton.classList.remove('d-none');   
         }
 
         // Deshabilitar inputs
@@ -173,6 +176,9 @@ export const usuarioController = {
         elements.editButton?.classList.add('d-none');
         elements.updateButton?.classList.remove('d-none');
         elements.cancelButton?.classList.remove('d-none');
+
+        elements.exportButton.classList.toggle('d-none');   
+        elements.deleteButton.classList.toggle('d-none');   
     },
 
     // Eliminar usuario
@@ -189,29 +195,8 @@ export const usuarioController = {
         }
     },
 
-    // Exportar a PDF
-    async exportSingleUserToPDF(userId) {
-        try {
-            const response = await usuarioService.load(userId);
-            const user = response.result;
-            if (user) {
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF();
-                doc.text(`Usuario: ${user.nombres} ${user.apellido}`, 10, 10);
-                doc.text(`Correo: ${user.correo}`, 10, 20);
-                doc.text(`Cuenta: ${user.cuenta}`, 10, 30);
-                doc.text(`Perfil: ${user.perfil}`, 10, 40);
-                doc.text(`Estado: ${user.estado ? 'Activo' : 'Inactivo'}`, 10, 50);
-                doc.text(`Fecha de creación: ${user.fechaAlta || 'N/A'}`, 10, 60);
-                doc.save(`usuario_${user.id}.pdf`);
-            } else {
-                alert('Usuario no encontrado para exportar');
-            }
-        } catch (error) {
-            console.error('Error al exportar PDF:', error);
-            alert('Error al exportar el usuario a PDF');
-        }
-    },
+   
+
 
     // Listar usuarios
     async list(filters = {}) {
@@ -304,5 +289,27 @@ export const usuarioController = {
             const idField = document.getElementById('id');
             if (idField) idField.value = '';
         }
-    }
+    },
+
+    // Exportar lista de usuarios a PDF
+   async exportListPDF(filters) {
+        try {
+            await usuarioService.exportPdf(filters);
+        } catch (error) {
+            console.error('Error al exportar lista de usuarios a PDF:', error);
+            alert(error.message || 'Error al exportar a PDF');
+        }
+    },
+
+    // Exportar datos de un usuario a PDF
+    async exportSinglePdf(id) {
+        try {
+            await usuarioService.exportSinglePdf(id);
+        } catch (error) {
+            console.error('Error al exportar usuario a PDF:', error);
+            alert(error.message || 'Error al exportar a PDF');
+        }
+    },
+
+  
 };

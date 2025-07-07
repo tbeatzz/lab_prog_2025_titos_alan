@@ -214,7 +214,7 @@ final class UsuarioDao extends BaseDao implements InterfaceDao {
         }
 
         $stmt = $this->connection->prepare($sql);
-        $stmt->bindValue(":cuenta", $cuenta);
+        $stmt->bindValue(":cuenta", $cuenta);   
         if ($excludeId > 0) {
             $stmt->bindValue(":id", $excludeId, \PDO::PARAM_INT);
         }
@@ -245,5 +245,31 @@ final class UsuarioDao extends BaseDao implements InterfaceDao {
         $data = $stmt->fetch(\PDO::FETCH_ASSOC);
         return $data ?: null;
     }
+    
+     public function login($cuenta): array{
+        $sql = "SELECT id, apellido, nombres, cuenta, clave, perfil, estado, resetPass";
+        $sql .= " FROM usuarios";
+        $sql .= " WHERE (cuenta = :cuenta OR correo = :cuenta)";
+
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute(["cuenta" => $cuenta]);
+        if($stmt->rowCount() != 1){
+            throw new \Exception("El nombre de usuario o la contraseña no coinciden");
+        }
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+
+    public function updatePassword(int $userId, string $newPassword): void {
+        $sql = "UPDATE usuarios SET clave = :clave, resetPass = 0 WHERE id = :id";
+
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute([
+            "clave" => password_hash($newPassword, PASSWORD_DEFAULT),
+            "id" => $userId
+        ]);
+    }
+
+  
+
 
 }

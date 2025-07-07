@@ -18,7 +18,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         updateButton: document.getElementById('updateButton'),
         cancelButton: document.getElementById('cancelButton'),
         deleteButton: document.getElementById('deleteButton'),
-        exportButton: document.getElementById('exportButton')
+        exportButton: document.getElementById('exportButton'),
+        volverListadoButton: document.getElementById('volverListadoButton')
     };
 
     // Verificación básica de elementos
@@ -87,6 +88,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     elements.exportButton.addEventListener('click', () => {
-        usuarioController.exportSingleUserToPDF(userId);
+        usuarioController.exportSinglePdf(userId);
     });
+
+     elements.volverListadoButton.addEventListener('click', () => {
+
+        window.location.href = `usuario/index`;
+    })
+
+
 });

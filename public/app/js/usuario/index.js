@@ -1,4 +1,4 @@
-// public/app/js/usuario/index.js
+// public/assets/js/usuario/index.js
 import { usuarioController } from './controller.js';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -46,17 +46,25 @@ const configurarBotonAlta = () => {
 };
 
 const configurarBotonExportar = () => {
-    const exportPdfButton = document.getElementById('export-pdf');
+    const exportPdfButton = document.getElementById('exportPdfButton');
     if (exportPdfButton) {
         exportPdfButton.addEventListener('click', () => {
-            console.log('Exportando PDF');
-            // usuarioController.exportToPDF();  <- desactivado por ahora
+            // Leer filtros de los inputs
+            const perfil = document.getElementById('filterProfile').value;
+            const email = document.getElementById('filterEmail').value;
+
+            const filtros = {
+                perfil: perfil || undefined,
+                correo: email || undefined
+            };
+
+            console.log('Exportando PDF con filtros:', filtros);
+            usuarioController.exportListPDF(filtros);
         });
     } else {
-        console.error('Botón export-pdf no encontrado');
+        console.error('Botón exportPdfButton no encontrado');
     }
 };
-
 const configurarBotonFiltros = () => {
     const applyFiltersButton = document.getElementById('botonFiltros');
     if (!applyFiltersButton) {

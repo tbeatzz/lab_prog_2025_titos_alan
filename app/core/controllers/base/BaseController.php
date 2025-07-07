@@ -79,6 +79,24 @@ class BaseController{
 
         require_once APP_FILE_TEMPLATE;
     }
+    
+    protected function renderLogin(Request $request): void {
+        $this->setCurrentView($request);
+        $this->currentController = $request->getController();
+        $this->currentAction = $request->getAction();
+
+
+        require_once APP_FILE_LOGIN;
+    }
+
+    protected function renderLogOut(Request $request): void {
+        $this->setCurrentView($request);
+        $this->currentController = $request->getController();
+        $this->currentAction = $request->getAction();
+
+
+        require_once APP_FILE_LOGOUT;
+    }
 
 
 

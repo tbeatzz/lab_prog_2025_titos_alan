@@ -3,9 +3,12 @@ namespace app;
 
 use app\libs\pipeline\Pipeline;
 use app\libs\pipeline\middlewares\ExceptionHandlerMiddleware;
+use app\libs\pipeline\middlewares\AuthenticationHandlerMiddleware;
+use app\libs\pipeline\middlewares\AuthorizationMiddleware;
 use app\libs\pipeline\middlewares\RouterHandlerMiddleware;
 use app\libs\http\Request;
 use app\libs\http\Response;
+
 
 final class App{
 
@@ -14,7 +17,10 @@ final class App{
     public static function run(){
         $pipeline = new Pipeline();
         // Esto es encadenamiento de metodos, gracias al return $this del metodo pipe
-        $pipeline->pipe(new ExceptionHandlerMiddleware())
+        $pipeline
+        ->pipe(new ExceptionHandlerMiddleware())
+        ->pipe(new AuthenticationHandlerMiddleware())
+        ->pipe(new AuthorizationMiddleware())
         ->pipe(new RouterHandlerMiddleware());
 
         $pipeline->process(new Request(), new Response());

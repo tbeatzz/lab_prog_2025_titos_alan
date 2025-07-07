@@ -1,8 +1,18 @@
- <nav class="navbar navbar-expand-lg" aria-label="Main navigation">
+<?php
+    $perfilheader = $_SESSION["perfil"];
+
+    if ($perfilheader == "Operador"){
+        $esOperador = true;
+    }else{
+        $esOperador = false;
+    }
+?>
+
+<nav class="navbar navbar-expand-lg" aria-label="Main navigation">
      <div class="container-fluid">
 
          <a class="navbar-brand" href="home/index">
-            <img src="<?= APP_URL ?>/app/assets/images/main_logo.webp" alt="BajoCeroWear Logo"
+             <img src="<?= APP_URL ?>/app/assets/images/main_logo.webp" alt="BajoCeroWear Logo"
                  width="70" height="70" class="d-inline-block align-text-top rounded-circle" />
          </a>
          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
@@ -13,17 +23,18 @@
 
              <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-4">
                  <li class="nav-item">
-                    <a class="nav-link fs-5 p-0 <?= $this->currentController === 'home' ? 'active' : '' ?> " href="<?= APP_URL ?>/home">Inicio</a>
+                     <a class="nav-link fs-5 p-0 <?= $this->currentController === 'home' ? 'active' : '' ?> " href="<?= APP_URL ?>/home">Inicio</a>
                  </li>
                  <li class="nav-item">
-                    
+
                      <a class="nav-link fs-5 p-0 <?= $this->currentController === 'producto' ? 'active' : '' ?> " href="<?= APP_URL ?>/producto">Productos</a>
                  </li>
+
                  <li class="nav-item">
-                     <a class="nav-link fs-5 p-0" href="sale/index">Ventas</a>
+                     <a class="nav-link fs-5 p-0 <?= $esOperador ? "not" : "" ; ?> <?= $this->currentController === 'usuario' ? 'active' : '' ?> " href="<?= APP_URL ?>/usuario">Usuarios</a>
                  </li>
                  <li class="nav-item">
-                    <a class="nav-link fs-5 p-0 <?= $this->currentController === 'usuario' ? 'active' : '' ?> " href="<?= APP_URL ?>/usuario">Usuarios</a>
+                     <a class="nav-link fs-5 p-0 <?= $this->currentController === 'categoria' ? 'active' : '' ?> " href="<?= APP_URL ?>/categoria">Cagetorias</a>
                  </li>
              </ul>
 
@@ -36,11 +47,11 @@
                      <ul class="dropdown-menu dropdown-menu-end">
                          <li class="p-1">
                              <a class="dropdown-item p-1 d-flex justify-content-between"
-                                 href="javascript:void(0)">Mis datos <i class="bi bi-person-circle"></i></a>
+                                 href="<?= APP_URL ?>/cuenta/index">Mis datos <i class="bi bi-person-circle"></i></a>
                          </li>
                          <li class="p-1">
                              <a class="dropdown-item p-1 d-flex justify-content-between"
-                                 href="authentication/index.html">Cerrar sesión <i
+                                 href="authentication/logout">Cerrar sesión <i
                                      class="bi bi-box-arrow-in-right"></i></a>
                          </li>
                      </ul>

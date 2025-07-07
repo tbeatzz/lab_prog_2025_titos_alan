@@ -9,6 +9,9 @@ use app\core\controllers\base\InterfaceController;
 use app\core\services\UsuarioService;
 use app\core\models\dto\UsuarioDto;
 
+use app\core\services\PDFService;
+
+
 /**
  * Controlador para manejar operaciones sobre usuarios.
  */
@@ -67,7 +70,7 @@ final class UsuarioController extends BaseController implements InterfaceControl
 
     /**
      * Vista para crear usuario 
-     */
+    */
     public function create(Request $request, Response $response): void
     {
         $this->scripts[] = "app/js/{$request->getController()}/{$request->getAction()}.js";
@@ -90,7 +93,8 @@ final class UsuarioController extends BaseController implements InterfaceControl
     /**
      * Actualiza un usuario existente
      */
-    public function update(Request $request, Response $response): void {
+    public function update(Request $request, Response $response): void
+    {
         try {
             // Obtener datos del cuerpo de la solicitud
             $data = $request->getDataFromInput();
@@ -131,7 +135,7 @@ final class UsuarioController extends BaseController implements InterfaceControl
         } catch (\Exception $e) {
             error_log("Error en UsuarioController::update: " . $e->getMessage());
             $response->setMessage("<p>Error al actualizar el usuario: {$e->getMessage()}</p>");
-            
+
             $response->send();
         }
     }
@@ -205,4 +209,91 @@ final class UsuarioController extends BaseController implements InterfaceControl
         $response->setMessage("<p>La contraseña fue restablecida.</p>");
         $response->send();
     }
+
+    /**
+     * Exporta la lista de usuarios a PDF.
+     */
+    public function exportPdf(Request $request, Response $response): void
+    {
+        try {
+            // Leer filtros desde el request (igual que en list())
+            $inputData = $request->getDataFromInput();
+
+            $filters = [
+                "perfil" => $inputData['perfil'] ?? $request->getParameterValue("perfil", null),
+                "correo" => $inputData['correo'] ?? $request->getParameterValue("correo", null),
+                "limit"  => $inputData['limit'] ?? $request->getParameterValue("limit", null)
+            ];
+
+            // Obtener la lista filtrada
+            $service = new UsuarioService();
+            $usuarios = $service->list($filters);
+
+            // Generar PDF
+            $pdfService = new PDFService();
+            $templatePath = APP_DIR_PDF . $request->getController() . '/pdf.php';
+            $pdfService->generatePdf(
+                $templatePath,
+                ['usuarios' => $usuarios],
+                "usuarios_" . date('Ymd_His') . ".pdf"
+            );
+        } catch (\Exception $e) {
+            error_log("Error en UsuarioController::exportPdf: " . $e->getMessage());
+            $response->setMessage("<p>Error al generar el PDF: {$e->getMessage()}</p>");
+            $response->send();
+        }
+    }
+
+
+    /**
+     * Exporta los datos de un usuario específico a PDF.
+     */
+    public function exportSinglePdf(Request $request, Response $response): void
+    {
+        try {
+            // Obtener el ID desde la URL
+            $id = (int) $request->getParameterValue('id', 0);
+            if (!is_numeric($id) || $id <= 0) {
+                throw new \Exception('ID de usuario inválido');
+            }
+
+            // Cargar datos del usuario
+            $service = new UsuarioService();
+            $dto = $service->load($id);
+            if (!$dto) {
+                throw new \Exception('Usuario no encontrado');
+            }
+
+            // Usar PDFService para generar el PDF
+            $pdfService = new PDFService();
+            $templatePath = APP_DIR_PDF . $request->getController() . '/pdf_single.php';
+            $pdfService->generatePdf(
+                $templatePath,
+                ['usuario' => $dto->toArray()],
+                "usuario_{$id}_" . date('Ymd_His') . ".pdf"
+            );
+        } catch (\Exception $e) {
+            error_log("Error en UsuarioController::exportSinglePdf: " . $e->getMessage());
+            $response->setMessage("<p>Error al generar el PDF: {$e->getMessage()}</p>");
+            $response->send();
+        }
+    }
+
+    
+    public function cantidadUsuarios(Request $request, Response $response): void {
+       
+        $service = new UsuarioService();
+        
+        if($_SESSION["perfil"] == "Operador"){
+            $response->setError(true);
+          
+        }
+
+        $response->setResult( $service->getCantidadUsuarios());
+        $response->setMessage("Cantidad de usuarios");
+        $response->send();
+    }
+
+
+
 }

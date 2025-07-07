@@ -28,10 +28,7 @@
                     <div class="col-md-6">
                         <label for="categoria" class="form-label">Categoría</label>
                         <select id="categoria" name="categoria" class="form-select" required>
-                            <option value="" disabled selected>Selecciona una categoría</option>
-                            <option value="Ropa Nueva">Ropa Nueva</option>
-                            <option value="Ropa Usada">Ropa Usada</option>
-                            <option value="Accesorios">Accesorios</option>
+                           
                         </select>
                     </div>
                     <!-- Precio -->

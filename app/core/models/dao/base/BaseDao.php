@@ -30,4 +30,11 @@ class BaseDao{
         $id = $this->connection->lastInsertId();
         return is_numeric($id) ? (int) $id : 0;
     }
+
+    public function listCantidad(): int {
+        $sql = "SELECT COUNT(*) FROM {$this->table}";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute();
+        return (int) $stmt->fetchColumn();
+    }
 }

@@ -112,11 +112,22 @@ h2,
   font-weight: 500;
 }
 
+.nav-link.not {
+  color: var(--black) !important; 
+}
+
+
+
 .nav-link:hover,
 .nav-link.active {
   color: var(
     --primario
   ) !important; 
+}
+
+.nav-link.not:hover{
+    color: var(--dark)!important;;
+    cursor:not-allowed !important;
 }
 /* 
 Menú desplegable */

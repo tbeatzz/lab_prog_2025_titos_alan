@@ -1,0 +1,85 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Listado de Usuarios</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            color: #212121; /* --black */
+            margin: 20px;
+        }
+        h1 {
+            color: #e63946; /* --primario */
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #6c757d; /* --secundario */
+            padding-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            background-color: #f5f5f5; /* --light */
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #6c757d; /* --secundario */
+        }
+        th {
+            background-color: #1a2526; /* --dark */
+            color: #ffffff; /* --white */
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f5eadb; /* --logo */
+        }
+        tr:hover {
+            background-color: #ffffff; /* --white */
+        }
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 10px;
+            color: #6c757d; /* --secundario */
+        }
+    </style>
+</head>
+<body>
+    <h1>Listado de Usuarios</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Usuario</th>
+                <th>Correo</th>
+                <th>Perfil</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($usuarios as $usuario): ?>
+                <tr>
+                    <td><?= htmlspecialchars($usuario['id'] ?? '') ?></td>
+                    <td><?= htmlspecialchars($usuario['nombres'] ?? '') ?></td>
+                    <td><?= htmlspecialchars($usuario['cuenta'] ?? '') ?></td>
+                    <td><?= htmlspecialchars($usuario['correo'] ?? '') ?></td>
+                    <td><?= htmlspecialchars($usuario['perfil'] ?? '') ?></td>
+                    <td><?= $usuario['estado'] ? 'Activo' : 'Inactivo' ?></td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+    <div class="footer">
+        <?php
+        // Configurar la zona horaria de Argentina
+        date_default_timezone_set('America/Argentina/Buenos_Aires');
+        ?>
+        Generado el <?= date('d/m/Y H:i:s') ?> | BajoCeroWear 1.0
+    </div>
+</body>
+</html>

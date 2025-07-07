@@ -153,4 +153,17 @@ final class UsuarioService implements InterfaceService
             throw new \Exception("<p>El <strong>usuario</strong> es obligatorio.</p>");
         }
     }
+    public function updatePassword(int $userId, string $newPassword): void {
+        $conn = Connection::get();
+        $dao = new UsuarioDao($conn);
+        $dao->updatePassword($userId, $newPassword);
+    }
+
+    public function getCantidadUsuarios(): int {
+        $dao = new UsuarioDao(Connection::get());
+        return $dao->listCantidad();
+    }
+
+
+    
 }

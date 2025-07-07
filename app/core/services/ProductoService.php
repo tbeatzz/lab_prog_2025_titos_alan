@@ -109,4 +109,9 @@ final class ProductoService implements InterfaceService {
             throw new \Exception("Debes seleccionar una <strong>categoría</strong> válida.");
         }
     }
+
+    public function getCantidadProductos(): int {
+        $dao = new ProductoDao(Connection::get());
+        return $dao->listCantidad();
+    }
 }

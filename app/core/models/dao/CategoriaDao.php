@@ -91,10 +91,20 @@ final class CategoriaDao extends BaseDao implements InterfaceDao {
      * @param int $id ID de la categoría a eliminar
      */
     public function delete(int $id): void {
-        $sql = "DELETE FROM {$this->table} WHERE id = :id";
-        $stmt = $this->connection->prepare($sql);
-        $stmt->execute(["id" => $id]);
+        try {
+            $sql = "DELETE FROM {$this->table} WHERE id = :id";
+            $stmt = $this->connection->prepare($sql);
+            $stmt->execute(["id" => $id]);
+        } catch (\PDOException $e) {
+            // Detectar error por clave foránea (código 23000 en MySQL)
+            if ($e->getCode() === '23000') {
+                throw new \Exception("No se puede eliminar la categoría porque está asociada a productos.");
+            } else {
+                throw $e; // relanzar cualquier otro error
+            }
+        }
     }
+
 
     /**
      * Lista categorías con filtros opcionales
