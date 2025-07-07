@@ -80,14 +80,23 @@ final class UsuarioController extends BaseController implements InterfaceControl
     /**
      * Guarda un nuevo usuario 
      */
+
     public function save(Request $request, Response $response): void
     {
-        $dto = new UsuarioDto($request->getDataFromInput());
-        $service = new UsuarioService();
-        $service->save($dto);
+        try {
+            $dto = new UsuarioDto($request->getDataFromInput());
+            $service = new UsuarioService();
+            $service->save($dto);
 
-        $response->setMessage("<p>Se agregó un nuevo usuario al sistema</p>");
-        $response->send();
+            $response->setMessage("<p>Se agregó un nuevo usuario al sistema</p>");
+            $response->send();
+
+        } catch (\Exception $e) {
+            // ⚠️ Acá devolvés error con código 400
+            http_response_code(400);
+            $response->setError($e->getMessage());
+            $response->send();
+        }
     }
 
     /**

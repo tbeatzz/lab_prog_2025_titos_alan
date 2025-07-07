@@ -46,46 +46,50 @@ export const usuarioController = {
 
     // Guardar un nuevo usuario
     async save() {
-        try {
-            const clave = document.getElementById('clave').value;
-            const confirmarClave = document.getElementById('confirmarClave').value;
+    try {
+        const clave = document.getElementById('clave').value;
+        const confirmarClave = document.getElementById('confirmarClave').value;
 
-            if (clave !== confirmarClave) {
-                Swal.fire('Error', 'Las contraseñas no coinciden', 'error');
-                return;
-            }
-
-            const user = {
-                apellido: document.getElementById('apellidos').value,
-                nombres: document.getElementById('nombres').value,
-                cuenta: document.getElementById('cuenta').value,
-                perfil: document.getElementById('perfil').value,
-                correo: document.getElementById('correo').value,
-                clave: clave,
-                estado: 1,
-                fechaAlta: new Date().toISOString().split('T')[0],
-                resetPass: 0
-            };
-
-            if (!user.apellido || !user.nombres || !user.cuenta || !user.correo) {
-                Swal.fire('Atención', 'Todos los campos son obligatorios', 'warning');
-                return;
-            }
-
-            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(user.correo)) {
-                Swal.fire('Atención', 'Correo electrónico inválido', 'warning');
-                return;
-            }
-
-            await usuarioService.save(user);
-            await Swal.fire('Éxito', 'Usuario guardado correctamente', 'success');
-            window.location.href = 'usuario/index';
-
-        } catch (error) {
-            console.error('Error al guardar usuario', error);
-            Swal.fire('Error', error.message || 'Error al guardar usuario', 'error');
+        if (clave !== confirmarClave) {
+            Swal.fire('Error', 'Las contraseñas no coinciden', 'error');
+            return;
         }
-    },
+
+        const user = {
+            apellido: document.getElementById('apellidos').value,
+            nombres: document.getElementById('nombres').value,
+            cuenta: document.getElementById('cuenta').value,
+            perfil: document.getElementById('perfil').value,
+            correo: document.getElementById('correo').value,
+            clave: clave,
+            estado: 1,
+            fechaAlta: new Date().toISOString().split('T')[0],
+            resetPass: 0
+        };
+
+        if (!user.apellido || !user.nombres || !user.cuenta || !user.correo) {
+            Swal.fire('Atención', 'Todos los campos son obligatorios', 'warning');
+            return;
+        }
+
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(user.correo)) {
+            Swal.fire('Atención', 'Correo electrónico inválido', 'warning');
+            return;
+        }
+
+        await usuarioService.save(user);
+
+        await Swal.fire('Éxito', 'Usuario guardado correctamente', 'success');
+        window.location.href = 'usuario/index';
+
+    } catch (error) {
+        console.error('Error al guardar usuario', error);
+
+        const mensajeError = error?.response?.data?.message || error.message || 'Error al guardar usuario';
+        Swal.fire('Error', mensajeError, 'error');
+    }
+},
+
 
 
     // Actualizar usuario
@@ -209,7 +213,7 @@ export const usuarioController = {
     },
 
 
-
+    
 
 
     // Listar usuarios

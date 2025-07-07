@@ -27,10 +27,10 @@
                 <div id="usuariosCount" class="alert alert-info">Usuarios registrados: <?= !$esOperador ? "<strong id='cantidad-usuarios'></strong>" : "";?> </div>
             </div>
             <div class="col-md-4 pt-3">
-                <div class="alert alert-success">Productos en stock: <strong id="cantidad-productos"></strong></div>
+                <div class="alert alert-success">Productos cargados: <strong id="cantidad-productos"></strong></div>
             </div>
             <div class="col-md-4 pt-3">
-                <div class="alert alert-warning">Categorías activas: <strong id="cantidad-categorias"></strong></div>
+                <div class="alert alert-warning">Categorías cargadas: <strong id="cantidad-categorias"></strong></div>
             </div>
         </div>
 

@@ -88,9 +88,16 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Aquí se insertan dinámicamente las filas -->
+                
                 </tbody>
+                
+
             </table>
+            <div class="mt-3 d-flex justify-content-center gap-2 align-items-center">
+                    <button id="prevPage" class="btn btn-outline-secondary">Anterior</button>
+                    <span id="currentPage">Página 1</span>
+                    <button id="nextPage" class="btn btn-outline-secondary">Siguiente</button>
+                </div>
         </div>
     </section>
 

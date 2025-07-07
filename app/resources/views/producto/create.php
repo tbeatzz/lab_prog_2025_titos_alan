@@ -14,8 +14,10 @@
                     <div class="col-12">
                         <label for="nombre" class="form-label">Nombre</label>
                         <input type="text" id="nombre" name="nombre" class="form-control"
-                            placeholder="Ingresa el nombre del producto" required minlength="2" pattern="[A-Za-z\s]+"
+                            placeholder="Ingresa el nombre del producto" required minlength="2" maxlength="50"
+                            pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+"
                             title="Solo letras y espacios, entre 2 y 50 caracteres">
+
                     </div>
                     <!-- Código -->
                     <div class="col-md-6">
@@ -28,7 +30,7 @@
                     <div class="col-md-6">
                         <label for="categoria" class="form-label">Categoría</label>
                         <select id="categoria" name="categoria" class="form-select" required>
-                           
+
                         </select>
                     </div>
                     <!-- Precio -->

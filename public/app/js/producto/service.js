@@ -14,7 +14,15 @@ export const productoService = {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(producto),
         });
-        return response.json();
+       
+		const result = await response.json();
+
+		if (!response.ok) {
+			// Lanza un error que puede ser capturado en el controller.js
+			throw new Error(result.error || result.message || 'Error al guardar usuario');
+		}
+
+		return result;
     },
 
     update: async (producto) => {

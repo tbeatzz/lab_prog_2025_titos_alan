@@ -80,7 +80,7 @@
 		class="btn btn-primary d-flex align-items-center justify-content-between gap-1">
 		Validar y guardar <i class="bi bi-save"></i>
 	</button>
-	<a href="./user/index.html"
+	<a href="./usuario/index"
 		class="btn btn-outline-secondary d-flex align-items-center justify-content-between gap-1">Volver al
 		listado <i class="bi bi-arrow-left-square"></i></a>
 </section>

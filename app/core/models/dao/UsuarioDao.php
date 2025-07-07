@@ -270,7 +270,18 @@ final class UsuarioDao extends BaseDao implements InterfaceDao {
         ]);
     }
 
-  
+    public function findById(int $id): ?array {
+        $sql = "SELECT * FROM usuario WHERE id = :id LIMIT 1";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(":id", $id, \PDO::PARAM_INT);
+        $stmt->execute();
+        $usuario = $stmt->fetch(\PDO::FETCH_ASSOC);
+        
+        return $usuario ?: null;
+    }
+
+
+    
 
 
 }

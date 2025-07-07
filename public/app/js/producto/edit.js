@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     elements.updateButton.addEventListener('click', async () => {
         const errors = [];
-        if (!elements.nombre.value.match(/^[A-Za-z\s]{2,50}$/)) {
+       if (!elements.nombre.value.match(/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{2,50}$/)) {
             errors.push('El nombre debe contener solo letras y espacios, entre 2 y 50 caracteres');
         }
         if (!elements.codigo.value.match(/^[A-Za-z0-9]{3,10}$/)) {
@@ -107,21 +107,38 @@ document.addEventListener('DOMContentLoaded', async () => {
         elements.updateButton.disabled = true;
         elements.updateButton.innerHTML = 'Actualizando... <i class="bi bi-spinner"></i>';
 
-        try {
-            await productoController.update(elements);
-            if (elements.successMessage) {
-                elements.successMessage.classList.remove('d-none');
-                setTimeout(() => {
-                    window.location.href = 'producto/index';
-                }, 2000);
-            }
-        } catch (error) {
-            console.error('Error al actualizar el producto:', error);
-            alert('Error al actualizar el producto: ' + (error.response?.data?.message || error.message || 'Error desconocido'));
-        } finally {
-            elements.updateButton.disabled = false;
-            elements.updateButton.innerHTML = 'Actualizar <i class="bi bi-file-earmark-arrow-up"></i>';
+       try {
+        await productoController.update(elements);
+
+        if (elements.successMessage) {
+            elements.successMessage.classList.remove('d-none');
         }
+
+        Swal.fire({
+            icon: 'success',
+            title: 'Producto actualizado',
+            text: 'Serás redirigido en unos segundos...',
+            timer: 2000,
+            showConfirmButton: false
+        });
+
+        setTimeout(() => {
+            window.location.href = 'producto/index';
+        }, 2000);
+
+    } catch (error) {
+        console.error('Error al actualizar el producto:', error);
+
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: error.response?.data?.message || error.message || 'Error desconocido',
+        });
+    } finally {
+        elements.updateButton.disabled = false;
+        elements.updateButton.innerHTML = 'Actualizar <i class="bi bi-file-earmark-arrow-up"></i>';
+    }
+
     });
 
     elements.cancelButton.addEventListener('click', () => {

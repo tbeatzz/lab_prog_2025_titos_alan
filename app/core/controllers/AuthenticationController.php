@@ -19,12 +19,19 @@ final class AuthenticationController extends BaseController {
     }
 
     public function login(Request $request, Response $response): void{
+    try {
         $dto = new LoginDto($request->getDataFromInput());
         $service = new AuthenticationService();
         $service->login($dto);
         $response->setMessage("OK");
-        $response->send();
+    } catch (\Exception $e) {
+        $response->setError(400);
+        $response->setMessage($e->getMessage());
     }
+
+    $response->send();
+}
+
 
     public function logout(Request $request, Response $response): void{
         $service = new AuthenticationService();

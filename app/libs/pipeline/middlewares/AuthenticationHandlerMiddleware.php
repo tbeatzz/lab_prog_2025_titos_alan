@@ -25,7 +25,7 @@ final class AuthenticationHandlerMiddleware extends BaseMiddleware implements In
     
         if(!isset($_SESSION["token"]) || ($_SESSION["token"] != APP_TOKEN)) {
             $request->setController(APP_AUTHENTICATION_CONTROLLER);
-            if($request->getAction() != APP_LOGIN_ACTION){
+            if($request->getAction() != APP_LOGIN_ACTION){  
                 $request->setAction(APP_DEFAULT_ACTION);
             }
         }

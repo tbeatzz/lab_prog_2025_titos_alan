@@ -53,13 +53,25 @@ final class ProductoController extends BaseController implements InterfaceContro
     /**
      * Guarda un nuevo producto.
      */
-    public function save(Request $request, Response $response): void {
-        $dto = new ProductoDto($request->getDataFromInput());
-        $service = new ProductoService();
-        $service->save($dto);
-        $response->setMessage("Producto agregado correctamente.");
-        $response->send();
+
+    public function save(Request $request, Response $response): void
+    {
+        try {
+            $dto = new ProductoDto($request->getDataFromInput());
+            $service = new ProductoService();
+            $service->save($dto);
+        
+            $response->setMessage("Producto agregado correctamente.");
+            $response->send();
+
+        } catch (\Exception $e) {
+            
+            http_response_code(400);
+            $response->setError($e->getMessage());
+            $response->send();
+        }
     }
+
 
     /**
      * Actualiza un producto existente.
@@ -142,8 +154,8 @@ final class ProductoController extends BaseController implements InterfaceContro
                 "nombre"    => $inputData['nombre'] ?? $request->getParameterValue("nombre", null),
                 "codigo"    => $inputData['codigo'] ?? $request->getParameterValue("codigo", null),
                 "orden"     => $inputData['orden'] ?? $request->getParameterValue("orden", null),
-                "limit"     => $inputData['limit'] ?? $request->getParameterValue("limit", null),
-                "offset"    => $inputData['offset'] ?? $request->getParameterValue("offset", 0),
+                // "limit"     => $inputData['limit'] ?? $request->getParameterValue("limit", null),
+                // "offset"    => $inputData['offset'] ?? $request->getParameterValue("offset", 0),
             ];
 
             $filterMap = [
@@ -151,8 +163,8 @@ final class ProductoController extends BaseController implements InterfaceContro
                 "nombre"    => "nombre",
                 "codigo"    => "codigo",
                 "orden"     => "orden",
-                "limit"     => "limit",
-                "offset"    => "offset",
+                // "limit"     => "limit",
+                // "offset"    => "offset",
             ];
 
             $mappedFilters = [];

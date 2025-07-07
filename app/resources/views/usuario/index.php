@@ -60,3 +60,10 @@
         </div>
     </section>
 </div>
+
+<?php if (isset($_SESSION["expiredMessage"])): ?>
+    <script defer>
+        sessionStorage.setItem("expiredMessage", <?= json_encode($_SESSION["expiredMessage"]) ?>);
+    </script>
+    <?php unset($_SESSION["expiredMessage"]); ?>
+<?php endif; ?>

@@ -79,12 +79,25 @@ final class UsuarioService implements InterfaceService
     /**
      * Elimina un usuario existente.
      */
-    public function delete(InterfaceDto $dto): void
+   public function delete(InterfaceDto $dto): void
     {
         $dao = new UsuarioDao(Connection::get());
         $dao->load($dto->getId());
+
+        // Verificar si el usuario actual es el que se quiere eliminar
+        if (isset($_SESSION["usuarioId"]) && (int)$_SESSION["usuarioId"] === (int)$dto->getId()) {
+            $dao->delete($dto->getId());
+
+            // Cerrar sesión
+            session_destroy();
+
+            // Opcional: lanzar una excepción o mensaje para el frontend
+            throw new \Exception("Tu cuenta ha sido eliminada. Cerrando sesión.");
+        }
+
         $dao->delete($dto->getId());
     }
+
 
     /**
      * Lista usuarios con filtros (perfil, estado, limit...).
