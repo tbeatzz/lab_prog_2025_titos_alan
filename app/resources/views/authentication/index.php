@@ -33,31 +33,30 @@
         <h2 class="text-center mb-4">Iniciar Sesión</h2>
 
         <!-- Formulario de autenticación -->
-        <form id="loginForm">
+        <form id="loginForm" novalidate>  <!-- novalidate para controlar validaciones manualmente -->
 
-            <!-- Campo Usuario -->
+            <!-- Usuario -->
             <div class="mb-3">
                 <label for="loginUsuario" class="form-label">Usuario</label>
-                <input type="text" id="loginUsuario" name="usuario" class="form-control" placeholder="Ingrese el nombre de usuario"  
-                    required 
-                    minlength="2" 
-                    maxlength="15" 
-                    pattern="[A-Za-z]{2,15}"
-                    title="Solo letras sin espacios, entre 2 y 15 caracteres"
-                >
+                <input type="text" id="loginUsuario" name="usuario" class="form-control"
+                    placeholder="Ingrese el nombre de usuario" required minlength="2" maxlength="15"
+                    pattern="[A-Za-z]{2,15}" title="Solo letras sin espacios, entre 2 y 15 caracteres">
+                <div id="usuarioFeedback" class="invalid-feedback"></div>
             </div>
 
-            <!-- Campo Contraseña -->
+            <!-- Contraseña -->
             <div class="mb-3">
                 <label for="loginContrasenha" class="form-label">Contraseña</label>
-                <input type="password" id="loginContrasenha" name="contrasena" class="form-control" placeholder="Ingrese la contraseña" 
-                required 
-                minlength="8" 
-                maxlength="20" 
-                pattern=".{8,20}" 
-                title="Debe tener entre 8 y 20 caracteres"
-                >
+                <input type="password" id="loginContrasenha" name="contrasena" class="form-control"
+                    placeholder="Ingrese la contraseña" required minlength="8" maxlength="20"
+                    pattern=".{8,20}" title="Debe tener entre 8 y 20 caracteres">
+                <div id="claveFeedback" class="invalid-feedback"></div>
             </div>
+            
+
+            <!-- Mensaje de error general -->
+            <div id="loginErrorMsg" class="alert alert-danger mt-3" style="display:none;"></div>
+
 
             <!-- Botón Ingresar -->
             <div class="d-grid">
@@ -68,7 +67,9 @@
             <div class="text-center mt-3">
                 <p class="mb-0">¿Olvidaste tu contraseña? <a href="#">Recuperar contraseña</a></p>
             </div>
+
         </form>
+
     </main>
 
 </body>

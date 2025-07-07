@@ -11,7 +11,7 @@ export const usuarioController = {
             if (elements) {
                 // Guardar datos originales en sessionStorage
                 sessionStorage.setItem('originalUserData', JSON.stringify(user));
-                
+
                 // Mostrar estado y fecha
                 elements.userEstado.innerHTML = `<strong>Estado de la cuenta:</strong> ${user.estado ? 'Activo' : 'Inactivo'}`;
                 elements.userFecha.innerHTML = `<strong>Fecha de creación:</strong> ${user.fechaAlta || 'N/A'}`;
@@ -32,7 +32,7 @@ export const usuarioController = {
                 sessionStorage.setItem('editUserId', id);
                 window.location.href = `usuario/edit/${id}`;
             }
-            
+
             return user;
         } catch (error) {
             console.error('Error al cargar usuario:', error);
@@ -51,7 +51,7 @@ export const usuarioController = {
             const confirmarClave = document.getElementById('confirmarClave').value;
 
             if (clave !== confirmarClave) {
-                alert('Las contraseñas no coinciden');
+                Swal.fire('Error', 'Las contraseñas no coinciden', 'error');
                 return;
             }
 
@@ -67,75 +67,79 @@ export const usuarioController = {
                 resetPass: 0
             };
 
-            // Validaciones
             if (!user.apellido || !user.nombres || !user.cuenta || !user.correo) {
-                alert('Todos los campos son obligatorios');
+                Swal.fire('Atención', 'Todos los campos son obligatorios', 'warning');
                 return;
             }
+
             if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(user.correo)) {
-                alert('Correo electrónico inválido');
+                Swal.fire('Atención', 'Correo electrónico inválido', 'warning');
                 return;
             }
 
             await usuarioService.save(user);
-            alert('Usuario guardado correctamente');
+            await Swal.fire('Éxito', 'Usuario guardado correctamente', 'success');
             window.location.href = 'usuario/index';
+
         } catch (error) {
             console.error('Error al guardar usuario', error);
-            alert(error.message || 'Error al guardar usuario');
+            Swal.fire('Error', error.message || 'Error al guardar usuario', 'error');
         }
     },
 
+
     // Actualizar usuario
     update: async (elements) => {
-    try {
-        const clave = elements.clave.value;
-        const confirmarClave = elements.confirmarClave.value;
+        try {
+            const clave = elements.clave.value;
+            const confirmarClave = elements.confirmarClave.value;
 
-        if (clave && clave !== confirmarClave) {
-            alert('Las contraseñas no coinciden');
-            return;
+            if (clave && clave !== confirmarClave) {
+                Swal.fire('Error', 'Las contraseñas no coinciden', 'error');
+                return;
+            }
+
+            const id = parseInt(elements.id.value);
+            if (!id || isNaN(id)) {
+                Swal.fire('Error', 'ID de usuario inválido', 'error');
+                return;
+            }
+
+            const originalUserData = JSON.parse(sessionStorage.getItem('originalUserData') || '{}');
+
+            const user = {
+                id,
+                apellido: elements.apellidos.value.trim(),
+                nombres: elements.nombres.value.trim(),
+                cuenta: elements.cuenta.value.trim(),
+                perfil: elements.perfil.value,
+                correo: elements.correo.value.trim(),
+                clave: clave || "",
+                estado: originalUserData.estado ?? 1,
+                fechaAlta: originalUserData.fechaAlta,
+                resetPass: 0
+            };
+
+            if (!user.apellido || !user.nombres || !user.cuenta || !user.correo) {
+                Swal.fire('Error', 'Todos los campos son obligatorios', 'warning');
+                return;
+            }
+
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(user.correo)) {
+                Swal.fire('Error', 'Correo electrónico inválido', 'warning');
+                return;
+            }
+
+            const response = await usuarioService.update(user);
+            await Swal.fire('Actualizado', response.message || 'Usuario actualizado correctamente', 'success');
+            window.location.href = `usuario/edit/${user.id}`;
+
+        } catch (error) {
+            console.error('Error al actualizar usuario:', error);
+            Swal.fire('Error', error.message || 'Error inesperado al actualizar el usuario', 'error');
         }
+    },
 
-        const id = parseInt(elements.id.value);
-        if (!id || isNaN(id)) {
-            alert('ID de usuario inválido');
-            return;
-        }
-
-        const originalUserData = JSON.parse(sessionStorage.getItem('originalUserData') || '{}');
-
-        const user = {
-            id,
-            apellido: elements.apellidos.value.trim(),
-            nombres: elements.nombres.value.trim(),
-            cuenta: elements.cuenta.value.trim(),
-            perfil: elements.perfil.value,
-            correo: elements.correo.value.trim(),
-            clave: clave || "", // Asegura que clave sea una cadena vacía si no se proporciona
-            estado: originalUserData.estado ?? 1,
-            fechaAlta: originalUserData.fechaAlta,
-            resetPass: 0
-        };
-
-        // Validaciones
-        if (!user.apellido || !user.nombres || !user.cuenta || !user.correo) {
-            alert('Todos los campos son obligatorios');
-            return;
-        }
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(user.correo)) {
-            alert('Correo electrónico inválido');
-            return;
-        }
-
-        const response = await usuarioService.update(user);
-        alert(response.message || 'Usuario actualizado correctamente');
-        window.location.href = `usuario/edit/${user.id}`;
-    } catch (error) {
-        console.error('Error al actualizar usuario:', error);
-        alert(error.message || 'Error inesperado al actualizar el usuario');
-    }
-},
     // Cancelar edición
     cancelEditMode(elements) {
         const originalUserData = JSON.parse(sessionStorage.getItem('originalUserData') || '{}');
@@ -148,8 +152,8 @@ export const usuarioController = {
             elements.clave.value = '';
             elements.confirmarClave.value = '';
 
-            elements.exportButton.classList.remove('d-none');   
-            elements.deleteButton.classList.remove('d-none');   
+            elements.exportButton.classList.remove('d-none');
+            elements.deleteButton.classList.remove('d-none');
         }
 
         // Deshabilitar inputs
@@ -177,25 +181,35 @@ export const usuarioController = {
         elements.updateButton?.classList.remove('d-none');
         elements.cancelButton?.classList.remove('d-none');
 
-        elements.exportButton.classList.toggle('d-none');   
-        elements.deleteButton.classList.toggle('d-none');   
+        elements.exportButton.classList.toggle('d-none');
+        elements.deleteButton.classList.toggle('d-none');
     },
 
     // Eliminar usuario
     async delete(id) {
         try {
-            if (confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
+            const result = await Swal.fire({
+                title: '¿Eliminar usuario?',
+                text: 'Esta acción no se puede deshacer',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            });
+
+            if (result.isConfirmed) {
                 await usuarioService.delete(id);
-                alert('Usuario eliminado con éxito');
+                await Swal.fire('Eliminado', 'Usuario eliminado con éxito', 'success');
                 window.location.href = 'usuario/index';
             }
         } catch (error) {
             console.error('Error al eliminar usuario:', error);
-            alert(error.message || 'Error al eliminar usuario');
+            Swal.fire('Error', error.message || 'Error al eliminar usuario', 'error');
         }
     },
 
-   
+
+
 
 
     // Listar usuarios
@@ -249,37 +263,33 @@ export const usuarioController = {
     async enable(id) {
         try {
             await usuarioService.enable(id);
-            alert('Usuario habilitado correctamente');
-            window.location.reload();
+            Swal.fire('Usuario habilitado', '', 'success').then(() => window.location.reload());
         } catch (error) {
             console.error('Error al habilitar usuario', error);
-            alert(error.message || 'Error al habilitar usuario');
+            Swal.fire('Error', error.message || 'Error al habilitar usuario', 'error');
         }
     },
 
-    // Deshabilitar usuario
     async disable(id) {
         try {
             await usuarioService.disable(id);
-            alert('Usuario deshabilitado correctamente');
-            window.location.reload();
+            Swal.fire('Usuario deshabilitado', '', 'success').then(() => window.location.reload());
         } catch (error) {
             console.error('Error al deshabilitar usuario', error);
-            alert(error.message || 'Error al deshabilitar usuario');
+            Swal.fire('Error', error.message || 'Error al deshabilitar usuario', 'error');
         }
     },
 
-    // Restablecer contraseña
     async reset(id) {
         try {
             await usuarioService.reset(id);
-            alert('Contraseña marcada para restablecimiento');
-            window.location.reload();
+            Swal.fire('Contraseña marcada para restablecimiento', '', 'success').then(() => window.location.reload());
         } catch (error) {
             console.error('Error al restablecer contraseña', error);
-            alert(error.message || 'Error al restablecer contraseña');
+            Swal.fire('Error', error.message || 'Error al restablecer contraseña', 'error');
         }
     },
+
 
     // Reiniciar formulario
     resetForm(formId) {
@@ -292,12 +302,12 @@ export const usuarioController = {
     },
 
     // Exportar lista de usuarios a PDF
-   async exportListPDF(filters) {
+    async exportListPDF(filters) {
         try {
             await usuarioService.exportPdf(filters);
         } catch (error) {
             console.error('Error al exportar lista de usuarios a PDF:', error);
-            alert(error.message || 'Error al exportar a PDF');
+            Swal.fire('Error', error.message || 'Error al exportar a PDF', 'error');
         }
     },
 
@@ -307,9 +317,12 @@ export const usuarioController = {
             await usuarioService.exportSinglePdf(id);
         } catch (error) {
             console.error('Error al exportar usuario a PDF:', error);
-            alert(error.message || 'Error al exportar a PDF');
+            Swal.fire('Error', error.message || 'Error al exportar a PDF', 'error');
         }
     },
 
-  
+
+
+
 };
+

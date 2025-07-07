@@ -76,12 +76,16 @@ final class ProductoController extends BaseController implements InterfaceContro
      * Elimina un producto existente.
      */
     public function delete(Request $request, Response $response): void {
-        $dto = new ProductoDto($request->getDataFromInput());
         $service = new ProductoService();
+        $dto = $service->load((int)$request->getId());  // ✔️ Conversión a int
         $service->delete($dto);
-        $response->setMessage("Producto eliminado correctamente.");
+
+        $response->setMessage("Se eliminó el producto correctamente");
         $response->send();
     }
+
+
+
 
     
     /**
@@ -133,7 +137,6 @@ final class ProductoController extends BaseController implements InterfaceContro
             // Leer filtros desde el request (igual que en list())
             $inputData = $request->getDataFromInput();
 
-             // Filtros desde input JSON o parámetros GET
             $rawFilters = [
                 "categoria" => $inputData['categoria'] ?? $request->getParameterValue("categoria", null),
                 "nombre"    => $inputData['nombre'] ?? $request->getParameterValue("nombre", null),
@@ -143,7 +146,6 @@ final class ProductoController extends BaseController implements InterfaceContro
                 "offset"    => $inputData['offset'] ?? $request->getParameterValue("offset", 0),
             ];
 
-            // 🎯 Mapeo de nombres de filtros del front a los internos del backend
             $filterMap = [
                 "categoria" => "categoriaId",
                 "nombre"    => "nombre",
@@ -153,7 +155,6 @@ final class ProductoController extends BaseController implements InterfaceContro
                 "offset"    => "offset",
             ];
 
-            // 🧩 Aplicar el mapeo
             $mappedFilters = [];
             foreach ($rawFilters as $key => $value) {
                 if ($value !== null && $value !== '') {

@@ -8,6 +8,7 @@
     }
 ?>
 
+
 <nav class="navbar navbar-expand-lg" aria-label="Main navigation">
      <div class="container-fluid">
 
@@ -34,7 +35,7 @@
                      <a class="nav-link fs-5 p-0 <?= $esOperador ? "not" : "" ; ?> <?= $this->currentController === 'usuario' ? 'active' : '' ?> " href="<?= APP_URL ?>/usuario">Usuarios</a>
                  </li>
                  <li class="nav-item">
-                     <a class="nav-link fs-5 p-0 <?= $this->currentController === 'categoria' ? 'active' : '' ?> " href="<?= APP_URL ?>/categoria">Cagetorias</a>
+                     <a class="nav-link fs-5 p-0 <?= $this->currentController === 'categoria' ? 'active' : '' ?> " href="<?= APP_URL ?>/categoria">Categorias</a>
                  </li>
              </ul>
 

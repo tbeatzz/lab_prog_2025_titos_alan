@@ -19,6 +19,7 @@ final class AuthenticationService{
         $usuario = $usuarioDao->login($login->getUserName());
 
         if(!password_verify($login->getPassword(), $usuario["clave"])){
+            
             throw new \Exception("El usuario o la clave es incorrecta.");
         }
         if($usuario["estado"] !== 1){

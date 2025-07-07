@@ -1,4 +1,3 @@
-// public/assets/js/usuario/index.js
 import { usuarioController } from './controller.js';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -28,9 +27,9 @@ const configurarEventosTabla = () => {
         const accion = boton.dataset.action;
 
         if (accion === 'editar') {
-            // Redirigir a la URL amigable
             window.location.href = `usuario/edit/${idUsuario}`;
-        } else if (accion === 'eliminar' && confirm('¿Seguro que quieres eliminar este usuario?')) {
+        } else if (accion === 'eliminar') {
+            // SweetAlert se maneja dentro de usuarioController.delete
             usuarioController.delete(idUsuario);
         }
     });
@@ -49,7 +48,6 @@ const configurarBotonExportar = () => {
     const exportPdfButton = document.getElementById('exportPdfButton');
     if (exportPdfButton) {
         exportPdfButton.addEventListener('click', () => {
-            // Leer filtros de los inputs
             const perfil = document.getElementById('filterProfile').value;
             const email = document.getElementById('filterEmail').value;
 
@@ -59,14 +57,29 @@ const configurarBotonExportar = () => {
             };
 
             console.log('Exportando PDF con filtros:', filtros);
-            usuarioController.exportListPDF(filtros);
+
+            // Mostrar feedback con SweetAlert
+            Swal.fire({
+                title: 'Generando PDF...',
+                text: 'Por favor espera unos segundos',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            }); 
+
+            usuarioController.exportListPDF(filtros).finally(() => Swal.close());
         });
     } else {
         console.error('Botón exportPdfButton no encontrado');
     }
 };
+
 const configurarBotonFiltros = () => {
     const applyFiltersButton = document.getElementById('botonFiltros');
+   
+
+
     if (!applyFiltersButton) {
         console.error('Botón botonFiltros no encontrado');
         return;
@@ -83,7 +96,10 @@ const configurarBotonFiltros = () => {
             correo: email || undefined
         });
     });
+
+ 
 };
+
 
 //  filtros dinámicos:
 // const filterEmail = document.getElementById('filterEmail');

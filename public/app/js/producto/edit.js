@@ -140,6 +140,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     elements.volverListadoButton.addEventListener('click', () => {
 
-        window.location.href = `usuario/index`;
+        window.location.href = `producto/index`;
     })
 });

@@ -38,11 +38,10 @@ export const productoService = {
         }
     },
 
-    delete: async (id) => {
-        const response = await fetch(`${BASE_URL}/producto/delete/${id}`, {
-            method: "POST",
-        });
-        return response.json();
+    async delete(id) {
+        const response = await fetch(`producto/delete/${id}`, { method: 'GET' });
+        const data = await response.json();
+        return data;
     },
 
     list: async (filters = {}) => {

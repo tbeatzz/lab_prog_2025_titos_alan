@@ -10,12 +10,20 @@
 <link rel="icon" type="image/x-icon" href="/lab_prog_2025_titos_alan/public/app/assets/images/main_logo.webp" />
 
 <!-- Bootstrap CSS -->
-<link type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css"
+<!-- <link type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css"
     rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT"
-    crossorigin="anonymous" />
-<script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
+    crossorigin="anonymous" /> -->
+<!-- <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
-    crossorigin="anonymous"></script>
+    crossorigin="anonymous"></script> -->
+
+<link type="text/css" rel="stylesheet" href="<?= APP_URL ?>/app/libs/bootstrap-5.3.7-dist/bootstrap.min.css">
+<script defer src="<?= APP_URL ?>/app/libs/bootstrap-5.3.7-dist/bootstrap.bundle.min.js"></script>
+
+<script defer src="<?= APP_URL ?>/app/libs/sweetalert2/sweetalert2.min.js"></script>
+<link type="text/css" rel="stylesheet" href="<?= APP_URL ?>/app/libs/sweetalert2/sweetalert2.min.css">
+
+
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
 
  <!-- CSS y JS -->

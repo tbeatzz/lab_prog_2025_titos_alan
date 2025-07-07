@@ -72,15 +72,8 @@
         </div>
 </div>
 
-<!-- Script para fecha -->
-<script>
-    document.getElementById("fecha-hoy").innerText = new Date().toLocaleDateString('es-ES', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
-</script>
+
 </section>
+
 
 </div>

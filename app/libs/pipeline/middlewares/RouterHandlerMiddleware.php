@@ -7,6 +7,9 @@ use app\libs\pipeline\middlewares\base\InterfaceMiddleware;
 use app\libs\http\Request;
 use app\libs\http\Response;
 
+use app\core\controllers\ErrorController;
+
+
 final class RouterHandlerMiddleware extends BaseMiddleware implements InterfaceMiddleware{
     
     public function __construct(){
@@ -18,8 +21,8 @@ final class RouterHandlerMiddleware extends BaseMiddleware implements InterfaceM
         $controller = "app\\core\\controllers\\" . $controller;
         //app\core\controllers\CategoriaController.php
 
-        if(!class_exists($controller) || !method_exists($controller, $request->getAction())){
-            throw new \Exception("Controlador y acción incorrectos ({$request->getController()} => {$request->getAction()})");
+        if (!class_exists($controller) || !method_exists($controller, $request->getAction())) {
+            $this->showNotFoundPage($request->getController(), $request->getAction());
         }
 
         //Se pre-configura la respuesta
@@ -31,5 +34,11 @@ final class RouterHandlerMiddleware extends BaseMiddleware implements InterfaceM
             array(new $controller([],[]), $request->getAction()),
             array($request, $response)
         );
+    }
+
+    private function showNotFoundPage(string $controller, string $action): void {
+        $errorController = new ErrorController();
+        $errorController->notFound($controller, $action);
+        exit;
     }
 }

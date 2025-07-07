@@ -47,3 +47,4 @@ const configurarBotones = () =>{
         window.location.href = `usuario/index`;
     })
 }
+

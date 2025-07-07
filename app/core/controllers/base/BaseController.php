@@ -98,6 +98,12 @@ class BaseController{
         require_once APP_FILE_LOGOUT;
     }
 
+    public static function renderError(string $view, array $params = []): void {
+        extract($params);
+        require_once APP_DIR_ERRORS . "/{$view}.php";
+    }
+
+
 
 
 

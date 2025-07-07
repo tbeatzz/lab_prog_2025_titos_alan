@@ -204,3 +204,19 @@ h1 {
 .footer p {
   margin-bottom: 0.5rem; /* Espaciado entre líneas */
 }
+
+.errorBody{
+  background-color: var(--dark) !important;
+}
+.errorBody h1{
+  font-weight: 700;
+}
+
+.errorBody p{
+  font-weight: 400;
+  color: var(--light);
+}
+.errorBody a,.errorBody a:hover{
+
+  color: var(--light);
+}

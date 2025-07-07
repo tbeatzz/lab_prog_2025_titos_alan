@@ -1,11 +1,10 @@
-// public/assets/js/producto/controller.js
 import { productoService } from './service.js';
 
 export const productoController = {
     async load(id, elements = null) {
         try {
             const response = await productoService.load(id);
-            const producto = response.result; // Compatible con UsuarioService::load
+            const producto = response.result;
             console.log('Producto cargado:', producto);
 
             if (elements) {
@@ -28,12 +27,11 @@ export const productoController = {
             return producto;
         } catch (error) {
             console.error('Error al cargar producto:', error);
-            alert(error.message || 'Error al cargar producto');
-            if (elements) window.location.href = 'producto/index.html';
+            Swal.fire('Error', error.message || 'Error al cargar producto', 'error');
+            if (elements) window.location.href = 'producto/index';
             return null;
         }
     },
-
 
     async save() {
         try {
@@ -58,16 +56,13 @@ export const productoController = {
     async update(elements) {
         try {
             const id = parseInt(elements.id.value);
-            if (!id) {
-                throw new Error('ID inválido');
-            }
+            if (!id) throw new Error('ID inválido');
 
             const originalData = JSON.parse(sessionStorage.getItem('originalProductoData') || '{}');
 
             const producto = {
                 id,
                 nombre: elements.nombre.value.trim(),
-        
                 codigo: elements.codigo.value.trim(),
                 categoriaId: elements.categoria.value,
                 precio: parseFloat(elements.precio.value) || originalData.precio,
@@ -77,7 +72,7 @@ export const productoController = {
             };
 
             await productoService.update(producto);
-            sessionStorage.setItem('originalProductoData', JSON.stringify(producto)); // Actualizar datos originales
+            sessionStorage.setItem('originalProductoData', JSON.stringify(producto));
             return true;
         } catch (error) {
             console.error('Error al actualizar producto', error);
@@ -86,18 +81,34 @@ export const productoController = {
         }
     },
 
+
+    // Eliminar producto
     async delete(id) {
         try {
-            if (confirm('¿Seguro que deseas eliminar este producto?')) {
-                await productoService.delete(id);
-                alert('Producto eliminado');
-                window.location.href = 'producto/index.html';
+            const result = await Swal.fire({
+                title: '¿Eliminar producto?',
+                text: 'Esta acción no se puede deshacer',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            });
+
+            if (result.isConfirmed) {
+                const response = await productoService.delete(id);
+                // alert(response.message);
+                await Swal.fire('Eliminado', 'Producto eliminado con éxito', 'success');
+                // En vez de redirigir, actualizamos la lista
+                window.location.href = 'producto/index';
+                // await this.list(); // refresca la tabla con los productos actuales
             }
         } catch (error) {
-            console.error('Error al eliminar producto', error);
-            alert(error.message || 'Error al eliminar producto');
+            console.error('Error al eliminar producto:', error);
+            Swal.fire('Error', error.message || 'Error al eliminar producto', 'error');
         }
     },
+
+
 
     async list(filters = {}) {
         try {
@@ -113,13 +124,12 @@ export const productoController = {
                 tableBody.innerHTML = '<tr><td colspan="8" class="text-center">No hay registros disponibles.</td></tr>';
                 return;
             }
-            
+
             productos.forEach(producto => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <th scope="row">${producto.id}</th>
                     <td>${producto.nombre}</td>
-              
                     <td>${producto.codigo}</td>
                     <td>${producto.categoria || '-'}</td>
                     <td>$ ${producto.precio?.toFixed(2) ?? 0}</td>
@@ -138,25 +148,45 @@ export const productoController = {
             });
         } catch (error) {
             console.error('Error al listar productos:', error);
-            alert(error.message || 'Error al listar productos');
+            Swal.fire('Error', error.message || 'Error al listar productos', 'error');
         }
     },
 
     async exportListPDF(filters) {
         try {
+            Swal.fire({
+                title: 'Generando PDF...',
+                text: 'Por favor espera unos segundos',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
             await productoService.exportPdf(filters);
+            Swal.close();
         } catch (error) {
             console.error('Error al exportar productos a PDF:', error);
-            alert(error.message || 'Error al exportar a PDF');
+            Swal.fire('Error', error.message || 'Error al exportar a PDF', 'error');
         }
     },
 
     async exportSinglePdf(id) {
         try {
+            Swal.fire({
+                title: 'Generando PDF...',
+                text: 'Por favor espera unos segundos',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
             await productoService.exportSinglePdf(id);
+            Swal.close();
         } catch (error) {
             console.error('Error al exportar producto a PDF:', error);
-            alert(error.message || 'Error al exportar a PDF');
+            Swal.fire('Error', error.message || 'Error al exportar a PDF', 'error');
         }
     },
 
@@ -169,10 +199,8 @@ export const productoController = {
         elements.updateButton.classList.remove('d-none');
         elements.cancelButton.classList.remove('d-none');
         elements.editButton.classList.add('d-none');
-
-        elements.exportButton.classList.toggle('d-none');   
-        elements.deleteButton.classList.toggle('d-none');   
-   
+        elements.exportButton.classList.add('d-none');
+        elements.deleteButton.classList.add('d-none');
     },
 
     cancelEditMode(elements) {
@@ -193,9 +221,8 @@ export const productoController = {
         elements.updateButton.classList.add('d-none');
         elements.cancelButton.classList.add('d-none');
         elements.editButton.classList.remove('d-none');
-        
-        elements.exportButton.classList.remove('d-none');   
-        elements.deleteButton.classList.remove('d-none');   
+        elements.exportButton.classList.remove('d-none');
+        elements.deleteButton.classList.remove('d-none');
     },
 
     resetForm(formId) {

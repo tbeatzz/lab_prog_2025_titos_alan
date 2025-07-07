@@ -7,6 +7,8 @@ use app\libs\http\Response;
 use app\libs\pipeline\middlewares\base\BaseMiddleware;
 use app\libs\pipeline\middlewares\base\InterfaceMiddleware;
 
+use app\core\controllers\ErrorController;
+
 final class AuthorizationMiddleware extends BaseMiddleware implements InterfaceMiddleware {
 
     public function __construct() {
@@ -64,8 +66,10 @@ final class AuthorizationMiddleware extends BaseMiddleware implements InterfaceM
     }
 
     private function showForbiddenPage(): void {
-        http_response_code(403);
-        echo "Acceso no autorizado.";
+        $errorController = new ErrorController();
+        $errorController->forbidden();
         exit;
     }
+
+
 }

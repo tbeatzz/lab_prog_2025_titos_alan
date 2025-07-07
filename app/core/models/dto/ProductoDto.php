@@ -79,7 +79,7 @@ final class ProductoDto implements InterfaceDto {
             "codigo"      => $this->codigo,
             "descripcion" => $this->descripcion,
             "categoriaId" => $this->categoriaId,
-            "categoria"   => $this->categoria, // 👈 esto permite que JS lo reciba
+            "categoria"   => $this->categoria, 
             "precio"      => $this->precio,
             "stock"       => $this->stock
         ];

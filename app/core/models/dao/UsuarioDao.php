@@ -103,7 +103,8 @@ final class UsuarioDao extends BaseDao implements InterfaceDao {
             $rowsAffected = $stmt->rowCount();
             error_log("Filas afectadas en update: $rowsAffected");
             if ($rowsAffected === 0) {
-                throw new \Exception("No se actualizó ningún usuario. Verifica el ID o los datos enviados.");
+                error_log("Usuario actualizado, pero sin cambios en los datos.");
+                return; 
             }
         } catch (\Exception $e) {
             error_log("Error en UsuarioDao::update: " . $e->getMessage());
