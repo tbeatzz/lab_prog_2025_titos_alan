@@ -7,7 +7,6 @@ use app\core\models\dto\base\InterfaceDto;
 /**
  * Descripción de LoginDto
  * 
- * @author Ing. Jose Rasjido
  */
 final class LoginDto implements InterfaceDto{
 

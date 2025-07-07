@@ -5,13 +5,31 @@ namespace app\core\models\dao;
 use app\core\models\dao\base\BaseDao;
 use app\core\models\dao\base\InterfaceDao;
 
-final class UsuarioDao extends BaseDao implements InterfaceDao {
-
-    public function __construct(\PDO $connection) {
+/**
+ * DAO para la entidad Usuario.
+ * Maneja operaciones CRUD y consultas adicionales sobre la tabla `usuarios`.
+ */
+final class UsuarioDao extends BaseDao implements InterfaceDao
+{
+    /**
+     * Constructor que inicializa la conexión y la tabla.
+     *
+     * @param \PDO $connection Conexión PDO a la base de datos.
+     */
+    public function __construct(\PDO $connection)
+    {
         parent::__construct($connection, "usuarios");
     }
 
-    public function load(int $id): array {
+    /**
+     * Carga un usuario por su ID.
+     *
+     * @param int $id ID del usuario.
+     * @return array Datos del usuario.
+     * @throws \Exception Si no se encuentra el usuario.
+     */
+    public function load(int $id): array
+    {
         $sql = "SELECT * FROM {$this->table} WHERE id = :id LIMIT 1";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute(["id" => $id]);
@@ -24,16 +42,21 @@ final class UsuarioDao extends BaseDao implements InterfaceDao {
         return $data;
     }
 
-    public function save(array $data): void {
-        // Validar que no exista otra cuenta igual
+    /**
+     * Guarda un nuevo usuario.
+     *
+     * @param array $data Datos del nuevo usuario.
+     * @throws \Exception Si la cuenta o correo ya existen.
+     */
+    public function save(array $data): void
+    {
         if ($this->existsByCuenta($data["cuenta"])) {
             throw new \Exception("La cuenta '{$data["cuenta"]}' ya está en uso.");
         }
 
-        // Validar que no exista otro correo igual
         if ($this->existsByCorreo($data["correo"])) {
             throw new \Exception("El correo '{$data["correo"]}' ya está en uso.");
-    }
+        }
 
         $sql = "INSERT INTO {$this->table} 
             (apellido, nombres, cuenta, perfil, clave, correo, estado, fechaAlta, resetPass) 
@@ -53,16 +76,21 @@ final class UsuarioDao extends BaseDao implements InterfaceDao {
         ]);
     }
 
-    public function update(array $data): void {
+    /**
+     * Actualiza los datos de un usuario existente.
+     *
+     * @param array $data Datos actualizados del usuario.
+     * @throws \Exception Si ocurren errores en la validación o ejecución.
+     */
+    public function update(array $data): void
+    {
         try {
             error_log("Datos recibidos en UsuarioDao::update: " . print_r($data, true));
 
-            // Validar ID
             if (empty($data['id']) || !is_numeric($data['id'])) {
                 throw new \Exception("ID de usuario inválido o no especificado.");
             }
 
-            // Validar unicidad solo si los campos están presentes
             if (!empty($data["cuenta"]) && $this->existsByCuenta($data["cuenta"], $data["id"])) {
                 throw new \Exception("La cuenta '{$data["cuenta"]}' ya está en uso por otro usuario.");
             }
@@ -71,7 +99,6 @@ final class UsuarioDao extends BaseDao implements InterfaceDao {
                 throw new \Exception("El correo '{$data["correo"]}' ya está en uso por otro usuario.");
             }
 
-            // Construir la consulta dinámicamente
             $fields = [];
             $params = [];
             foreach (['apellido', 'nombres', 'cuenta', 'perfil', 'clave', 'correo', 'estado', 'resetPass'] as $field) {
@@ -84,7 +111,7 @@ final class UsuarioDao extends BaseDao implements InterfaceDao {
 
             if (empty($fields)) {
                 error_log("No hay campos para actualizar en UsuarioDao::update");
-                return; // No hay nada que actualizar
+                return;
             }
 
             $sql = "UPDATE {$this->table} SET " . implode(', ', $fields) . " WHERE id = :id";
@@ -95,30 +122,37 @@ final class UsuarioDao extends BaseDao implements InterfaceDao {
                 throw new \Exception("Error al preparar la consulta SQL");
             }
 
-            $result = $stmt->execute($params);
-            if (!$result) {
+            if (!$stmt->execute($params)) {
                 throw new \Exception("Error al ejecutar la consulta SQL");
             }
 
-            $rowsAffected = $stmt->rowCount();
-            error_log("Filas afectadas en update: $rowsAffected");
-            if ($rowsAffected === 0) {
-                error_log("Usuario actualizado, pero sin cambios en los datos.");
-                return; 
-            }
+            error_log("Filas afectadas en update: " . $stmt->rowCount());
         } catch (\Exception $e) {
             error_log("Error en UsuarioDao::update: " . $e->getMessage());
             throw $e;
         }
     }
 
-    public function delete(int $id): void {
+    /**
+     * Elimina un usuario por ID.
+     *
+     * @param int $id ID del usuario.
+     */
+    public function delete(int $id): void
+    {
         $sql = "DELETE FROM {$this->table} WHERE id = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute(["id" => $id]);
     }
 
-    public function list(array $filters): array {
+    /**
+     * Lista usuarios filtrados por parámetros opcionales.
+     *
+     * @param array $filters Filtros como perfil, estado, correo, limit.
+     * @return array Lista de usuarios.
+     */
+    public function list(array $filters): array
+    {
         $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM {$this->table} WHERE 1";
 
         if (!empty($filters["perfil"])) {
@@ -140,14 +174,8 @@ final class UsuarioDao extends BaseDao implements InterfaceDao {
             }
         }
 
-        //$sql .= " ORDER BY apellido, nombres";
-
-        
-
-
         $stmt = $this->connection->prepare($sql);
 
-        // Vinculaciones dinámicas
         if (!empty($filters["perfil"])) {
             $stmt->bindValue(":perfil", $filters["perfil"]);
         }
@@ -156,18 +184,23 @@ final class UsuarioDao extends BaseDao implements InterfaceDao {
             $stmt->bindValue(":estado", $filters["estado"], \PDO::PARAM_INT);
         }
 
-
         if (isset($filters["correo"]) && trim($filters["correo"]) !== '') {
             $stmt->bindValue(":correo", "%" . $filters["correo"] . "%");
         }
-
 
         $stmt->execute();
 
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function suggestive(array $filters): array {
+    /**
+     * Sugerencias de usuarios por coincidencias parciales.
+     *
+     * @param array $filters Filtros, espera 'keyword'.
+     * @return array Resultados sugeridos.
+     */
+    public function suggestive(array $filters): array
+    {
         $sql = "SELECT id, cuenta, apellido, nombres FROM {$this->table} 
                 WHERE cuenta LIKE :keyword OR apellido LIKE :keyword OR nombres LIKE :keyword 
                 ORDER BY apellido, nombres LIMIT 10";
@@ -180,50 +213,95 @@ final class UsuarioDao extends BaseDao implements InterfaceDao {
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function foundRows(): int {
+    /**
+     * Retorna el total de filas encontradas tras la última consulta con SQL_CALC_FOUND_ROWS.
+     *
+     * @return int Total de filas.
+     */
+    public function foundRows(): int
+    {
         return parent::foundRows();
     }
 
-    public function getLastInsertId(): int {
+    /**
+     * Obtiene el ID del último registro insertado.
+     *
+     * @return int Último ID insertado.
+     */
+    public function getLastInsertId(): int
+    {
         return parent::getLastInsertId();
     }
 
-    // ================== Métodos especiales ===================
-
-    public function enable(int $id): void {
+    /**
+     * Habilita un usuario.
+     *
+     * @param int $id ID del usuario.
+     */
+    public function enable(int $id): void
+    {
         $sql = "UPDATE {$this->table} SET estado = 1 WHERE id = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute(["id" => $id]);
     }
 
-    public function disable(int $id): void {
+    /**
+     * Deshabilita un usuario.
+     *
+     * @param int $id ID del usuario.
+     */
+    public function disable(int $id): void
+    {
         $sql = "UPDATE {$this->table} SET estado = 0 WHERE id = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute(["id" => $id]);
     }
 
-    public function reset(int $id): void {
+    /**
+     * Marca el usuario para reiniciar la contraseña.
+     *
+     * @param int $id ID del usuario.
+     */
+    public function reset(int $id): void
+    {
         $sql = "UPDATE {$this->table} SET resetPass = 1 WHERE id = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute(["id" => $id]);
     }
 
-    public function existsByCuenta(string $cuenta, int $excludeId = 0): bool {
+    /**
+     * Verifica si existe una cuenta, excluyendo un ID opcional.
+     *
+     * @param string $cuenta Cuenta a verificar.
+     * @param int $excludeId ID a excluir.
+     * @return bool Verdadero si existe.
+     */
+    public function existsByCuenta(string $cuenta, int $excludeId = 0): bool
+    {
         $sql = "SELECT COUNT(*) FROM {$this->table} WHERE cuenta = :cuenta";
         if ($excludeId > 0) {
             $sql .= " AND id != :id";
         }
 
         $stmt = $this->connection->prepare($sql);
-        $stmt->bindValue(":cuenta", $cuenta);   
+        $stmt->bindValue(":cuenta", $cuenta);
         if ($excludeId > 0) {
             $stmt->bindValue(":id", $excludeId, \PDO::PARAM_INT);
         }
         $stmt->execute();
+
         return $stmt->fetchColumn() > 0;
     }
 
-    public function existsByCorreo(string $correo, int $excludeId = 0): bool {
+    /**
+     * Verifica si existe un correo, excluyendo un ID opcional.
+     *
+     * @param string $correo Correo a verificar.
+     * @param int $excludeId ID a excluir.
+     * @return bool Verdadero si existe.
+     */
+    public function existsByCorreo(string $correo, int $excludeId = 0): bool
+    {
         $sql = "SELECT COUNT(*) FROM {$this->table} WHERE correo = :correo";
         if ($excludeId > 0) {
             $sql .= " AND id != :id";
@@ -235,32 +313,57 @@ final class UsuarioDao extends BaseDao implements InterfaceDao {
             $stmt->bindValue(":id", $excludeId, \PDO::PARAM_INT);
         }
         $stmt->execute();
+
         return $stmt->fetchColumn() > 0;
     }
 
-    public function findByCuenta(string $cuenta): ?array {
+    /**
+     * Busca un usuario por su cuenta.
+     *
+     * @param string $cuenta Cuenta del usuario.
+     * @return array|null Datos del usuario o null si no existe.
+     */
+    public function findByCuenta(string $cuenta): ?array
+    {
         $sql = "SELECT * FROM {$this->table} WHERE cuenta = :cuenta LIMIT 1";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(":cuenta", $cuenta);
         $stmt->execute();
-        $data = $stmt->fetch(\PDO::FETCH_ASSOC);
-        return $data ?: null;
+
+        return $stmt->fetch(\PDO::FETCH_ASSOC) ?: null;
     }
-    
-     public function login($cuenta): array{
-        $sql = "SELECT id, apellido, nombres, cuenta, clave, perfil, estado, resetPass";
-        $sql .= " FROM usuarios";
-        $sql .= " WHERE (cuenta = :cuenta OR correo = :cuenta)";
+
+    /**
+     * Busca usuario por cuenta o correo para login.
+     *
+     * @param string $cuenta Cuenta o correo.
+     * @return array Datos del usuario.
+     * @throws \Exception Si no se encuentra.
+     */
+    public function login($cuenta): array
+    {
+        $sql = "SELECT id, apellido, nombres, cuenta, clave, perfil, estado, resetPass
+                FROM usuarios
+                WHERE (cuenta = :cuenta OR correo = :cuenta)";
 
         $stmt = $this->connection->prepare($sql);
         $stmt->execute(["cuenta" => $cuenta]);
-        if($stmt->rowCount() != 1){
+
+        if ($stmt->rowCount() != 1) {
             throw new \Exception("El nombre de usuario o la contraseña no coinciden");
         }
+
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
-    public function updatePassword(int $userId, string $newPassword): void {
+    /**
+     * Actualiza la contraseña de un usuario.
+     *
+     * @param int $userId ID del usuario.
+     * @param string $newPassword Nueva contraseña.
+     */
+    public function updatePassword(int $userId, string $newPassword): void
+    {
         $sql = "UPDATE usuarios SET clave = :clave, resetPass = 0 WHERE id = :id";
 
         $stmt = $this->connection->prepare($sql);
@@ -270,18 +373,19 @@ final class UsuarioDao extends BaseDao implements InterfaceDao {
         ]);
     }
 
-    public function findById(int $id): ?array {
-        $sql = "SELECT * FROM usuario WHERE id = :id LIMIT 1";
+    /**
+     * Busca un usuario por su ID.
+     *
+     * @param int $id ID del usuario.
+     * @return array|null Datos del usuario o null si no existe.
+     */
+    public function findById(int $id): ?array
+    {
+        $sql = "SELECT * FROM {$this->table} WHERE id = :id LIMIT 1";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(":id", $id, \PDO::PARAM_INT);
         $stmt->execute();
-        $usuario = $stmt->fetch(\PDO::FETCH_ASSOC);
-        
-        return $usuario ?: null;
+
+        return $stmt->fetch(\PDO::FETCH_ASSOC) ?: null;
     }
-
-
-    
-
-
 }

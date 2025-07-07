@@ -8,21 +8,27 @@ use app\core\controllers\base\BaseController;
 use app\core\controllers\base\InterfaceController;
 use app\core\services\ProductoService;
 use app\core\models\dto\ProductoDto;
-
 use app\core\services\PDFService;
+
 /**
- * Controlador para gestionar productos.
- * Conecta las solicitudes HTTP con la lógica de servicio.
+ * Controlador para gestionar productos del sistema.
+ * Implementa operaciones CRUD, filtrado, conteo y exportación a PDF.
  */
 final class ProductoController extends BaseController implements InterfaceController {
 
+    /**
+     * Carga la vista principal del módulo productos.
+     */
     public function index(Request $request, Response $response): void {
         $this->scripts[] = "app/js/{$request->getController()}/{$request->getAction()}.js";
         $this->render($request);
     }
 
     /**
-     * Carga un producto por ID.
+     * Carga un producto específico por su ID.
+     *
+     * @param Request $request
+     * @param Response $response
      */
     public function load(Request $request, Response $response): void {
         $id = (int)$request->getParameterValue("id", 0);
@@ -32,76 +38,70 @@ final class ProductoController extends BaseController implements InterfaceContro
         $response->send();
     }
 
-
     /**
-     * Crea una nueva vista para el formulario de productos (opcional).
+     * Renderiza el formulario de creación de productos.
      */
     public function create(Request $request, Response $response): void {
         $this->scripts[] = "app/js/{$request->getController()}/{$request->getAction()}.js";
         $this->render($request);
     }
 
-     /**
-     * Crea una nueva vista 
+    /**
+     * Renderiza el formulario de edición de productos.
      */
     public function edit(Request $request, Response $response): void {
         $this->scripts[] = "app/js/{$request->getController()}/{$request->getAction()}.js";
         $this->render($request);
     }
 
-
     /**
      * Guarda un nuevo producto.
+     *
+     * @param Request $request
+     * @param Response $response
      */
-
-    public function save(Request $request, Response $response): void
-    {
+    public function save(Request $request, Response $response): void {
         try {
             $dto = new ProductoDto($request->getDataFromInput());
             $service = new ProductoService();
             $service->save($dto);
-        
+
             $response->setMessage("Producto agregado correctamente.");
             $response->send();
 
         } catch (\Exception $e) {
-            
             http_response_code(400);
             $response->setError($e->getMessage());
             $response->send();
         }
     }
 
-
     /**
-     * Actualiza un producto existente.
+     * Actualiza los datos de un producto existente.
      */
     public function update(Request $request, Response $response): void {
         $dto = new ProductoDto($request->getDataFromInput());
         $service = new ProductoService();
         $service->update($dto);
+
         $response->setMessage("Producto actualizado correctamente.");
         $response->send();
     }
 
     /**
-     * Elimina un producto existente.
+     * Elimina un producto a partir de su ID.
      */
     public function delete(Request $request, Response $response): void {
         $service = new ProductoService();
-        $dto = $service->load((int)$request->getId());  // ✔️ Conversión a int
+        $dto = $service->load((int)$request->getId());
         $service->delete($dto);
 
         $response->setMessage("Se eliminó el producto correctamente");
         $response->send();
     }
 
-
-
-
-    
     /**
-     * Lista productos con filtros opcionales.
+     * Lista productos aplicando filtros opcionales (nombre, código, categoría, etc.).
      */
     public function list(Request $request, Response $response): void {
         $inputData = $request->getDataFromInput();
@@ -132,7 +132,6 @@ final class ProductoController extends BaseController implements InterfaceContro
             }
         }
 
-
         $service = new ProductoService();
         $productos = $service->list($mappedFilters);
 
@@ -140,13 +139,11 @@ final class ProductoController extends BaseController implements InterfaceContro
         $response->send();
     }
 
-     /**
-     * Exporta la lista de usuarios a PDF.
+    /**
+     * Exporta la lista de productos filtrados a un archivo PDF.
      */
-    public function exportPdf(Request $request, Response $response): void
-    {
+    public function exportPdf(Request $request, Response $response): void {
         try {
-            // Leer filtros desde el request (igual que en list())
             $inputData = $request->getDataFromInput();
 
             $rawFilters = [
@@ -154,8 +151,6 @@ final class ProductoController extends BaseController implements InterfaceContro
                 "nombre"    => $inputData['nombre'] ?? $request->getParameterValue("nombre", null),
                 "codigo"    => $inputData['codigo'] ?? $request->getParameterValue("codigo", null),
                 "orden"     => $inputData['orden'] ?? $request->getParameterValue("orden", null),
-                // "limit"     => $inputData['limit'] ?? $request->getParameterValue("limit", null),
-                // "offset"    => $inputData['offset'] ?? $request->getParameterValue("offset", 0),
             ];
 
             $filterMap = [
@@ -163,8 +158,6 @@ final class ProductoController extends BaseController implements InterfaceContro
                 "nombre"    => "nombre",
                 "codigo"    => "codigo",
                 "orden"     => "orden",
-                // "limit"     => "limit",
-                // "offset"    => "offset",
             ];
 
             $mappedFilters = [];
@@ -175,12 +168,9 @@ final class ProductoController extends BaseController implements InterfaceContro
                 }
             }
 
-
-            // Obtener la lista filtrada
             $service = new ProductoService();
             $productos = $service->list($mappedFilters);
 
-            // Generar PDF
             $pdfService = new PDFService();
             $templatePath = APP_DIR_PDF . $request->getController() . '/pdf.php';
             $pdfService->generatePdf(
@@ -188,6 +178,7 @@ final class ProductoController extends BaseController implements InterfaceContro
                 ['productos' => $productos],
                 "productos_" . date('Ymd_His') . ".pdf"
             );
+
         } catch (\Exception $e) {
             error_log("Error en ProductoController::exportPdf: " . $e->getMessage());
             $response->setMessage("<p>Error al generar el PDF: {$e->getMessage()}</p>");
@@ -195,27 +186,22 @@ final class ProductoController extends BaseController implements InterfaceContro
         }
     }
 
-
     /**
-     * Exporta los datos de un producto específico a PDF.
+     * Exporta un producto específico a PDF por su ID.
      */
-    public function exportSinglePdf(Request $request, Response $response): void
-    {
+    public function exportSinglePdf(Request $request, Response $response): void {
         try {
-            // Obtener el ID desde la URL
             $id = (int) $request->getParameterValue('id', 0);
             if (!is_numeric($id) || $id <= 0) {
                 throw new \Exception('ID de producto inválido');
             }
 
-            // Cargar datos del usuario
             $service = new ProductoService();
             $dto = $service->load($id);
             if (!$dto) {
-                throw new \Exception('producto no encontrado');
+                throw new \Exception('Producto no encontrado');
             }
 
-            // Usar PDFService para generar el PDF
             $pdfService = new PDFService();
             $templatePath = APP_DIR_PDF . $request->getController() . '/pdf_single.php';
             $pdfService->generatePdf(
@@ -223,21 +209,22 @@ final class ProductoController extends BaseController implements InterfaceContro
                 ['producto' => $dto->toArray()],
                 "producto_{$id}_" . date('Ymd_His') . ".pdf"
             );
+
         } catch (\Exception $e) {
-            error_log("Error en UsuarioController::exportSinglePdf: " . $e->getMessage());
+            error_log("Error en ProductoController::exportSinglePdf: " . $e->getMessage());
             $response->setMessage("<p>Error al generar el PDF: {$e->getMessage()}</p>");
             $response->send();
         }
     }
 
+    /**
+     * Devuelve la cantidad total de productos registrados en el sistema.
+     */
     public function cantidadProductos(Request $request, Response $response): void {
-       
         $service = new ProductoService();
-        $response->setResult( $service->getCantidadProductos());
+        $response->setResult($service->getCantidadProductos());
         $response->setMessage("Cantidad de productos");
         $response->send();
     }
-
-
 
 }

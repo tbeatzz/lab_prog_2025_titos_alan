@@ -8,9 +8,10 @@ use app\libs\pipeline\middlewares\base\BaseMiddleware;
 use app\libs\pipeline\middlewares\base\InterfaceMiddleware;
 
 /**
- * Descripción de AuthenticationMiddleware
- *
- * @author Ing. Jose Rasjido
+ * Middleware de autorización.
+ * 
+ * Valida el perfil del usuario y determina si puede acceder a determinados controladores/acciones.
+ * Si no tiene permisos, redirige a la página 403 Forbidden.
  */
 
 final class AuthenticationHandlerMiddleware extends BaseMiddleware implements InterfaceMiddleware {
@@ -19,6 +20,16 @@ final class AuthenticationHandlerMiddleware extends BaseMiddleware implements In
         parent::__construct();
     }
 
+    /**
+     * Ejecuta la lógica de autorización.
+     * 
+     * - Si el usuario es "Administrador", permite todo.
+     * - Si es "Operador", permite acceso solo a ciertos controladores/acciones.
+     * - Si no tiene permisos, redirige a una página 403.
+     *
+     * @param Request $request Objeto que representa la solicitud HTTP.
+     * @param Response $response Objeto que representa la respuesta HTTP.
+     */
     public function handler(Request $request, Response $response): void {
         
         session_start();

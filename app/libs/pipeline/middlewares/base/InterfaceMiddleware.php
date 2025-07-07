@@ -7,7 +7,6 @@ use app\libs\http\Response;
 /**
  * Descripción de MiddlewareInterface
  * 
- * @author Reales Daniel Ivan
  */
 
  interface InterfaceMiddleware{

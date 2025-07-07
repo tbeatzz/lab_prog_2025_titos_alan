@@ -9,7 +9,7 @@ use app\libs\http\Request;
 final class HomeController extends BaseController {
     public function index(Request $request, Response $response): void {
         $this->scripts[] = "app/js/{$request->getController()}/{$request->getAction()}.js";
-        // $this->styles[] = "app/css/{$request->getController()}/{$request->getAction()}.css";
+       
         $this->render($request);
     }
 

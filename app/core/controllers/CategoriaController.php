@@ -10,35 +10,48 @@ use app\core\services\CategoriaService;
 use app\core\models\dto\CategoriaDto;
 use app\core\services\PDFService;
 
-
 /**
- * Controlador del módulo Categoría.
- * Gestiona las peticiones HTTP y comunica la vista con la lógica de negocio (service).
+ * Clase CategoriaController
+ *
+ * Controlador encargado de gestionar las operaciones CRUD para categorías,
+ * así como la exportación de datos en formato PDF.
+ *
+ * Implementa la interfaz InterfaceController y extiende BaseController.
+ *
+ * @package app\core\controllers
  */
 final class CategoriaController extends BaseController implements InterfaceController {
 
     /**
      * Muestra la vista principal del módulo Categoría.
      *
-     * @param Request $request
-     * @param Response $response
+     * @param Request $request  Solicitud HTTP con información del cliente.
+     * @param Response $response Respuesta HTTP a enviar al cliente.
+     * @return void
      */
     public function index(Request $request, Response $response): void {
         $this->scripts[] = "app/js/{$request->getController()}/{$request->getAction()}.js";
         $this->render($request);
     }
 
+    /**
+     * Muestra la vista de edición de categoría.
+     *
+     * @param Request $request
+     * @param Response $response
+     * @return void
+     */
     public function edit(Request $request, Response $response): void {
         $this->scripts[] = "app/js/{$request->getController()}/{$request->getAction()}.js";
         $this->render($request);
     }
 
     /**
-     * Carga una categoría por ID.
-     * Ejemplo: GET /categoria/load/1
+     * Carga una categoría específica por su ID.
      *
      * @param Request $request
      * @param Response $response
+     * @return void
      */
     public function load(Request $request, Response $response): void {
         $id = (int) $request->getParameterValue("id", 0);
@@ -49,13 +62,12 @@ final class CategoriaController extends BaseController implements InterfaceContr
         $response->send();
     }
 
-    
-
     /**
-     * Invoca la vista para crear una nueva categoría.
+     * Muestra la vista para crear una nueva categoría.
      *
      * @param Request $request
      * @param Response $response
+     * @return void
      */
     public function create(Request $request, Response $response): void {
         $this->scripts[] = "app/js/{$request->getController()}/{$request->getAction()}.js";
@@ -63,11 +75,11 @@ final class CategoriaController extends BaseController implements InterfaceContr
     }
 
     /**
-     * Guarda una nueva categoría.
-     * Ejemplo: POST /categoria/save con body JSON {"nombre": "Guantes"}
+     * Guarda una nueva categoría a partir de los datos recibidos.
      *
      * @param Request $request
      * @param Response $response
+     * @return void
      */
     public function save(Request $request, Response $response): void {
         $dto = new CategoriaDto($request->getDataFromInput());
@@ -79,11 +91,11 @@ final class CategoriaController extends BaseController implements InterfaceContr
     }
 
     /**
-     * Actualiza una categoría existente.
-     * Ejemplo: PUT /categoria/update con body JSON {"id":1, "nombre": "Nuevo nombre"}
+     * Actualiza una categoría existente con nuevos datos.
      *
      * @param Request $request
      * @param Response $response
+     * @return void
      */
     public function update(Request $request, Response $response): void {
         $dto = new CategoriaDto($request->getDataFromInput());
@@ -96,10 +108,10 @@ final class CategoriaController extends BaseController implements InterfaceContr
 
     /**
      * Elimina una categoría.
-     * Ejemplo: DELETE /categoria/delete con body JSON {"id":1}
      *
      * @param Request $request
      * @param Response $response
+     * @return void
      */
     public function delete(Request $request, Response $response): void {
         try {
@@ -108,7 +120,6 @@ final class CategoriaController extends BaseController implements InterfaceContr
             $service->delete($dto);
             $response->setMessage("<p>Se eliminó la categoría correctamente</p>");
         } catch (\Exception $e) {
-            // Enviar mensaje de error
             $response->setStatus(false);
             $response->setMessage($e->getMessage());
         }
@@ -116,18 +127,16 @@ final class CategoriaController extends BaseController implements InterfaceContr
         $response->send();
     }
 
-
     /**
-     * Lista categorías con filtros opcionales.
-     * Ejemplo: GET /categoria/list?nombre=guante&limit=10&offset=0
+     * Lista categorías con filtros opcionales como nombre, límite y desplazamiento.
      *
      * @param Request $request
      * @param Response $response
+     * @return void
      */
     public function list(Request $request, Response $response): void {
-        // Obtener filtros del cuerpo JSON o de parámetros GET
-        $inputData = $request->getDataFromInput();  // ← Esto toma los datos del POST JSON
-        
+        $inputData = $request->getDataFromInput();
+
         $filters = [
             "nombre" => $inputData['nombre'] ?? $request->getParameterValue("nombre", null),
             "limit"  => $inputData['limit'] ?? $request->getParameterValue("limit", null),
@@ -141,31 +150,29 @@ final class CategoriaController extends BaseController implements InterfaceContr
         $response->send();
     }
 
-
-     /**
-     * Exporta la lista de usuarios a PDF.
+    /**
+     * Exporta a PDF la lista de categorías filtradas.
+     *
+     * @param Request $request
+     * @param Response $response
+     * @return void
      */
-    public function exportPdf(Request $request, Response $response): void
-    {
+    public function exportPdf(Request $request, Response $response): void {
         try {
-            // Leer filtros desde el request (igual que en list())
             $inputData = $request->getDataFromInput();
 
-             // Filtros desde input JSON o parámetros GET
             $rawFilters = [
-                "nombre"    => $inputData['nombre'] ?? $request->getParameterValue("nombre", null),
-                "limit"     => $inputData['limit'] ?? $request->getParameterValue("limit", null),
-                "offset"    => $inputData['offset'] ?? $request->getParameterValue("offset", 0),
+                "nombre" => $inputData['nombre'] ?? $request->getParameterValue("nombre", null),
+                "limit"  => $inputData['limit'] ?? $request->getParameterValue("limit", null),
+                "offset" => $inputData['offset'] ?? $request->getParameterValue("offset", 0),
             ];
 
-            // 🎯 Mapeo de nombres de filtros del front a los internos del backend
             $filterMap = [
-                "nombre"    => "nombre",
-                "limit"     => "limit",
-                "offset"    => "offset",
+                "nombre" => "nombre",
+                "limit"  => "limit",
+                "offset" => "offset",
             ];
 
-            // 🧩 Aplicar el mapeo
             $mappedFilters = [];
             foreach ($rawFilters as $key => $value) {
                 if ($value !== null && $value !== '') {
@@ -174,12 +181,9 @@ final class CategoriaController extends BaseController implements InterfaceContr
                 }
             }
 
-
-            // Obtener la lista filtrada
             $service = new CategoriaService();
             $categorias = $service->list($mappedFilters);
 
-            // Generar PDF
             $pdfService = new PDFService();
             $templatePath = APP_DIR_PDF . $request->getController() . '/pdf.php';
             $pdfService->generatePdf(
@@ -194,27 +198,26 @@ final class CategoriaController extends BaseController implements InterfaceContr
         }
     }
 
-
     /**
-     * Exporta los datos de un producto específico a PDF.
+     * Exporta a PDF los datos de una categoría específica.
+     *
+     * @param Request $request
+     * @param Response $response
+     * @return void
      */
-    public function exportSinglePdf(Request $request, Response $response): void
-    {
+    public function exportSinglePdf(Request $request, Response $response): void {
         try {
-            // Obtener el ID desde la URL
             $id = (int) $request->getParameterValue('id', 0);
             if (!is_numeric($id) || $id <= 0) {
-                throw new \Exception('ID de categoria inválido');
+                throw new \Exception('ID de categoría inválido');
             }
 
-            // Cargar datos del usuario
             $service = new CategoriaService();
             $dto = $service->load($id);
             if (!$dto) {
-                throw new \Exception('categoria no encontrada');
+                throw new \Exception('Categoría no encontrada');
             }
 
-            // Usar PDFService para generar el PDF
             $pdfService = new PDFService();
             $templatePath = APP_DIR_PDF . $request->getController() . '/pdf_single.php';
             $pdfService->generatePdf(
@@ -228,12 +231,18 @@ final class CategoriaController extends BaseController implements InterfaceContr
             $response->send();
         }
     }
+
+    /**
+     * Obtiene la cantidad total de categorías registradas en el sistema.
+     *
+     * @param Request $request
+     * @param Response $response
+     * @return void
+     */
     public function cantidadCategorias(Request $request, Response $response): void {
-       
         $service = new CategoriaService();
-        $response->setResult( $service->getCantidadCategorias());
-        $response->setMessage("Cantidad de categorias");
+        $response->setResult($service->getCantidadCategorias());
+        $response->setMessage("Cantidad de categorías");
         $response->send();
     }
-
 }
